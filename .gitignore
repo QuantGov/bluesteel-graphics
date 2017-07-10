@@ -88,4 +88,6 @@ ENV/
 .spyderproject
 
 # Rope project settings
-.ropeproject
+.ropeproject.DS_Store
+bluesteel/.DS_Store
+.DS_Store
