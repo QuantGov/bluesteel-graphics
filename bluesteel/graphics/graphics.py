@@ -6,17 +6,14 @@ bluesteel.graphics
 Utility functions for generating Mercatus style graphics objects and files.
 """
 
-import argparse
 import logging
 import matplotlib.pyplot as plt
-import pandas as pd
-import sys
 import os
 
-#
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
+
 
 def draw_chart(data, ylabel=None, xlabel=None, title=None, source=None,
                type_='Line', xmax=None, xmin=None, ymax=None, ymin=None):

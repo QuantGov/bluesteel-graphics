@@ -1,3 +1,14 @@
+import argparse
+import logging
+import sys
+
+import pandas as pd
+
+import bluesteel
+
+from pathlib import Path
+
+
 def parse_args(args):
     """Parse command line arguments
 
@@ -38,6 +49,9 @@ def main(args=sys.argv[1:]):
         else:
             raise ValueError
 
-    save_fig(args.outfile, data=indata)
+    bluesteel.graphics.save_fig(args.outfile, data=indata)
 
+
+if __name__ == "__main__":
+    main()
 
