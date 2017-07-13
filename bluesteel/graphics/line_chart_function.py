@@ -25,7 +25,6 @@ def line_chart(data, rot=None, title=None, source=None,
 #Formatting
 	ax.set_yticklabels('{:,.0f}'.format(i) 
 		if i else '' for i in ax.get_yticks())
-	ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
 	ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
 	ax.tick_params(bottom='off', left='off')
 	
