@@ -1,55 +1,56 @@
-def line_chart(data, rot=None, title=None, source=None, 
-				xmax=None, ymax=None, xmin=None, ymin=None
-				size=None, xlabel=None, ylabel=None):
+def line_chart(data, rot=None, title=None, source=None,
+               xmax=None, ymax=None, xmin=None, ymin=None,
+               size=None, xlabel=None, ylabel=None):
 
-#Set up the data and style
-	plt.style.use('mercatus.mplstyle')
-	f, ax = plt.subplots()
-	header_list = list(data)
-	x_value = data.iloc[:,0]
-	y_value = data.iloc[:,1]
+    # Set up the data and style
+    plt.style.use('mercatus.mplstyle')
+    f, ax = plt.subplots()
+    header_list = list(data)
+    x_value = data.iloc[:, 0]
+    y_value = data.iloc[:, 1]
 
-#Takes care of graphs with multiple lines and too few input issues
-	if len(header_list)>2:
-		header_list.pop(0)
-		for i in header_list:
-			plt.plot(x_value, data[i])
-		if len(x_value)<6:
-			plt.xticks(x_value)
-	else:
-		plt.plot(x_value, y_value)
-		if len(x_value)<6:
-			plt.xticks(x_value)
-			plt.yticks(y_value)
+    # Takes care of graphs with multiple lines and too few input issues
+    if len(header_list) > 2:
+        header_list.pop(0)
+        for i in header_list:
+            plt.plot(x_value, data[i])
+        if len(x_value) < 6:
+            plt.xticks(x_value)
+    else:
+        plt.plot(x_value, y_value)
+        if len(x_value) < 6:
+            plt.xticks(x_value)
+            plt.yticks(y_value)
 
-#Formatting
-	ax.set_yticklabels('{:,.0f}'.format(i) 
-		if i else '' for i in ax.get_yticks())
-	ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-	ax.tick_params(bottom='off', left='off')
-	
-#Axis Labels	
-	if xlabel == None:
-		xlabel = header_list[0]
-	if ylabel == None:
-		ylabel = header_list[1]
-	plt.xlabel(xlabel)
-	plt.ylabel(ylabel)
-	
-#Other Options for the Graph
-	if title:
-		plt.title(title)
-	if xmax:
-		ax.set_xlim(xmax=xmax)
-	if ymax:
-		ax.set_ylim(ymax=ymax)
-	if xmin:
-		ax.set_xlim(xmin=xmin)
-	if ymin:
-		ax.set_ylim(ymin=ymin)
-	if rot:
-		plt.xticks(rotation=rot)
-	if source:	
-		f.text(1, 0, source, transform=ax.transAxes, 
-		fontsize=10, ha='right', va='bottom')
-	return f
+    # Formatting
+    ax.set_yticklabels('{:,.0f}'.format(i)
+                       if i else '' for i in ax.get_yticks())
+    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+    ax.tick_params(bottom='off', left='off')
+
+    # Axis Labels
+    if not xlabel:
+        xlabel = header_list[0]
+    if not ylabel:
+        ylabel = header_list[1]
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+
+    # Other Options for the Graph
+    if title:
+        plt.title(title)
+    if xmax:
+        ax.set_xlim(xmax=xmax)
+    if ymax:
+        ax.set_ylim(ymax=ymax)
+    if xmin:
+        ax.set_xlim(xmin=xmin)
+    if ymin:
+        ax.set_ylim(ymin=ymin)
+    if rot:
+        plt.xticks(rotation=rot)
+    if source:
+        f.text(1, 0, source, transform=ax.transAxes,
+               fontsize=10, ha='right', va='bottom')
+
+    return f
