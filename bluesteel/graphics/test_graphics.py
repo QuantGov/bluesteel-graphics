@@ -1,7 +1,7 @@
 import os
 import unittest
 
-import bluesteel
+import bluesteel.graphics
 
 from pathlib import Path
 
@@ -50,7 +50,7 @@ class BadChartParams(unittest.TestCase):
     def testBadChartType(self):
         """Should only run on specific types of charts"""
         self.assertRaises(
-            NotImplemenetedError,
+            NotImplementedError,
             bluesteel.graphics.draw_chart(type='Pie', data='testdata.csv')
         )
 
