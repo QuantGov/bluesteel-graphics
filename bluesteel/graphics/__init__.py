@@ -1,5 +1,4 @@
-import graphics
-import __main__
+from . import graphics
 
 
 def save_fig(outfile, **kwargs):
@@ -9,4 +8,4 @@ def save_fig(outfile, **kwargs):
 
 
 
-__version__ = 0.1.dev0
+__version__ = '0.1.dev0'

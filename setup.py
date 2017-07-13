@@ -18,7 +18,10 @@ setup(
     name='bluesteel-graphics',
     version=version,
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-    install_requires=[''],
+    install_requires=[
+        'matplotlib',
+        'pandas'
+    ],
     extras_require={
         'test': ['pytest-flake8'],
     },
