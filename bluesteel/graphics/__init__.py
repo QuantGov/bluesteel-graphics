@@ -2,6 +2,8 @@ import logging
 import matplotlib.pyplot as plt
 
 from bluesteel.graphics import graphics
+from bluesteel.graphics import __main__
+
 log = logging.getLogger(__name__)
 
 
