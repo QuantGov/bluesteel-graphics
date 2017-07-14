@@ -32,15 +32,9 @@ def parse_args(args):
 
 
 def main(args=sys.argv[1:]):
+    """Dispatches request to module. """
     args = parse_args(args)
     logging.basicConfig(level=args.verbose)
-
-    if args.data.suffix == '.csv':
-        indata = pd.read_csv(str(args.data))
-    elif args.data.suffix in ['.xlsx', '.xls']:
-        indata = pd.read_excel((args.data))
-    else:
-        raise ValueError
 
     bluesteel.graphics.save_fig(args.outfile, data=indata,
                                 format=Path(args.outfile).suffix[1:])
