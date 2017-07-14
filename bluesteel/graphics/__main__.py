@@ -42,14 +42,8 @@ def main(args=sys.argv[1:]):
     else:
         raise ValueError
 
-    if args.outfile.exists():
-        response = input(f'Are you sure you want to overwrite {args.outfile}?')
-        if response == 'y':
-            pass
-        else:
-            raise ValueError
-
-    bluesteel.graphics.save_fig(args.outfile, data=indata)
+    bluesteel.graphics.save_fig(args.outfile, data=indata,
+                                format=Path(args.outfile).suffix[1:])
 
 
 if __name__ == "__main__":

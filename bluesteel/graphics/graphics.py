@@ -8,48 +8,39 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import logging
 import matplotlib.pyplot as plt
-import os
+import pandas as pd
+# import os
 
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
 
 
-def draw_chart(data, ylabel=None, xlabel=None, title=None, source=None,
-               type_='Line', xmax=None, xmin=None, ymax=None, ymin=None):
-    plt.style.use(os.path.dirname(os.path.abspath(__file__))
-                  + '/mercatus.mplstyle')
-    if len(data.columns) > 1:
-        fig, ax = plt.subplots(1)
-        for x in data.columns:
-            if type_ == 'Line':
-                ax.plot(data[x], label=x)
+def draw_chart(data=None, type_='line', **kwargs):
+    """Dispatcher function for different chart types. """
 
-        ax.legend(loc='best')
-    if type_ == "Line":
-        plt.plot(data)
-    elif type_ == "hist":
-        plt.hist(data)
-    if ylabel:
-        plt.ylabel(ylabel)
-    if xlabel:
-        plt.xlabel(xlabel)
-    if title:
-        plt.title(title)
-    if xmax or xmin or ymax or ymin:
-        print('hit')
-        plt.axis([xmin, xmax, ymin, ymax])
-    if source:
-        plt.annotate(source, xy=(10, 10), xycoords='figure pixels')
+    # plt.style.use(os.path.dirname(os.path.abspath(__file__)) +
+    # '/mercatus.mplstyle')
+    if type(data) == str:
+        data = pd.read_csv(data, index_col=0)
+
+    allowed_types = ['line', 'vertical_bar']
+    # 'horizontal_bar', 'stacked_area', 'scatter']
+    if type_ not in allowed_types:
+        raise NotImplementedError("This chart type is not supported")
+    if type_ == "line":
+        return line_chart(data, **kwargs)
+    # elif type_ == "hist":
+        # plt.hist(data)
 
 
 def line_chart(data, rot=None, title=None, source=None,
                xmax=None, ymax=None, xmin=None, ymin=None,
-               size=None, xlabel=None, ylabel=None):
-
+               size=None, xlabel=None, ylabel=None, yaxis_title=None):
+    """Base function for line chart creation. """
     # Set up the data and style
     plt.style.use('mercatus.mplstyle')
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:, 0]
     y_value = data.iloc[:, 1]
@@ -83,7 +74,9 @@ def line_chart(data, rot=None, title=None, source=None,
 
     # Other Options for the Graph
     if title:
-        plt.title(title)
+        ax.set_title(title)
+    if yaxis_title:
+        ax.set_ylabel(yaxis_title)
     if xmax:
         ax.set_xlim(xmax=xmax)
     if ymax:
@@ -93,10 +86,8 @@ def line_chart(data, rot=None, title=None, source=None,
     if ymin:
         ax.set_ylim(ymin=ymin)
     if rot:
-        plt.xticks(rotation=rot)
+        ax.xticks(rotation=rot)
     if source:
-        f.text(1, 0, source, transform=ax.transAxes,
-               fontsize=10, ha='right', va='bottom')
-
-    return f
-
+        fig.text(1, 0, source, transform=ax.transAxes,
+                 fontsize=10, ha='right', va='bottom')
+    return fig
