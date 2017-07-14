@@ -1,5 +1,6 @@
-import os
-import unittest
+import pytest
+import pandas as pd
+import matplotlib
 
 import bluesteel.graphics
 
@@ -36,7 +37,8 @@ Main Functionality:
     B.	A low-level interface that returns objects for further manipulation
 
 1.	Uses UNIX convention for arguments and parameters
-2.	Reads in data from a CSV or Excel spreadsheet with an index in rows and series in columns
+2.	Reads in data from a CSV or Excel spreadsheet with an index in rows and
+    series in columns
 3.	Employs the programmatic API exclusively for chart creation logic
 
 """
@@ -45,83 +47,66 @@ Main Functionality:
 
 
 # PROGRAMMATIC INTERFACE
-class BadChartParams(unittest.TestCase):
+class TestBadChartParams(object):
 
-    def testBadChartType(self):
+    def test_BadChartType(self):
         """Should only run on specific types of charts"""
-        self.assertRaises(
-            NotImplementedError,
-            bluesteel.graphics.draw_chart(type='Pie', data='testdata.csv')
-        )
+        with pytest.raises(NotImplementedError):
+            bluesteel.graphics.gen_chart(type_='Pie', data='dev/test_data.csv')
 
-    def testEmptyData(self):
+    def test_EmptyData(self):
         """Should fail if passed an empty csv"""
-        self.assertRaises(
-            bluesteel.graphics.EmptyDataError,
-            bluesteel.graphics.draw_chart(data='empty.csv')
-        )
+        with pytest.raises(pd.errors.EmptyDataError):
+            bluesteel.graphics.gen_chart(data='dev/empty.csv')
 
 
-class ValidChartTypes(unittest.TestCase):
+class TestValidChartTypes(object):
 
-    def chartTypes():
-        for type in ['Line', 'Horizontal_Bar', 'Vertical_Bar',
-                     'Stacked_Area', 'Scatter']:
-            bluesteel.graphics.draw_chart(type=type, data='testdata.csv')
+    def test_chartTypes(self):
+        # for type in ['Line', 'Horizontal_Bar', 'Vertical_Bar',
+        # 'Stacked_Area', 'Scatter']:
+        bluesteel.graphics.gen_chart(type_="line", data='dev/test_data.csv')
 
 
-class ChartReturnFormats(unittest.TestCase):
+class TestChartReturnFormats(object):
 
-    def testReturnImage(self):
+    def test_ReturnImage(self):
         """Should return proper image formats when specified"""
-        types = ['ps', 'eps', 'pdf', 'pgf', 'png', 'raw', 'rgba', 'svg',
-                 'svgz', 'jpg', 'jpeg', 'tif', 'tiff']
+        types = ['ps', 'eps', 'pdf', 'png', 'raw', 'rgba', 'svg',
+                 'svgz']
 
         for format in types:
-            self.assertEqual(
-                format, os.path.suffix(bluesteel.graphics.chart_to_file(
-                    data='testdata.csv', format=format)
-                ))
+                assert format == Path(bluesteel.graphics.save_fig(
+                    data='dev/test_data.csv',
+                    outfile=f'dev/tests/output.{format}',
+                    format=format)).suffix[1:]
 
-    def testReturnObject(self):
+    def test_ReturnObject(self):
         """Should return a graphics object for further testing when
         requested"""
-        self.assertEqual(
-            bluesteel.graphics.ChartObject,
-            type(bluesteel.graphics.chart_object(data='testdata.csv'))
-        )
+        assert isinstance(bluesteel.graphics.gen_chart
+                          (data='dev/test_data.csv'), matplotlib.figure.Figure)
 
 
-class ChartElements(unittest.TestCase):
+class TestChartElements(object):
 
-    def testTitle(self):
+    def test_Title(self):
         """Should contain a title when passed a valid string"""
-        self.assertEqual(
-            'Test Title',
-            bluesteel.graphics.chart_object(
-                data='testdata.csv', title='Test Title'
-            ).title
-        )
+        pass
 
-    def testYAxisTitle(self):
+    def test_YAxisTitle(self):
         """Should contain axes titles when passed valid strings"""
-        self.assertEqual(
-            'Y Title',
-            bluesteel.graphics.chart_object(
-                data='testdata.csv',
-                yaxis_title='Y Title'
-            ).yaxis_title
-        )
+        pass
 
-    def testXYBounds(self):
+    def test_XYBounds(self):
         """Should limit data to specific bounds on request"""
         pass
 
-    def testSourceNotes(self):
+    def test_SourceNotes(self):
         """Should contain source notes when passed valid options"""
         pass
 
-    def testAnnotations(self):
+    def test_Annotations(self):
         """Should contain annotations if possible when passed valid
         parameters"""
         pass
@@ -129,15 +114,15 @@ class ChartElements(unittest.TestCase):
 
 # COMMAND LINE INTERFACE
 
-class CLI(unittest.TestCase):
+class TestCLI(object):
 
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['-d', 'sample_data.csv', '-o', 'testchart.png']
+            args=['-d', 'dev/test_data.csv', '-o', 'testchart.png']
         )
-        self.assertTrue(Path('testchart.png').exists())
+        assert Path('testchart.png').exists()
 
 
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+    # unittest.main()
