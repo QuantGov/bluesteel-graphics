@@ -2,9 +2,7 @@ import argparse
 import logging
 import sys
 
-import pandas as pd
-
-import bluesteel
+import bluesteel.graphics
 
 from pathlib import Path
 
@@ -21,7 +19,7 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(description=__doc__)
     # parser.add_argument('settings', nargs='+')
-    parser.add_argument('-d', '--data', type=Path)
+    parser.add_argument('-d', '--data')
     parser.add_argument('-o', '--outfile', type=Path)
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',
@@ -36,7 +34,7 @@ def main(args=sys.argv[1:]):
     args = parse_args(args)
     logging.basicConfig(level=args.verbose)
 
-    bluesteel.graphics.save_fig(args.outfile, data=indata,
+    bluesteel.graphics.save_fig(args.outfile, data=args.data,
                                 format=Path(args.outfile).suffix[1:])
 
 
