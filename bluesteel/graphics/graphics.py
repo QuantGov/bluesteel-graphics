@@ -39,7 +39,7 @@ def line_chart(data, rot=None, title=None, source=None,
                size=None, xlabel=None, ylabel=None, yaxis_title=None):
     """Base function for line chart creation. """
     # Set up the data and style
-    plt.style.use('mercatus.mplstyle')
+    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:, 0]
