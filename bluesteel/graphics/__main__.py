@@ -49,7 +49,7 @@ def main(args=sys.argv[1:]):
     kwargs = vars(args)
     logging.basicConfig(level=kwargs.pop('verbose'))
 
-    bluesteel.graphics.save_fig(**vars(args))
+    bluesteel.graphics.save_fig(kwargs)
 
 
 if __name__ == "__main__":
