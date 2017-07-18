@@ -119,10 +119,9 @@ class TestCLI(object):
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['-d', 'dev/test_data.csv', '-o', 'dev/tests/testchart.png']
+            args=['-d', 'dev/test_data.csv', '-o', 'dev/tests/testchart.png',
+                  '--title', 'test_title', '--ylabel', 'count', '--xlabel',
+                  'date', '--source', 'quantgov.org']
         )
         assert Path('dev/tests/testchart.png').exists()
 
-
-# if __name__ == "__main__":
-    # unittest.main()

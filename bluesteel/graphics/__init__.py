@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 
 from pathlib import Path
 
+
 from bluesteel.graphics import graphics
 from bluesteel.graphics import __main__
 
