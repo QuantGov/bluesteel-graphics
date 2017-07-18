@@ -6,8 +6,6 @@ import bluesteel.graphics
 
 from pathlib import Path
 
-# TODO: fix runtime warning associated with submodule import
-
 
 def parse_args(args):
     """Parse command line arguments
@@ -20,9 +18,9 @@ def parse_args(args):
     Arguments[attributes] -- returns object with arguments as attributes.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    # parser.add_argument('settings', nargs='+')
     parser.add_argument('data')
     parser.add_argument('-o', '--outfile', type=Path)
+
     parser.add_argument('--type_', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
     parser.add_argument('--format', help='output file format')
@@ -47,9 +45,9 @@ def main(args=sys.argv[1:]):
     """Dispatches request to module. """
     args = parse_args(args)
     kwargs = vars(args)
-    logging.basicConfig(level=kwargs.pop('verbose'))
 
-    bluesteel.graphics.save_fig(kwargs)
+    logging.basicConfig(level=kwargs.pop('verbose'))
+    bluesteel.graphics.save_fig(**kwargs)
 
 
 if __name__ == "__main__":

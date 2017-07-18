@@ -16,7 +16,7 @@ from pathlib import Path
 log = logging.getLogger(Path(__file__).stem)
 
 
-def draw_chart(data=None, type_='line', **kwargs):
+def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
 
     # plt.style.use(os.path.dirname(os.path.abspath(__file__)) +

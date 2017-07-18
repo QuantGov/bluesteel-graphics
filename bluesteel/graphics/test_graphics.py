@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib
 
 import bluesteel.graphics
+from bluesteel.graphics import __main__
 
 from pathlib import Path
 
@@ -119,7 +120,7 @@ class TestCLI(object):
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['-d', 'dev/test_data.csv', '-o', 'dev/tests/testchart.png',
+            args=['dev/test_data.csv', '-o', 'dev/tests/testchart.png',
                   '--title', 'test_title', '--ylabel', 'count', '--xlabel',
                   'date', '--source', 'quantgov.org']
         )
