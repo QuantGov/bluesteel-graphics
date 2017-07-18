@@ -21,7 +21,7 @@ def parse_args(args):
     """
     parser = argparse.ArgumentParser(description=__doc__)
     # parser.add_argument('settings', nargs='+')
-    parser.add_argument('-d', '--data', required=True)
+    parser.add_argument('data')
     parser.add_argument('-o', '--outfile', type=Path)
     parser.add_argument('--type_', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
