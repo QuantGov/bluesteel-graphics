@@ -8,6 +8,17 @@ import bluesteel.graphics
 
 from pathlib import Path
 
+log = logging.getLogger(__name__)
+
+
+def save_fig(outfile, format='png', **kwargs):
+    """Outputs figure to specified location. """
+    fig = bluesteel.graphics.gen_chart(**kwargs)
+    log.debug(f'attempting to save to {outfile}')
+    Path(outfile).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(str(outfile), format=format)
+    return str(outfile)
+
 
 def parse_args(args):
     """Parse command line arguments
@@ -49,7 +60,7 @@ def main(args=sys.argv[1:]):
     kwargs = vars(args)
 
     logging.basicConfig(level=kwargs.pop('verbose'))
-    bluesteel.graphics.save_fig(**kwargs)
+    save_fig(**kwargs)
 
 
 if __name__ == "__main__":

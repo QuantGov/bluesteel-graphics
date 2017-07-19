@@ -83,7 +83,7 @@ class TestChartReturnFormats(object):
         # TODO, figure out : 'ps', 'eps',
 
         for format in types:
-                assert format == Path(bluesteel.graphics.save_fig(
+                assert format == Path(bluesteel.graphics.__main__.save_fig(
                     data=pd.read_csv('dev/test_data.csv', index_col=0),
                     outfile=f'dev/tests/output.{format}',
                     format=format)).suffix[1:]
