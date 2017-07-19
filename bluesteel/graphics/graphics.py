@@ -21,12 +21,13 @@ def draw_chart(data, type_='line', **kwargs):
     if type(data) == str:
         data = pd.read_csv(data, index_col=0)
 
-    allowed_types = ['line', 'vertical_bar']
-    # 'horizontal_bar', 'stacked_area', 'scatter']
-    if type_ not in allowed_types:
+    kinds = {
+        'line': line_chart,
+    }
+    try:
+        return kinds[type_](data, **kwargs)
+    except KeyError:
         raise NotImplementedError("This chart type is not supported")
-    if type_ == "line":
-        return line_chart(data, **kwargs)
 
 
 def line_chart(data, rot=None, title=None, source=None,
