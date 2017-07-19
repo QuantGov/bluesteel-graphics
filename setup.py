@@ -25,4 +25,5 @@ setup(
     extras_require={
         'test': ['pytest-flake8'],
     },
+    include_package_data=True
 )

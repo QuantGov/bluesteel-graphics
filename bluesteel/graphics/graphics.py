@@ -10,11 +10,11 @@ import io
 import logging
 
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
+plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
 
 def create_image(data, type_='line', format='png', **kwargs):
@@ -40,20 +40,13 @@ def create_image(data, type_='line', format='png', **kwargs):
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
-
-    # plt.style.use(os.path.dirname(os.path.abspath(__file__)) +
-    # '/mercatus.mplstyle')
-    if type(data) == str:
-        data = pd.read_csv(data, index_col=0)
-
-    allowed_types = ['line', 'vertical_bar']
-    # 'horizontal_bar', 'stacked_area', 'scatter']
-    if type_ not in allowed_types:
+    kinds = {
+        'line': line_chart,
+    }
+    try:
+        return kinds[type_](data, **kwargs)
+    except KeyError:
         raise NotImplementedError("This chart type is not supported")
-    if type_ == "line":
-        return line_chart(data, **kwargs)
-    # elif type_ == "hist":
-        # plt.hist(data)
 
 
 def line_chart(data, rot=None, title=None, source=None,
@@ -61,7 +54,6 @@ def line_chart(data, rot=None, title=None, source=None,
                size=None, xlabel=None, ylabel=None, yaxis_title=None):
     """Base function for line chart creation. """
     # Set up the data and style
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:, 0]
