@@ -122,6 +122,18 @@ class TestChartElements(object):
         pass
 
 
+class TestImageCreation(object):
+    # TODO: Need to check against correct files
+    def test_ReturnObject(self):
+        """
+        Tests if the returned object has a read() function that produces bytes
+        """
+        imgbuf = bluesteel.graphics.graphics.create_image(
+            data=pd.read_csv('dev/test_data.csv')
+        )
+        assert isinstance(imgbuf.read(), bytes)
+
+
 # COMMAND LINE INTERFACE
 
 class TestCLI(object):

@@ -6,13 +6,36 @@ bluesteel.graphics
 Utility functions for generating Mercatus style graphics objects and files.
 """
 
+import io
 import logging
+
 import matplotlib.pyplot as plt
 
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
 plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
+
+
+def create_image(data, type_='line', format='png', **kwargs):
+    """
+    Create an image of a chart
+
+    :param data: a DataFrame representing the data to be charted
+    :param type_: type of chart to create
+    :param image_format: three-letter code for the image type to be created
+    :param **kwargs: settings for the chart
+
+    :returns: a BytesIO holding the image
+    """
+    imagebuffer = io.BytesIO()
+    draw_chart(data, type_=type_, **kwargs).savefig(
+        imagebuffer,
+        format=format,
+        bbox_inches='tight',
+        dpi='figure'
+    )
+    return imagebuffer
 
 
 def draw_chart(data, type_='line', **kwargs):
