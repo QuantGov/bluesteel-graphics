@@ -1,11 +1,16 @@
+import sys
+
 import pytest
 import pandas as pd
 import matplotlib
 
-import bluesteel.graphics
-from bluesteel.graphics import __main__
-
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent.resolve()))
+
+import bluesteel.graphics
+import bluesteel.graphics.__main__
+
 
 """
 Main Functionality:
