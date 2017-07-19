@@ -2,9 +2,23 @@ import argparse
 import logging
 import sys
 
+import pandas as pd
+
 import bluesteel.graphics
 
 from pathlib import Path
+
+log = logging.getLogger(__name__)
+
+
+def save_fig(outfile, **kwargs):
+    """Outputs figure to specified location. """
+    log.debug(f'attempting to save to {outfile}')
+    outfile = Path(outfile)
+    outfile.parent.mkdir(parents=True, exist_ok=True)
+    outfile.write_bytes(
+        bluesteel.graphics.graphics.create_image(**kwargs).read())
+    return str(outfile)
 
 
 def parse_args(args):
@@ -18,7 +32,7 @@ def parse_args(args):
     Arguments[attributes] -- returns object with arguments as attributes.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('data')
+    parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('-o', '--outfile', type=Path)
 
     parser.add_argument('--type_', default='line', help='chart type')
@@ -47,7 +61,7 @@ def main(args=sys.argv[1:]):
     kwargs = vars(args)
 
     logging.basicConfig(level=kwargs.pop('verbose'))
-    bluesteel.graphics.save_fig(**kwargs)
+    save_fig(**kwargs)
 
 
 if __name__ == "__main__":

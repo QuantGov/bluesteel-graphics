@@ -10,11 +10,11 @@ import io
 import logging
 
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
+plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
 
 def create_image(data, type_='line', format='png', **kwargs):
@@ -40,27 +40,20 @@ def create_image(data, type_='line', format='png', **kwargs):
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
-
-    # plt.style.use(os.path.dirname(os.path.abspath(__file__)) +
-    # '/mercatus.mplstyle')
-    if type(data) == str:
-        data = pd.read_csv(data, index_col=0)
-
-    allowed_types = ['line', 'vertical_bar']
-    # 'horizontal_bar', 'stacked_area', 'scatter']
-    if type_ not in allowed_types:
+    kinds = {
+        'line': line_chart,
+    }
+    try:
+        return kinds[type_](data, **kwargs)
+    except KeyError:
         raise NotImplementedError("This chart type is not supported")
-    if type_ == "line":
-        return line_chart(data, **kwargs)
-    # elif type_ == "hist":
-        # plt.hist(data)
 
 
 def filled_line_chart(data, **kwargs):
 
     #Set up the data and style
     plt.style.use('mercatus.mplstyle')
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:,0]
     y_value = data.iloc[:,1]
@@ -87,7 +80,7 @@ def filled_line_chart(data, **kwargs):
             plt.xticks(x_value)
             plt.yticks(y_value)
         ax.fill_between(x_value, y_value, interpolate=True)
-    fig = formatting(data, f, ax, header_list,
+    fig = formatting(data, fig, ax, header_list,
                     default_xmin, **kwargs)
     return fig
 
@@ -95,7 +88,7 @@ def filled_line_chart(data, **kwargs):
 def line_chart(data, **kwargs):
     #Set up the data and style
     plt.style.use('mercatus.mplstyle')
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:,0]
     y_value = data.iloc[:,1]
@@ -114,7 +107,7 @@ def line_chart(data, **kwargs):
         if len(x_value)<6:
             plt.xticks(x_value)
             plt.yticks(y_value)
-    fig = formatting(data, f, ax, header_list,
+    fig = formatting(data, fig, ax, header_list,
                     default_xmin, **kwargs)
     return fig
 
@@ -122,17 +115,17 @@ def line_chart(data, **kwargs):
 def scatter_plot(data, **kwargs):
 
     plt.style.use('mercatus.mplstyle')
-    f, ax = plt.subplots()
+    fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:,0]
     y_value = data.iloc[:,1]
     ax.scatter(x_value, y_value)
 
-    fig = formatting(data, f, ax, header_list,**kwargs)
+    fig = formatting(data, fig, ax, header_list,**kwargs)
     return fig
 
 
-def formatting(data, f, ax, header_list, default_xmin=None, 
+def formatting(data, fig, ax, header_list, default_xmin=None, 
             rot=None, title=None, source=None,
             xmax=None, ymax=None, xmin=None, ymin=None,
             size=None, xlabel=None, ylabel=None):
@@ -163,7 +156,7 @@ def formatting(data, f, ax, header_list, default_xmin=None,
     if rot:
         plt.xticks(rotation=rot)
     if source:
-        f.text(1, 0, source, transform=ax.transAxes,
+        fig.text(1, 0, source, transform=ax.transAxes,
             fontsize=10, ha='right', va='bottom')
     #Formatting
     #Hides the 0 on the y-axis for a cleaner look
@@ -173,4 +166,4 @@ def formatting(data, f, ax, header_list, default_xmin=None,
     #turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
-    return f
+    return fig
