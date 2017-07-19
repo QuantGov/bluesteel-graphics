@@ -122,7 +122,7 @@ class TestImageCreation(object):
         """
         imgbuf = bluesteel.graphics.graphics.create_image(
             data='dev/test_data.csv'
-        ) 
+        )
         assert isinstance(imgbuf.read(), bytes)
 
 
