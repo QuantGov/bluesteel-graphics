@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib
 
 import bluesteel.graphics
-from bluesteel.graphics import __main__
+import bluesteel.graphics.graphics
+import bluesteel.graphics.__main__
 
 from pathlib import Path
 
@@ -111,6 +112,18 @@ class TestChartElements(object):
         """Should contain annotations if possible when passed valid
         parameters"""
         pass
+
+
+class TestImageCreation(object):
+    # TODO: Need to check against correct files
+    def test_ReturnObject(self):
+        """
+        Tests if the returned object has a read() function that produces bytes
+        """
+        imgbuf = bluesteel.graphics.graphics.create_image(
+            data='dev/test_data.csv'
+        ) 
+        assert isinstance(imgbuf.read(), bytes)
 
 
 # COMMAND LINE INTERFACE
