@@ -9,18 +9,15 @@ Utility functions for generating Mercatus style graphics objects and files.
 import logging
 import matplotlib.pyplot as plt
 import pandas as pd
-# import os
 
 from pathlib import Path
 
 log = logging.getLogger(Path(__file__).stem)
+plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
-
-    # plt.style.use(os.path.dirname(os.path.abspath(__file__)) +
-    # '/mercatus.mplstyle')
     if type(data) == str:
         data = pd.read_csv(data, index_col=0)
 
@@ -30,8 +27,6 @@ def draw_chart(data, type_='line', **kwargs):
         raise NotImplementedError("This chart type is not supported")
     if type_ == "line":
         return line_chart(data, **kwargs)
-    # elif type_ == "hist":
-        # plt.hist(data)
 
 
 def line_chart(data, rot=None, title=None, source=None,
@@ -39,7 +34,6 @@ def line_chart(data, rot=None, title=None, source=None,
                size=None, xlabel=None, ylabel=None, yaxis_title=None):
     """Base function for line chart creation. """
     # Set up the data and style
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.iloc[:, 0]
