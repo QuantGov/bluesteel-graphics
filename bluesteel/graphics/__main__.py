@@ -18,9 +18,21 @@ def parse_args(args):
     Arguments[attributes] -- returns object with arguments as attributes.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    # parser.add_argument('settings', nargs='+')
-    parser.add_argument('-d', '--data')
+    parser.add_argument('data')
     parser.add_argument('-o', '--outfile', type=Path)
+
+    parser.add_argument('--type_', default='line', help='chart type')
+    parser.add_argument('--title', help='main chart title')
+    parser.add_argument('--format', help='output file format')
+    parser.add_argument('--size', help='output size in inches')
+    parser.add_argument('--ymin', help='minimum y value to display')
+    parser.add_argument('--xmin', help='minimum x value to display')
+    parser.add_argument('--ymax', help='maximum y value to display')
+    parser.add_argument('--xmax', help='maximum x value to display')
+    parser.add_argument('--xlabel', help='X axis label')
+    parser.add_argument('--ylabel', help='Y axis label')
+    parser.add_argument('--source', help='Source attribution')
+
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',
                            const=logging.DEBUG, default=logging.INFO)
@@ -32,10 +44,10 @@ def parse_args(args):
 def main(args=sys.argv[1:]):
     """Dispatches request to module. """
     args = parse_args(args)
-    logging.basicConfig(level=args.verbose)
+    kwargs = vars(args)
 
-    bluesteel.graphics.save_fig(args.outfile, data=args.data,
-                                format=Path(args.outfile).suffix[1:])
+    logging.basicConfig(level=kwargs.pop('verbose'))
+    bluesteel.graphics.save_fig(**kwargs)
 
 
 if __name__ == "__main__":
