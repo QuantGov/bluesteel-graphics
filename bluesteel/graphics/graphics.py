@@ -8,7 +8,6 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import logging
 import matplotlib.pyplot as plt
-import pandas as pd
 
 from pathlib import Path
 
@@ -18,9 +17,6 @@ plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
-    if type(data) == str:
-        data = pd.read_csv(data, index_col=0)
-
     kinds = {
         'line': line_chart,
     }

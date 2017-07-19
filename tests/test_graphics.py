@@ -58,12 +58,10 @@ class TestBadChartParams(object):
     def test_BadChartType(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
-            bluesteel.graphics.gen_chart(type_='Pie', data='dev/test_data.csv')
-
-    def test_EmptyData(self):
-        """Should fail if passed an empty csv"""
-        with pytest.raises(pd.errors.EmptyDataError):
-            bluesteel.graphics.gen_chart(data='dev/empty.csv')
+            bluesteel.graphics.gen_chart(
+                type_='Pie',
+                data=pd.read_csv('dev/test_data.csv', index_col=0)
+            )
 
 
 class TestValidChartTypes(object):
@@ -71,7 +69,10 @@ class TestValidChartTypes(object):
     def test_chartTypes(self):
         # for type in ['Line', 'Horizontal_Bar', 'Vertical_Bar',
         # 'Stacked_Area', 'Scatter']:
-        bluesteel.graphics.gen_chart(type_="line", data='dev/test_data.csv')
+        bluesteel.graphics.gen_chart(
+            type_="line",
+            data=pd.read_csv('dev/test_data.csv', index_col=0)
+        )
 
 
 class TestChartReturnFormats(object):
@@ -83,15 +84,18 @@ class TestChartReturnFormats(object):
 
         for format in types:
                 assert format == Path(bluesteel.graphics.save_fig(
-                    data='dev/test_data.csv',
+                    data=pd.read_csv('dev/test_data.csv', index_col=0),
                     outfile=f'dev/tests/output.{format}',
                     format=format)).suffix[1:]
 
     def test_ReturnObject(self):
         """Should return a graphics object for further testing when
         requested"""
-        assert isinstance(bluesteel.graphics.gen_chart
-                          (data='dev/test_data.csv'), matplotlib.figure.Figure)
+        assert isinstance(
+            bluesteel.graphics.gen_chart(
+                data=pd.read_csv('dev/test_data.csv')),
+            matplotlib.figure.Figure
+        )
 
 
 class TestChartElements(object):
