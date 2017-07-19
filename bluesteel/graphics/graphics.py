@@ -58,8 +58,6 @@ def filled_line_chart(data, **kwargs):
         for i in ordered_list:
             ax.fill_between(x_value, data[ordered_list[0]], data[ordered_list[1]], interpolate=True)
             ordered_list.pop(0)
-        
-
     else:
         plt.plot(x_value, y_value)
         default_xmin = x_value[0]
@@ -67,13 +65,12 @@ def filled_line_chart(data, **kwargs):
             plt.xticks(x_value)
             plt.yticks(y_value)
         ax.fill_between(x_value, y_value, interpolate=True)
-    fig = formatting(data, header_list, f, ax,
+    fig = formatting(data, f, ax, header_list,
                     default_xmin, **kwargs)
     return fig
 
 
 def line_chart(data, **kwargs):
-
     #Set up the data and style
     plt.style.use('mercatus.mplstyle')
     f, ax = plt.subplots()
@@ -89,19 +86,31 @@ def line_chart(data, **kwargs):
             plt.plot(x_value, data[i])
         if len(x_value)<6:
             plt.xticks(x_value)
-
     else:
         plt.plot(x_value, y_value)
         default_xmin = x_value[0]
         if len(x_value)<6:
             plt.xticks(x_value)
             plt.yticks(y_value)
-    fig = formatting(data, header_list, f, ax,
+    fig = formatting(data, f, ax, header_list,
                     default_xmin, **kwargs)
     return fig
 
 
-def formatting(data, header_list, f, ax, default_xmin, 
+def scatter_plot(data, **kwargs):
+
+    plt.style.use('mercatus.mplstyle')
+    f, ax = plt.subplots()
+    header_list = list(data)
+    x_value = data.iloc[:,0]
+    y_value = data.iloc[:,1]
+    ax.scatter(x_value, y_value)
+
+    fig = formatting(data, f, ax, header_list,**kwargs)
+    return fig
+
+
+def formatting(data, f, ax, header_list, default_xmin=None, 
             rot=None, title=None, source=None,
             xmax=None, ymax=None, xmin=None, ymin=None,
             size=None, xlabel=None, ylabel=None):
