@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib
 
 import bluesteel.graphics
+import bluesteel.graphics.graphics
+import bluesteel.graphics.__main__
 
 from pathlib import Path
 
@@ -112,6 +114,18 @@ class TestChartElements(object):
         pass
 
 
+class TestImageCreation(object):
+    # TODO: Need to check against correct files
+    def test_ReturnObject(self):
+        """
+        Tests if the returned object has a read() function that produces bytes
+        """
+        imgbuf = bluesteel.graphics.graphics.create_image(
+            data='dev/test_data.csv'
+        )
+        assert isinstance(imgbuf.read(), bytes)
+
+
 # COMMAND LINE INTERFACE
 
 class TestCLI(object):
@@ -119,10 +133,9 @@ class TestCLI(object):
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['-d', 'dev/test_data.csv', '-o', 'dev/tests/testchart.png']
+            args=['dev/test_data.csv', '-o', 'dev/tests/testchart.png',
+                  '--title', 'test_title', '--ylabel', 'count', '--xlabel',
+                  'date', '--source', 'quantgov.org']
         )
         assert Path('dev/tests/testchart.png').exists()
 
-
-# if __name__ == "__main__":
-    # unittest.main()
