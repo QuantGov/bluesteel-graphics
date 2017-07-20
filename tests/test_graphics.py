@@ -148,7 +148,7 @@ class TestChartElements(object):
     def test_annotations(self):
         """Should contain annotations if possible when passed valid
         parameters"""
-    pass
+        pass
 
 
 class TestImageCreation(object):
