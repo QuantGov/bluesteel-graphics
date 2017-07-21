@@ -1,10 +1,16 @@
+import sys
+
 import pytest
 import pandas as pd
 import matplotlib
 
-import bluesteel.graphics
-
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).parent.parent.resolve()))
+
+import bluesteel.graphics
+import bluesteel.graphics.__main__
+
 
 """
 Main Functionality:
@@ -52,12 +58,10 @@ class TestBadChartParams(object):
     def test_BadChartType(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
-            bluesteel.graphics.gen_chart(type_='Pie', data='dev/test_data.csv')
-
-    def test_EmptyData(self):
-        """Should fail if passed an empty csv"""
-        with pytest.raises(pd.errors.EmptyDataError):
-            bluesteel.graphics.gen_chart(data='dev/empty.csv')
+            bluesteel.graphics.gen_chart(
+                type_='Pie',
+                data=pd.read_csv('dev/test_data.csv', index_col=0)
+            )
 
 
 class TestValidChartTypes(object):
@@ -65,7 +69,10 @@ class TestValidChartTypes(object):
     def test_chartTypes(self):
         # for type in ['Line', 'Horizontal_Bar', 'Vertical_Bar',
         # 'Stacked_Area', 'Scatter']:
-        bluesteel.graphics.gen_chart(type_="line", data='dev/test_data.csv')
+        bluesteel.graphics.gen_chart(
+            type_="line",
+            data=pd.read_csv('dev/test_data.csv', index_col=0)
+        )
 
 
 class TestChartReturnFormats(object):
@@ -76,16 +83,19 @@ class TestChartReturnFormats(object):
         # TODO, figure out : 'ps', 'eps',
 
         for format in types:
-                assert format == Path(bluesteel.graphics.save_fig(
-                    data='dev/test_data.csv',
+                assert format == Path(bluesteel.graphics.__main__.save_fig(
+                    data=pd.read_csv('dev/test_data.csv', index_col=0),
                     outfile=f'dev/tests/output.{format}',
                     format=format)).suffix[1:]
 
     def test_ReturnObject(self):
         """Should return a graphics object for further testing when
         requested"""
-        assert isinstance(bluesteel.graphics.gen_chart
-                          (data='dev/test_data.csv'), matplotlib.figure.Figure)
+        assert isinstance(
+            bluesteel.graphics.gen_chart(
+                data=pd.read_csv('dev/test_data.csv')),
+            matplotlib.figure.Figure
+        )
 
 
 class TestChartElements(object):
@@ -112,6 +122,18 @@ class TestChartElements(object):
         pass
 
 
+class TestImageCreation(object):
+    # TODO: Need to check against correct files
+    def test_ReturnObject(self):
+        """
+        Tests if the returned object has a read() function that produces bytes
+        """
+        imgbuf = bluesteel.graphics.graphics.create_image(
+            data=pd.read_csv('dev/test_data.csv')
+        )
+        assert isinstance(imgbuf.read(), bytes)
+
+
 # COMMAND LINE INTERFACE
 
 class TestCLI(object):
@@ -119,10 +141,9 @@ class TestCLI(object):
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['-d', 'dev/test_data.csv', '-o', 'dev/tests/testchart.png']
+            args=['dev/test_data.csv', '-o', 'dev/tests/testchart.png',
+                  '--title', 'test_title', '--ylabel', 'count', '--xlabel',
+                  'date', '--source', 'quantgov.org']
         )
         assert Path('dev/tests/testchart.png').exists()
 
-
-# if __name__ == "__main__":
-    # unittest.main()
