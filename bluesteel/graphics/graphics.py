@@ -6,13 +6,14 @@ bluesteel.graphics
 Utility functions for generating Mercatus style graphics objects and files.
 """
 
-import io
+import io 
 import logging
 
 import matplotlib.pyplot as plt
 import numpy as np
 
 from pathlib import Path
+from PIL import Image as image
 
 log = logging.getLogger(Path(__file__).stem)
 plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
@@ -230,5 +231,18 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
     # turns ticks marks off
     ax.tick_params(bottom='off', left='off')
+
+    # logo
+    logo = image.open('mercatus_logo.eps')
+    logo.load(10)
+
+    figwidth = fig.get_size_inches()[0] * fig.dpi
+    logo_width = int(figwidth / 3)
+    fig.figimage(logo.resize((logo_width, int(logo_width * logo.height /
+                                              logo.width))), yo=fig.dpi / 16)
+
+    # adjustment to fit Mercatus logo and source notes
+    # TODO: make adjustment relative
+    fig.subplots_adjust(bottom=0.2)
 
     return fig
