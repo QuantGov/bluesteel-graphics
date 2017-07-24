@@ -41,20 +41,24 @@ def create_image(data, type_='line', format='png', **kwargs):
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
     kinds = {
-        'line': line_chart,
-        "stacked_area": filled_line_chart,
-        "scatter": scatter_plot
+        'line': draw_line_chart,
+        "stacked_area": draw_filled_line_chart,
+        "scatter": draw_scatter_plot
     }
     if type_ in kinds.keys():
-            return kinds[type_](data, **kwargs)
+        return kinds[type_](data, **kwargs)
     else:
         raise NotImplementedError("This chart type is not supported")
 
 
-def filled_line_chart(data, **kwargs):
+def draw_filled_line_chart(data, **kwargs):
+    """Creates filled line chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
 
     # Set up the data and style
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.index.values
@@ -82,14 +86,18 @@ def filled_line_chart(data, **kwargs):
             plt.xticks(x_value)
             plt.yticks(y_value)
         ax.fill_between(x_value, y_value, interpolate=True)
-    fig = formatting(data, fig, ax, header_list,
-                     default_xmin, **kwargs)
+    fig = format_figure(data, fig, ax, header_list,
+                        default_xmin, **kwargs)
     return fig
 
 
-def line_chart(data, **kwargs):
+def draw_line_chart(data, **kwargs):
+    """Creates standard line chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
     # Set up the data and style
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.index.values
@@ -108,29 +116,34 @@ def line_chart(data, **kwargs):
         if len(x_value) < 6:
             plt.xticks(x_value)
             plt.yticks(y_value)
-    fig = formatting(data, fig, ax, header_list,
-                     default_xmin, **kwargs)
+    fig = format_figure(data, fig, ax, header_list,
+                        default_xmin, **kwargs)
     return fig
 
 
-def scatter_plot(data, **kwargs):
+def draw_scatter_plot(data, **kwargs):
+    """Creates standard scatter plot and returns figure
 
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
     fig, ax = plt.subplots()
     header_list = list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
 
-    fig = formatting(data, fig, ax, header_list, **kwargs)
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
     return fig
 
 
-def formatting(data, fig, ax, header_list, default_xmin=None,
-               rot=None, title=None, source=None,
-               xmax=None, ymax=None, xmin=None, ymin=None,
-               size=None, xlabel=None, ylabel=None):
+def format_figure(data, fig, ax, header_list, default_xmin=None,
+                  rot=None, title=None, source=None,
+                  xmax=None, ymax=None, xmin=None, ymin=None,
+                  size=None, xlabel=None, ylabel=None):
+    """Handles general formatting common across all chart types."""
 
+    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     # Axis Labels
     if xlabel is None:
         xlabel = header_list[0]
@@ -168,3 +181,4 @@ def formatting(data, fig, ax, header_list, default_xmin=None,
     ax.tick_params(bottom='off', left='off')
 
     return fig
+
