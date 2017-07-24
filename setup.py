@@ -23,7 +23,7 @@ setup(
         'pandas'
     ],
     extras_require={
-        'test': ['pytest-flake8'],
+        'test': ['pytest-flake8', 'nose'],
     },
     include_package_data=True
 )
