@@ -41,6 +41,12 @@ def create_image(data, type_='line', format='png', **kwargs):
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
+
+    try:
+        header_list = list(data.index.name) + list(data)
+    except TypeError:
+        header_list = list(data)
+
     kinds = {
         'line': draw_line_chart,
         "stacked_area": draw_filled_line_chart,
@@ -49,21 +55,21 @@ def draw_chart(data, type_='line', **kwargs):
         'vertical_bar': draw_vertical_bar_chart
     }
     if type_ in kinds:
-        return kinds[type_](data, **kwargs)
+        return kinds[type_](data, header_list, **kwargs)
     else:
         raise NotImplementedError("This chart type is not supported")
 
 
-def draw_filled_line_chart(data, **kwargs):
+def draw_filled_line_chart(data, header_list, **kwargs):
     """Creates filled line chart and returns figure
 
     :param data: input data
+    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
 
     # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
 
@@ -76,6 +82,7 @@ def draw_filled_line_chart(data, **kwargs):
 
         value_dict = {}
         for i in header_list:
+            # TODO: fix this to work with correct headers
             value_dict[i] = data[i][0]
         ordered_list = sorted(value_dict, key=value_dict.__getitem__)
         ax.fill_between(x_value, data[ordered_list[0]], interpolate=True)
@@ -94,15 +101,15 @@ def draw_filled_line_chart(data, **kwargs):
     return fig
 
 
-def draw_line_chart(data, **kwargs):
+def draw_line_chart(data, header_list, **kwargs):
     """Creates standard line chart and returns figure
 
     :param data: input data
+    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
 
@@ -124,14 +131,14 @@ def draw_line_chart(data, **kwargs):
     return fig
 
 
-def draw_horizontal_bar_chart(data, **kwargs):
+def draw_horizontal_bar_chart(data, header_list, **kwargs):
     """Creates horizontal bar chart and returns figure
 
     :param data: input data
+    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data.index.name) + list(data)
     bars = np.arange(len(data.index))
     height = 2 / 3
     values = data.iloc[:, 0]
@@ -148,14 +155,14 @@ def draw_horizontal_bar_chart(data, **kwargs):
     return fig
 
 
-def draw_vertical_bar_chart(data, **kwargs):
+def draw_vertical_bar_chart(data, header_list, **kwargs):
     """Creates vertical bar chart and returns figure
 
     :param data: input data
+    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data.index.name) + list(data)
     bars = np.arange(len(data.index))
     width = 2 / 3
     values = data.iloc[:, 0]
@@ -172,14 +179,14 @@ def draw_vertical_bar_chart(data, **kwargs):
     return fig
 
 
-def draw_scatter_plot(data, **kwargs):
+def draw_scatter_plot(data, header_list, **kwargs):
     """Creates standard scatter plot and returns figure
 
     :param data: input data
+    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
