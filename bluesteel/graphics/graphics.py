@@ -152,7 +152,7 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-# Other Options for the Graph
+    # Other Options for the Graph
     if title:
         plt.title(title)
     if xmax:
