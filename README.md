@@ -28,8 +28,8 @@ The command line interface supports the following options:
 * --ylabel - y axis label
 
 
-### Programmatic API
-The programmatic API accepts the long form name of all parameters accepted by the Command Line Interface. The input data should still be the first argument, and must consist of a pandas DataFrame with the X-Axis values as the index.
+### API
+The API accepts the long form name of all parameters accepted by the Command Line Interface. The input data should still be the first argument, and must consist of a pandas DataFrame with the X-Axis values as the index.
 
 
 ## Installation
