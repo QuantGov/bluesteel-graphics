@@ -6,7 +6,7 @@ bluesteel.graphics
 Utility functions for generating Mercatus style graphics objects and files.
 """
 
-import io 
+import io
 import logging
 
 import matplotlib.pyplot as plt
@@ -233,7 +233,7 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     ax.tick_params(bottom='off', left='off')
 
     # logo
-    logo = image.open('mercatus_logo.eps')
+    logo = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
     logo.load(10)
 
     figwidth = fig.get_size_inches()[0] * fig.dpi
