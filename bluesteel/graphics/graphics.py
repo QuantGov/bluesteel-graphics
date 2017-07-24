@@ -45,7 +45,7 @@ def draw_chart(data, type_='line', **kwargs):
         "stacked_area": draw_filled_line_chart,
         "scatter": draw_scatter_plot
     }
-    if type_ in kinds.keys():
+    if type_ in kinds:
         return kinds[type_](data, **kwargs)
     else:
         raise NotImplementedError("This chart type is not supported")
