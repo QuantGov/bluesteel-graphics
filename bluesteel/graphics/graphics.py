@@ -43,9 +43,9 @@ def draw_chart(data, type_='line', **kwargs):
     kinds = {
         'line': line_chart,
     }
-    try:
+    if type_ in kinds.keys():
         return kinds[type_](data, **kwargs)
-    except KeyError:
+    else:
         raise NotImplementedError("This chart type is not supported")
 
 
