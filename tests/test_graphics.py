@@ -59,6 +59,7 @@ test_data = pd.read_csv('dev/test_data.csv', index_col=0)
 # PROGRAMMATIC INTERFACE
 class TestBadChartParams(object):
 
+    @cleanup
     def test_BadChartType(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
@@ -70,17 +71,18 @@ class TestBadChartParams(object):
 
 class TestValidChartTypes(object):
 
+    @cleanup
     def test_chartTypes(self):
-        # for type in ['Line', 'Horizontal_Bar', 'Vertical_Bar',
-        # 'Stacked_Area', 'Scatter']:
-        bluesteel.graphics.gen_chart(
-            type_="line",
-            data=test_data
-        )
+        for type in ['line', 'stacked_area', 'scatter']:
+            bluesteel.graphics.gen_chart(
+                type_=type,
+                data=pd.read_csv('dev/test_data.csv', index_col=0)
+            )
 
 
 class TestChartReturnFormats(object):
 
+    @cleanup
     def test_ReturnImage(self):
         """Should return proper image formats when specified"""
         types = ['pdf', 'png', 'raw', 'rgba', 'svg', 'svgz']

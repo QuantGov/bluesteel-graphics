@@ -41,25 +41,70 @@ def create_image(data, type_='line', format='png', **kwargs):
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
     kinds = {
-        'line': line_chart,
+        'line': draw_line_chart,
+        "stacked_area": draw_filled_line_chart,
+        "scatter": draw_scatter_plot
     }
-    try:
+    if type_ in kinds:
         return kinds[type_](data, **kwargs)
-    except KeyError:
+    else:
         raise NotImplementedError("This chart type is not supported")
 
 
-def line_chart(data, rot=None, title=None, source=None,
-               xmax=None, ymax=None, xmin=None, ymin=None,
-               size=None, xlabel=None, ylabel=None, yaxis_title=None):
-    """Base function for line chart creation. """
+def draw_filled_line_chart(data, **kwargs):
+    """Creates filled line chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
+
     # Set up the data and style
     fig, ax = plt.subplots()
     header_list = list(data)
-    x_value = data.iloc[:, 0]
-    y_value = data.iloc[:, 1]
+    x_value = data.index.values
+    y_value = data.iloc[:, 0]
 
     # Takes care of graphs with multiple lines and too few input issues
+    default_xmin = x_value[0]
+    if len(header_list) > 2:
+        header_list.pop(0)
+        if len(x_value) < 6:
+            plt.xticks(x_value)
+
+        value_dict = {}
+        for i in header_list:
+            value_dict[i] = data[i][0]
+        ordered_list = sorted(value_dict, key=value_dict.__getitem__)
+        ax.fill_between(x_value, data[ordered_list[0]], interpolate=True)
+        for i in ordered_list:
+            ax.fill_between(x_value, data[ordered_list[0]],
+                            data[ordered_list[1]], interpolate=True)
+            ordered_list.pop(0)
+    else:
+        plt.plot(x_value, y_value)
+        if len(x_value) < 6:
+            plt.xticks(x_value)
+            plt.yticks(y_value)
+        ax.fill_between(x_value, y_value, interpolate=True)
+    fig = format_figure(data, fig, ax, header_list,
+                        default_xmin, **kwargs)
+    return fig
+
+
+def draw_line_chart(data, **kwargs):
+    """Creates standard line chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
+    # Set up the data and style
+    fig, ax = plt.subplots()
+    header_list = list(data)
+    x_value = data.index.values
+    y_value = data.iloc[:, 0]
+
+    # Takes care of graphs with multiple lines and too few input issues
+    default_xmin = x_value[0]
     if len(header_list) > 2:
         header_list.pop(0)
         for i in header_list:
@@ -71,37 +116,69 @@ def line_chart(data, rot=None, title=None, source=None,
         if len(x_value) < 6:
             plt.xticks(x_value)
             plt.yticks(y_value)
+    fig = format_figure(data, fig, ax, header_list,
+                        default_xmin, **kwargs)
+    return fig
 
-    # Formatting
-    ax.set_yticklabels('{:,.0f}'.format(i)
-                       if i else '' for i in ax.get_yticks())
-    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-    ax.tick_params(bottom='off', left='off')
 
+def draw_scatter_plot(data, **kwargs):
+    """Creates standard scatter plot and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
+    fig, ax = plt.subplots()
+    header_list = list(data)
+    x_value = data.index.values
+    y_value = data.iloc[:, 0]
+    ax.scatter(x_value, y_value)
+
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    return fig
+
+
+def format_figure(data, fig, ax, header_list, default_xmin=None,
+                  rot=None, title=None, source=None,
+                  xmax=None, ymax=None, xmin=None, ymin=None,
+                  size=None, xlabel=None, ylabel=None):
+    """Handles general formatting common across all chart types."""
+
+    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     # Axis Labels
-    if not xlabel:
+    if xlabel is None:
         xlabel = header_list[0]
-    if not ylabel:
+    if ylabel is None:
         ylabel = header_list[1]
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
     # Other Options for the Graph
     if title:
-        ax.set_title(title)
-    if yaxis_title:
-        ax.set_ylabel(yaxis_title)
+        plt.title(title)
     if xmax:
         ax.set_xlim(xmax=xmax)
     if ymax:
         ax.set_ylim(ymax=ymax)
     if xmin:
         ax.set_xlim(xmin=xmin)
+    else:
+        ax.set_xlim(xmin=default_xmin)
     if ymin:
         ax.set_ylim(ymin=ymin)
+    else:
+        ax.set_ylim(ymin=0)
     if rot:
-        ax.xticks(rotation=rot)
+        plt.xticks(rotation=rot)
     if source:
         fig.text(1, 0, source, transform=ax.transAxes,
                  fontsize=10, ha='right', va='bottom')
+    # Formatting
+    # Hides the 0 on the y-axis for a cleaner look
+    plt.setp(ax.get_yticklabels()[0], visible=False)
+    # puts commas in y ticks
+    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+    # turns ticks marks off
+    ax.tick_params(bottom='off', left='off')
+
     return fig
+
