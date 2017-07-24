@@ -63,7 +63,7 @@ def draw_filled_line_chart(data, **kwargs):
 
     # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data)
+    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
 
@@ -102,7 +102,7 @@ def draw_line_chart(data, **kwargs):
     """
     # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data)
+    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
 
@@ -131,7 +131,7 @@ def draw_horizontal_bar_chart(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
+    header_list = list(data.index.name) + list(data)
     bars = np.arange(len(data.index))
     height = 2 / 3
     values = data.iloc[:, 0]
@@ -155,7 +155,7 @@ def draw_vertical_bar_chart(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
+    header_list = list(data.index.name) + list(data)
     bars = np.arange(len(data.index))
     width = 2 / 3
     values = data.iloc[:, 0]
@@ -179,7 +179,7 @@ def draw_scatter_plot(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
+    header_list = list(data.index.name) + list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
