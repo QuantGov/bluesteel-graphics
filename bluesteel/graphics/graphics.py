@@ -10,6 +10,7 @@ import io
 import logging
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from pathlib import Path
 
@@ -43,7 +44,9 @@ def draw_chart(data, type_='line', **kwargs):
     kinds = {
         'line': draw_line_chart,
         "stacked_area": draw_filled_line_chart,
-        "scatter": draw_scatter_plot
+        "scatter": draw_scatter_plot,
+        'horizontal_bar': draw_horizontal_bar_chart,
+        'vertical_bar': draw_vertical_bar_chart
     }
     if type_ in kinds:
         return kinds[type_](data, **kwargs)
@@ -121,6 +124,54 @@ def draw_line_chart(data, **kwargs):
     return fig
 
 
+def draw_horizontal_bar_chart(data, **kwargs):
+    """Creates horizontal bar chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
+    fig, ax = plt.subplots()
+    header_list = list(data)
+    bars = np.arange(len(data.index))
+    height = 2 / 3
+    values = data.iloc[:, 0]
+    ax.barh(bars, values, height)
+    ax.set_ylim(bars.min() - height * .75, bars.max() + height * .75)
+    ax.set_yticks(bars)
+    ax.set_yticklabels(data.index)
+    ax.tick_params(bottom='off', left='off')
+    ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
+    for i, k in zip(bars, values.values):
+        ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
+                va='center', ha='left')
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    return fig
+
+
+def draw_vertical_bar_chart(data, **kwargs):
+    """Creates vertical bar chart and returns figure
+
+    :param data: input data
+    :param **kwargs: passed through to formatting function
+    """
+    fig, ax = plt.subplots()
+    header_list = list(data)
+    bars = np.arange(len(data.index))
+    width = 2 / 3
+    values = data.iloc[:, 0]
+    ax.bar(bars, values, width)
+    ax.set_xlim(bars.min() - width * .75, bars.max() + width * .75)
+    ax.set_xticks(bars)
+    ax.set_xticklabels(data.index)
+    ax.tick_params(bottom='off', left='off')
+    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+    for i, k in zip(bars, values.values):
+        ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
+                va='bottom', ha='center')
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    return fig
+
+
 def draw_scatter_plot(data, **kwargs):
     """Creates standard scatter plot and returns figure
 
@@ -181,4 +232,3 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     ax.tick_params(bottom='off', left='off')
 
     return fig
-

@@ -67,7 +67,8 @@ class TestBadChartParams(object):
 class TestValidChartTypes(object):
 
     def test_chartTypes(self):
-        for type in ['line', 'stacked_area', 'scatter']:
+        for type in ['line', 'stacked_area', 'scatter',
+                     'horizontal_bar', 'vertical_bar']:
             bluesteel.graphics.gen_chart(
                 type_=type,
                 data=pd.read_csv('dev/test_data.csv', index_col=0)
@@ -145,4 +146,3 @@ class TestCLI(object):
                   'date', '--source', 'quantgov.org']
         )
         assert Path('dev/tests/testchart.png').exists()
-
