@@ -29,18 +29,13 @@ The command line interface supports the following options:
 
 
 ### Programmatic API
+The programmatic API accepts the long form name of all parameters accepted by the Command Line Interface. The input data should still be the first argument, and must consist of a pandas DataFrame with the X-Axis values as the index.
 
 
 ## Installation
 
-The bluesteel graphics module can be installed using `pip install bluesteel-graphics`
+The bluesteel graphics module can be installed using `pip install bluesteel-graphics`. 
 
 ## Tests
 This module uses pytest - simply ensure you have pytest installed (with flake8) and run the command `py.test` from the root directory of the installation.
 
-## Contributors
-This module is written and maintained by the Merctaus Center at George Mason University
-
-
-## License
-TBD
