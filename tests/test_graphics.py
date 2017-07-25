@@ -3,7 +3,7 @@ import sys
 import pytest
 import pandas as pd
 import matplotlib
-from matplotlib.testing.decorators import cleanup
+from matplotlib.testing.decorators import cleanup, image_comparison
 
 from pathlib import Path
 
