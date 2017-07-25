@@ -196,10 +196,10 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
 
     plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     # Axis Labels
-    if xlabel is None:
-        xlabel = header_list[0]
-    if ylabel is None:
-        ylabel = header_list[1]
+    # if xlabel is None:
+    # xlabel = header_list[0]
+    # if ylabel is None:
+    # ylabel = header_list[1]
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 

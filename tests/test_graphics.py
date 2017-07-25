@@ -163,8 +163,61 @@ class TestImageCreation(object):
         assert isinstance(imgbuf.read(), bytes)
 
 
-# COMMAND LINE INTERFACE
+class TestImageComparison(object):
 
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='accumulation_area.png')
+    def test_accumulation_area(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(data=data,
+                                           title='Accumulation of Federal'
+                                           'Regulation, 1970-2016',
+                                           type_='stacked_area',
+                                           source='Source: Patrick A. '
+                                           'McLaughlin and Oliver Sherouse, '
+                                           '"RegData 3.0" \n available at '
+                                           'quantgov.org')
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='pre_crisis_chart.png')
+    def test_pre_crisis_chart(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/title_12_17.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(data=data,
+                                           title='Growth in Pre-Crisis '
+                                           'Finanacial Regulatory '
+                                           'Restrictions,\n1970-2008',
+                                           type_='stacked_area',
+                                           source='Source: Patrick A. '
+                                           'McLaughlin and Oliver Sherouse, '
+                                           '"RegData 3.0" \n available at '
+                                           'quantgov.org\nProduced by Michael '
+                                           'Gasvoda')
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='accumulation_line.png')
+    def test_accumulation_line(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/all_laws.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(data=data,
+                                           title='Regulatory Impact of Dodd-'
+                                           'Frank vs. All Other\nObama '
+                                           'Administration Laws, 2009-2016',
+                                           type_='line',
+                                           source='Source: Patrick A. '
+                                           'McLaughlin and Oliver Sherouse, '
+                                           '"RegData 3.0" \n available at '
+                                           'quantgov.org')
+        return fig
+
+
+# COMMAND LINE INTERFACE
 class TestCLI(object):
 
     def test_file_generation(self):
@@ -176,3 +229,5 @@ class TestCLI(object):
                   'quantgov.org']
         )
         assert Path('tests/test_output/testchart.png').exists()
+
+
