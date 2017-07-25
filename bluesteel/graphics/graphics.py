@@ -101,6 +101,19 @@ def draw_filled_line_chart(data, header_list, **kwargs):
     return fig
 
 
+def draw_filled_line_alt(data, header_list, **kwargs):
+
+    # Set up the data and style
+    fig, ax = plt.subplots()
+    x_values = data.index.values
+    # y_value = data.iloc[:, 0]
+
+    y_values = np.row_stack(data[i] for i in list(data))
+    ax.stackplot(x_values, y_values)
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    return fig
+
+
 def draw_line_chart(data, header_list, **kwargs):
     """Creates standard line chart and returns figure
 
@@ -128,6 +141,17 @@ def draw_line_chart(data, header_list, **kwargs):
             plt.yticks(y_value)
     fig = format_figure(data, fig, ax, header_list,
                         default_xmin, **kwargs)
+    return fig
+
+
+def draw_line_alt(data, header_list, **kwargs):
+    fig, ax = plt.subplots()
+    # x_values = data.index.values
+    y_list = [data[i] for i in list(data)]
+    data.plot()
+    for y_values in y_list:
+        ax.plot(y_values)
+    fig = format_figure(data, fig, ax, header_list, **kwargs)
     return fig
 
 
