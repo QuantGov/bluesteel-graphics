@@ -42,10 +42,7 @@ def create_image(data, type_='line', format='png', **kwargs):
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
 
-    try:
-        header_list = list(data.index.name) + list(data)
-    except TypeError:
-        header_list = list(data)
+    header_list = list(data.index.name) + list(data)
 
     kinds = {
         'line': draw_line_chart,
@@ -55,103 +52,50 @@ def draw_chart(data, type_='line', **kwargs):
         'vertical_bar': draw_vertical_bar_chart
     }
     if type_ in kinds:
-        return kinds[type_](data, header_list, **kwargs)
+        return kinds[type_](data, header_list=header_list, **kwargs)
     else:
         raise NotImplementedError("This chart type is not supported")
 
 
-def draw_filled_line_chart(data, header_list, **kwargs):
+def draw_filled_line_chart(data, **kwargs):
     """Creates filled line chart and returns figure
 
     :param data: input data
-    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
 
     # Set up the data and style
     fig, ax = plt.subplots()
-    x_value = data.index.values
-    y_value = data.iloc[:, 0]
-
-    # Takes care of graphs with multiple lines and too few input issues
-    default_xmin = x_value[0]
-    if len(header_list) > 2:
-        header_list.pop(0)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-
-        value_dict = {}
-        for i in header_list:
-            # TODO: fix this to work with correct headers
-            value_dict[i] = data[i][0]
-        ordered_list = sorted(value_dict, key=value_dict.__getitem__)
-        ax.fill_between(x_value, data[ordered_list[0]], interpolate=True)
-        for i in ordered_list:
-            ax.fill_between(x_value, data[ordered_list[0]],
-                            data[ordered_list[1]], interpolate=True)
-            ordered_list.pop(0)
-    else:
-        plt.plot(x_value, y_value)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-            plt.yticks(y_value)
-        ax.fill_between(x_value, y_value, interpolate=True)
-    fig = format_figure(data, fig, ax, header_list,
-                        default_xmin, **kwargs)
-    return fig
-
-
-def draw_filled_line_alt(data, header_list, **kwargs):
-
-    # Set up the data and style
-    fig, ax = plt.subplots()
     x_values = data.index.values
-    # y_value = data.iloc[:, 0]
 
     y_values = np.row_stack(data[i] for i in list(data))
     ax.stackplot(x_values, y_values)
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
+
+    # Better labels for graphs with few x values
+    if len(data) < 6:
+        plt.xticks([i for i in data.index.values])
+
+    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
-def draw_line_chart(data, header_list, **kwargs):
+def draw_line_chart(data, **kwargs):
     """Creates standard line chart and returns figure
 
     :param data: input data
     :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
-    # Set up the data and style
     fig, ax = plt.subplots()
-    x_value = data.index.values
-    y_value = data.iloc[:, 0]
-
-    # Takes care of graphs with multiple lines and too few input issues
-    default_xmin = x_value[0]
-    if len(header_list) > 2:
-        header_list.pop(0)
-        for i in header_list:
-            plt.plot(x_value, data[i])
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-    else:
-        plt.plot(x_value, y_value)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-            plt.yticks(y_value)
-    fig = format_figure(data, fig, ax, header_list,
-                        default_xmin, **kwargs)
-    return fig
-
-
-def draw_line_alt(data, header_list, **kwargs):
-    fig, ax = plt.subplots()
-    # x_values = data.index.values
     y_list = [data[i] for i in list(data)]
-    data.plot()
     for y_values in y_list:
         ax.plot(y_values)
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
+
+    # Better labels for graphs with few x values
+    if len(data) < 6:
+        plt.xticks([i for i in data.index.values])
+
+    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
