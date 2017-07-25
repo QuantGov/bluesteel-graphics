@@ -51,7 +51,7 @@ Main Functionality:
 """
 
 # PREPARATION
-test_data = pd.read_csv('dev/test_data.csv', index_col=0)
+test_data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
 
 # GENERAL
 
@@ -75,10 +75,7 @@ class TestValidChartTypes(object):
     def test_chart_types(self):
         for type in ['line', 'stacked_area', 'scatter',
                      'horizontal_bar', 'vertical_bar']:
-            bluesteel.graphics.gen_chart(
-                type_=type,
-                data=pd.read_csv('dev/test_data.csv', index_col=0)
-            )
+            bluesteel.graphics.gen_chart(type_=type, data=test_data)
 
 
 class TestChartReturnFormats(object):
@@ -92,7 +89,7 @@ class TestChartReturnFormats(object):
         for format in types:
             assert format == Path(bluesteel.graphics.__main__.save_fig(
                 data=test_data,
-                outfile=f'dev/tests/output.{format}',
+                outfile=f'tests/test_output/output.{format}',
                 format=format)).suffix[1:]
 
     def test_return_object(self):
@@ -165,8 +162,6 @@ class TestImageCreation(object):
         )
         assert isinstance(imgbuf.read(), bytes)
 
-    def 
-
 
 # COMMAND LINE INTERFACE
 
@@ -175,8 +170,9 @@ class TestCLI(object):
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['dev/test_data.csv', '-o', 'dev/tests/testchart.png',
-                  '--title', 'test_title', '--ylabel', 'count', '--xlabel',
-                  'date', '--source', 'quantgov.org']
+            args=['tests/test_data/test_data.csv', '-o',
+                  'tests/test_output/testchart.png', '--title', 'test_title',
+                  '--ylabel', 'count', '--xlabel', 'date', '--source',
+                  'quantgov.org']
         )
-        assert Path('dev/tests/testchart.png').exists()
+        assert Path('tests/test_output/testchart.png').exists()
