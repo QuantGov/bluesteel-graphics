@@ -60,7 +60,7 @@ test_data = pd.read_csv('dev/test_data.csv', index_col=0)
 class TestBadChartParams(object):
 
     @cleanup
-    def test_BadChartType(self):
+    def test_bad_chart_types(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
             bluesteel.graphics.gen_chart(
@@ -72,7 +72,7 @@ class TestBadChartParams(object):
 class TestValidChartTypes(object):
 
     @cleanup
-    def test_chartTypes(self):
+    def test_chart_types(self):
         for type in ['line', 'stacked_area', 'scatter',
                      'horizontal_bar', 'vertical_bar']:
             bluesteel.graphics.gen_chart(
@@ -84,7 +84,7 @@ class TestValidChartTypes(object):
 class TestChartReturnFormats(object):
 
     @cleanup
-    def test_ReturnImage(self):
+    def test_return_image(self):
         """Should return proper image formats when specified"""
         types = ['pdf', 'png', 'raw', 'rgba', 'svg', 'svgz']
         # TODO, figure out : 'ps', 'eps',
@@ -95,7 +95,7 @@ class TestChartReturnFormats(object):
                 outfile=f'dev/tests/output.{format}',
                 format=format)).suffix[1:]
 
-    def test_ReturnObject(self):
+    def test_return_object(self):
         """Should return a graphics object for further testing when
         requested"""
         assert isinstance(
@@ -156,7 +156,7 @@ class TestChartElements(object):
 
 class TestImageCreation(object):
     # TODO: Need to check against correct files
-    def test_ReturnObject(self):
+    def test_return_object(self):
         """
         Tests if the returned object has a read() function that produces bytes
         """
@@ -164,6 +164,8 @@ class TestImageCreation(object):
             data=test_data
         )
         assert isinstance(imgbuf.read(), bytes)
+
+    def 
 
 
 # COMMAND LINE INTERFACE
