@@ -52,6 +52,7 @@ def draw_chart(data, type_='line', **kwargs):
     if type_ not in kinds:
         raise NotImplementedError("This chart type is not supported")
     fig = kinds[type_](data, **kwargs)
+    return format_figure(data, fig, **kwargs)
 
 
 def draw_filled_line_chart(data, **kwargs):
@@ -71,7 +72,6 @@ def draw_filled_line_chart(data, **kwargs):
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
 
-    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -88,7 +88,6 @@ def draw_line_chart(data, **kwargs):
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
 
-    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -111,7 +110,6 @@ def draw_horizontal_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
-    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -134,7 +132,6 @@ def draw_vertical_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -149,16 +146,16 @@ def draw_scatter_plot(data, **kwargs):
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
 
-    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
-def format_figure(data, fig, ax, default_xmin=None, rot=None, title=None,
+def format_figure(data, fig, default_xmin=None, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
                   size=None, xlabel=None, ylabel=None):
     """Handles general formatting common across all chart types."""
 
     plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
+    ax = fig.axes[0]
     # Axis Labels
     if xlabel is None:
         xlabel = data.index.name
