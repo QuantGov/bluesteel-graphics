@@ -42,8 +42,6 @@ def create_image(data, type_='line', format='png', **kwargs):
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
 
-    header_list = list(data.index.name) + list(data)
-
     kinds = {
         'line': draw_line_chart,
         "stacked_area": draw_filled_line_chart,
@@ -52,7 +50,7 @@ def draw_chart(data, type_='line', **kwargs):
         'vertical_bar': draw_vertical_bar_chart
     }
     if type_ in kinds:
-        return kinds[type_](data, header_list=header_list, **kwargs)
+        return kinds[type_](data, **kwargs)
     else:
         raise NotImplementedError("This chart type is not supported")
 
@@ -117,7 +115,7 @@ def draw_horizontal_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -140,7 +138,7 @@ def draw_vertical_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
@@ -155,22 +153,19 @@ def draw_scatter_plot(data, **kwargs):
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
 
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
+    fig = format_figure(data, fig, ax, **kwargs)
     return fig
 
 
-def format_figure(data, fig, ax, header_list, default_xmin=None,
-                  rot=None, title=None, source=None,
-                  xmax=None, ymax=None, xmin=None, ymin=None,
+def format_figure(data, fig, ax, default_xmin=None, rot=None, title=None,
+                  source=None, xmax=None, ymax=None, xmin=None, ymin=None,
                   size=None, xlabel=None, ylabel=None):
     """Handles general formatting common across all chart types."""
 
     plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     # Axis Labels
     if xlabel is None:
-        xlabel = header_list[0]
-    if ylabel is None:
-        ylabel = header_list[1]
+        xlabel = data.index.name
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
