@@ -15,6 +15,10 @@ import numpy as np
 from pathlib import Path
 from PIL import Image as image
 
+
+LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
+LOGO.load(10)
+
 log = logging.getLogger(Path(__file__).stem)
 plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
@@ -195,7 +199,6 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
                   size=None, xlabel=None, ylabel=None):
     """Handles general formatting common across all chart types."""
 
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
     # Axis Labels
     if xlabel is None:
         xlabel = header_list[0]
@@ -233,13 +236,14 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     ax.tick_params(bottom='off', left='off')
 
     # logo
-    logo = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
-    logo.load(10)
-
     figwidth = fig.get_size_inches()[0] * fig.dpi
     logo_width = int(figwidth / 3)
-    fig.figimage(logo.resize((logo_width, int(logo_width * logo.height /
-                                              logo.width))), yo=fig.dpi / 16)
+    fig.figimage(LOGO.resize(
+        (logo_width,
+         int(logo_width * LOGO.height / LOGO.width))),
+        xo=fig.dpi / 16,
+        yo=fig.dpi / 16
+    )
 
     # adjustment to fit Mercatus logo and source notes
     # TODO: make adjustment relative
