@@ -49,10 +49,9 @@ def draw_chart(data, type_='line', **kwargs):
         'horizontal_bar': draw_horizontal_bar_chart,
         'vertical_bar': draw_vertical_bar_chart
     }
-    if type_ in kinds:
-        return kinds[type_](data, **kwargs)
-    else:
+    if type_ not in kinds:
         raise NotImplementedError("This chart type is not supported")
+    fig = kinds[type_](data, **kwargs)
 
 
 def draw_filled_line_chart(data, **kwargs):
@@ -70,8 +69,7 @@ def draw_filled_line_chart(data, **kwargs):
     ax.stackplot(x_values, y_values)
 
     # Better labels for graphs with few x values
-    if len(data) < 6:
-        plt.xticks([i for i in data.index.values])
+    fix_xticks_for_short_series(data, ax)
 
     fig = format_figure(data, fig, ax, **kwargs)
     return fig
@@ -84,13 +82,11 @@ def draw_line_chart(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    y_list = [data[i] for i in list(data)]
-    for y_values in y_list:
-        ax.plot(y_values)
+    for _, series in data.items():
+        ax.plot(series)
 
     # Better labels for graphs with few x values
-    if len(data) < 6:
-        plt.xticks([i for i in data.index.values])
+    fix_xticks_for_short_series(data, ax)
 
     fig = format_figure(data, fig, ax, **kwargs)
     return fig
@@ -167,6 +163,8 @@ def format_figure(data, fig, ax, default_xmin=None, rot=None, title=None,
     if xlabel is None:
         xlabel = data.index.name
     plt.xlabel(xlabel)
+    if ylabel is None:  # TODO: this should only be true for one-series charts!
+        ylabel = data.columns[0]
     plt.ylabel(ylabel)
 
     # Other Options for the Graph
@@ -198,3 +196,15 @@ def format_figure(data, fig, ax, default_xmin=None, rot=None, title=None,
     ax.tick_params(bottom='off', left='off')
 
     return fig
+
+
+def fix_xticks_for_short_series(data, ax):
+    """
+    Fix xticks if there are fewer thank six datapoints
+
+    :data: DataFrame holding the chart data
+    :ax: active Axes object
+
+    """
+    if len(data.index) < 6:
+        ax.set_xticks(data.index)
