@@ -83,7 +83,6 @@ def draw_line_chart(data, **kwargs):
     """Creates standard line chart and returns figure
 
     :param data: input data
-    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -99,11 +98,10 @@ def draw_line_chart(data, **kwargs):
     return fig
 
 
-def draw_horizontal_bar_chart(data, header_list, **kwargs):
+def draw_horizontal_bar_chart(data, **kwargs):
     """Creates horizontal bar chart and returns figure
 
     :param data: input data
-    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -123,11 +121,10 @@ def draw_horizontal_bar_chart(data, header_list, **kwargs):
     return fig
 
 
-def draw_vertical_bar_chart(data, header_list, **kwargs):
+def draw_vertical_bar_chart(data, **kwargs):
     """Creates vertical bar chart and returns figure
 
     :param data: input data
-    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -147,11 +144,10 @@ def draw_vertical_bar_chart(data, header_list, **kwargs):
     return fig
 
 
-def draw_scatter_plot(data, header_list, **kwargs):
+def draw_scatter_plot(data, **kwargs):
     """Creates standard scatter plot and returns figure
 
     :param data: input data
-    :param header_list: columns headers
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
