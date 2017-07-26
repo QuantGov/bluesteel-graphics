@@ -181,7 +181,6 @@ class TestImageComparison(object):
             type_='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
-            xlabel=None,
             ylabel=('thousands of regulatory restrictions in the\nCode of '
                     'Federal Regulations'),
             xmin=1970,
@@ -191,6 +190,35 @@ class TestImageComparison(object):
             grid=True,
             xlabel_off=True
         )
+        fig.savefig('acc_out.png')
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='accumulation_line.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=35)
+    def test_accumulation_line(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            type_='line',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0." \n Available at http://quantgov.org.'),
+            ylabel=('thousands of regulatory restrictions in the\nCode of '
+                    'Federal Regulations'),
+            xmin=1970,
+            xmax=data.index.values.max(),
+            spines=False,
+            yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
+            grid=True,
+            xlabel_off=True
+        )
+        fig.savefig('acc_line_out.png', bbox_inches='tight')
         return fig
 
     # @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -210,9 +238,13 @@ class TestImageComparison(object):
         )
         return fig
 
-    # @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-    # filename='accumulation_line.png')
-    def test_accumulation_line(self):
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='multiple_line.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   # savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=35)
+    def test_multiple_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
                            index_col=0)
@@ -222,8 +254,15 @@ class TestImageComparison(object):
                    'Administration Laws, 2009-2016'),
             type_='line',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n Available at http://quantgov.org')
+                    '"RegData 3.0" \n Available at http://quantgov.org'),
+            ylabel='cumulative new associated restrictions',
+            yticks=[10_000, 20_000, 30_000],
+            xlabel_off=True,
+            grid=True,
+            spines=False,
         )
+        fig.savefig('mult_line_out.png') 
+        # bbox_inches='tight')
         return fig
 
 

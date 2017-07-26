@@ -164,7 +164,7 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
     # Axis Labels
     if xlabel is None and not xlabel_off:
         xlabel = data.index.name
-    plt.xlabel(xlabel)
+        plt.xlabel(xlabel)
     if ylabel is None:  # TODO: this should only be true for one-series charts!
         ylabel = data.columns[0]
     plt.ylabel(ylabel)
@@ -187,8 +187,11 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
     if rot:
         plt.xticks(rotation=rot)
 
-    # Hides the 0 on the y-axis for a cleaner look
-    plt.setp(ax.get_yticklabels()[0], visible=False)
+    # Hides the 0 on the y-axis for a cleaner look if ylabels are not
+    # user-specified
+    if not yticks:
+        plt.setp(ax.get_yticklabels()[0], visible=False)
+
     # puts commas in y ticks
     if yticks:
         ax.set_yticks(yticks)
