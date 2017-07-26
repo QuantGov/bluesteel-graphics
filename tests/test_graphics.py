@@ -25,27 +25,27 @@ Main Functionality:
 
 1.  Accepts bluesteel.core data representations for data to visualize
 2.  Implements a basic set of plots, including:
-    A.  Line charts
-    B.  Bar charts
-        I.  Horizontal bars
-        II. Vertical Bars
-    C.  Stacked Area Charts
-    D.  Scatter Plots
+A.  Line charts
+B.  Bar charts
+I.  Horizontal bars
+II. Vertical Bars
+C.  Stacked Area Charts
+D.  Scatter Plots
 3.  Applies Mercatus Styles
 4.  Accepts additional parameters including:
-    A.  Chart title
-    B.  Axes titles
-    C.  X and Y bounds
-    D.  A source note
-    E.  If feasible: Annotations
+A.  Chart title
+B.  Axes titles
+C.  X and Y bounds
+D.  A source note
+E.  If feasible: Annotations
 5.  For appropriate charts, allows for legend or on-data series labeling
 6.  Provides two interfaces for producing charts:
-    A.  A high-level interface that returns an image in user-specified format
-    B.  A low-level interface that returns objects for further manipulation
+A.  A high-level interface that returns an image in user-specified format
+B.  A low-level interface that returns objects for further manipulation
 
 1.  Uses UNIX convention for arguments and parameters
 2.  Reads in data from a CSV or Excel spreadsheet with an index in rows and
-    series in columns
+series in columns
 3.  Employs the programmatic API exclusively for chart creation logic
 
 """
@@ -171,14 +171,13 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(data=data,
-                                           title='Accumulation of Federal'
-                                           'Regulation, 1970-2016',
-                                           type_='stacked_area',
-                                           source='Source: Patrick A. '
-                                           'McLaughlin and Oliver Sherouse, '
-                                           '"RegData 3.0" \n available at '
-                                           'quantgov.org')
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            type_='stacked_area',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org')
+        )
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -187,16 +186,15 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/title_12_17.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(data=data,
-                                           title='Growth in Pre-Crisis '
-                                           'Finanacial Regulatory '
-                                           'Restrictions,\n1970-2008',
-                                           type_='stacked_area',
-                                           source='Source: Patrick A. '
-                                           'McLaughlin and Oliver Sherouse, '
-                                           '"RegData 3.0" \n available at '
-                                           'quantgov.org\nProduced by Michael '
-                                           'Gasvoda')
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
+                  '\n1970-2008',
+            type_='stacked_area',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org\nProduced by'
+                    'Michael Gasvoda')
+        )
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -205,15 +203,14 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(data=data,
-                                           title='Regulatory Impact of Dodd-'
-                                           'Frank vs. All Other\nObama '
-                                           'Administration Laws, 2009-2016',
-                                           type_='line',
-                                           source='Source: Patrick A. '
-                                           'McLaughlin and Oliver Sherouse, '
-                                           '"RegData 3.0" \n available at '
-                                           'quantgov.org')
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Regulatory Impact of Dodd-Frank vs. All Other\nObama '
+                  'Administration Laws, 2009-2016',
+            type_='line',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org')
+        )
         return fig
 
 
