@@ -13,6 +13,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from pathlib import Path
+from PIL import Image as image
+
+
+LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
+LOGO.load(10)
 
 log = logging.getLogger(Path(__file__).stem)
 plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
@@ -41,6 +46,7 @@ def create_image(data, type_='line', format='png', **kwargs):
 
 def draw_chart(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
+
     kinds = {
         'line': draw_line_chart,
         "stacked_area": draw_filled_line_chart,
@@ -48,10 +54,10 @@ def draw_chart(data, type_='line', **kwargs):
         'horizontal_bar': draw_horizontal_bar_chart,
         'vertical_bar': draw_vertical_bar_chart
     }
-    if type_ in kinds:
-        return kinds[type_](data, **kwargs)
-    else:
+    if type_ not in kinds:
         raise NotImplementedError("This chart type is not supported")
+    fig = kinds[type_](data, **kwargs)
+    return format_figure(data, fig, **kwargs)
 
 
 def draw_filled_line_chart(data, **kwargs):
@@ -63,34 +69,14 @@ def draw_filled_line_chart(data, **kwargs):
 
     # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data)
-    x_value = data.index.values
-    y_value = data.iloc[:, 0]
+    x_values = data.index.values
 
-    # Takes care of graphs with multiple lines and too few input issues
-    default_xmin = x_value[0]
-    if len(header_list) > 2:
-        header_list.pop(0)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
+    y_values = np.row_stack(data[i] for i in list(data))
+    ax.stackplot(x_values, y_values)
 
-        value_dict = {}
-        for i in header_list:
-            value_dict[i] = data[i][0]
-        ordered_list = sorted(value_dict, key=value_dict.__getitem__)
-        ax.fill_between(x_value, data[ordered_list[0]], interpolate=True)
-        for i in ordered_list:
-            ax.fill_between(x_value, data[ordered_list[0]],
-                            data[ordered_list[1]], interpolate=True)
-            ordered_list.pop(0)
-    else:
-        plt.plot(x_value, y_value)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-            plt.yticks(y_value)
-        ax.fill_between(x_value, y_value, interpolate=True)
-    fig = format_figure(data, fig, ax, header_list,
-                        default_xmin, **kwargs)
+    # Better labels for graphs with few x values
+    fix_xticks_for_short_series(data, ax)
+
     return fig
 
 
@@ -100,27 +86,13 @@ def draw_line_chart(data, **kwargs):
     :param data: input data
     :param **kwargs: passed through to formatting function
     """
-    # Set up the data and style
     fig, ax = plt.subplots()
-    header_list = list(data)
-    x_value = data.index.values
-    y_value = data.iloc[:, 0]
+    for _, series in data.items():
+        ax.plot(series)
 
-    # Takes care of graphs with multiple lines and too few input issues
-    default_xmin = x_value[0]
-    if len(header_list) > 2:
-        header_list.pop(0)
-        for i in header_list:
-            plt.plot(x_value, data[i])
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-    else:
-        plt.plot(x_value, y_value)
-        if len(x_value) < 6:
-            plt.xticks(x_value)
-            plt.yticks(y_value)
-    fig = format_figure(data, fig, ax, header_list,
-                        default_xmin, **kwargs)
+    # Better labels for graphs with few x values
+    fix_xticks_for_short_series(data, ax)
+
     return fig
 
 
@@ -131,7 +103,6 @@ def draw_horizontal_bar_chart(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
     bars = np.arange(len(data.index))
     height = 2 / 3
     values = data.iloc[:, 0]
@@ -144,7 +115,6 @@ def draw_horizontal_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
     return fig
 
 
@@ -155,7 +125,6 @@ def draw_vertical_bar_chart(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
     bars = np.arange(len(data.index))
     width = 2 / 3
     values = data.iloc[:, 0]
@@ -168,7 +137,6 @@ def draw_vertical_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
     return fig
 
 
@@ -179,28 +147,25 @@ def draw_scatter_plot(data, **kwargs):
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
-    header_list = list(data)
     x_value = data.index.values
     y_value = data.iloc[:, 0]
     ax.scatter(x_value, y_value)
 
-    fig = format_figure(data, fig, ax, header_list, **kwargs)
     return fig
 
 
-def format_figure(data, fig, ax, header_list, default_xmin=None,
-                  rot=None, title=None, source=None,
-                  xmax=None, ymax=None, xmin=None, ymin=None,
+def format_figure(data, fig, default_xmin=None, rot=None, title=None,
+                  source=None, xmax=None, ymax=None, xmin=None, ymin=None,
                   size=None, xlabel=None, ylabel=None):
     """Handles general formatting common across all chart types."""
 
-    plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
+    ax = fig.axes[0]
     # Axis Labels
-    # if xlabel is None:
-    # xlabel = header_list[0]
-    # if ylabel is None:
-    # ylabel = header_list[1]
+    if xlabel is None:
+        xlabel = data.index.name
     plt.xlabel(xlabel)
+    if ylabel is None:  # TODO: this should only be true for one-series charts!
+        ylabel = data.columns[0]
     plt.ylabel(ylabel)
 
     # Other Options for the Graph
@@ -231,4 +196,30 @@ def format_figure(data, fig, ax, header_list, default_xmin=None,
     # turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
+    # logo
+    figwidth = fig.get_size_inches()[0] * fig.dpi
+    logo_width = int(figwidth / 3)
+    fig.figimage(LOGO.resize(
+        (logo_width,
+         int(logo_width * LOGO.height / LOGO.width))),
+        xo=fig.dpi / 16,
+        yo=fig.dpi / 16
+    )
+
+    # adjustment to fit Mercatus logo and source notes
+    # TODO: make adjustment relative
+    fig.subplots_adjust(bottom=0.2)
+
     return fig
+
+
+def fix_xticks_for_short_series(data, ax):
+    """
+    Fix xticks if there are fewer thank six datapoints
+
+    :data: DataFrame holding the chart data
+    :ax: active Axes object
+
+    """
+    if len(data.index) < 6:
+        ax.set_xticks(data.index)
