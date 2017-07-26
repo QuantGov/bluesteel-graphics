@@ -156,12 +156,13 @@ def draw_scatter_plot(data, **kwargs):
 
 def format_figure(data, fig, default_xmin=None, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
-                  size=None, xlabel=None, ylabel=None):
+                  size=None, xlabel=None, ylabel=None, spines=True,
+                  yticks=None, xticks=None, grid=False, xlabel_off=False):
     """Handles general formatting common across all chart types."""
 
-    ax = fig.axes[0]
+    ax = fig.gca()
     # Axis Labels
-    if xlabel is None:
+    if xlabel is None and not xlabel_off:
         xlabel = data.index.name
     plt.xlabel(xlabel)
     if ylabel is None:  # TODO: this should only be true for one-series charts!
@@ -185,16 +186,33 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
         ax.set_ylim(ymin=0)
     if rot:
         plt.xticks(rotation=rot)
-    if source:
-        fig.text(1, 0, source, transform=ax.transAxes,
-                 fontsize=10, ha='right', va='bottom')
-    # Formatting
+
     # Hides the 0 on the y-axis for a cleaner look
     plt.setp(ax.get_yticklabels()[0], visible=False)
     # puts commas in y ticks
+    if yticks:
+        ax.set_yticks(yticks)
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-    # turns ticks marks off
+
+    # Reduces size of labels greater than 6 digits
+    if max(ax.get_yticks()) >= 1000000:
+        ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
+                           for i in ax.get_yticks())
+    # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
+
+    # Optionally turns on ygrid
+    if grid:
+        ax.set(axisbelow=True)
+        ax.grid(axis='y')
+
+    # spines
+    if not spines:
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+
+    if source:
+        fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
 
     # logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
@@ -205,10 +223,6 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
         xo=fig.dpi / 16,
         yo=fig.dpi / 16
     )
-
-    # adjustment to fit Mercatus logo and source notes
-    # TODO: make adjustment relative
-    fig.subplots_adjust(bottom=0.2)
 
     return fig
 
