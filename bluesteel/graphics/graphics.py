@@ -60,7 +60,7 @@ def draw_chart(data, type_='line', **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def draw_filled_line_chart(data, **kwargs):
+def draw_filled_line_chart(data, label_area=None, **kwargs):
     """Creates filled line chart and returns figure
 
     :param data: input data
@@ -77,10 +77,18 @@ def draw_filled_line_chart(data, **kwargs):
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
 
+    if label_area:
+        stacked = data.cumsum(axis='columns')
+        xmid = sum(ax.get_xbound()) / 2
+        midvals = [0] + stacked.xs(xmid).tolist()
+        for name, lower, upper in zip(stacked.columns, midvals[: -1],
+                                      midvals[1:]):
+            ax.text(xmid, (lower + upper) / 2, name, va='center', ha='center')
+
     return fig
 
 
-def draw_line_chart(data, **kwargs):
+def draw_line_chart(data, label_lines=False, **kwargs):
     """Creates standard line chart and returns figure
 
     :param data: input data
@@ -89,6 +97,16 @@ def draw_line_chart(data, **kwargs):
     fig, ax = plt.subplots()
     for _, series in data.items():
         ax.plot(series)
+
+    if label_lines:
+        for name, series in data.items():
+            ax.text(
+                series.index[-1], series.iloc[-1],
+                f'{name}: {series.iloc[-1]:,.0f}',
+                va='bottom',
+                ha='right',
+                size='small'
+            )
 
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
@@ -115,6 +133,7 @@ def draw_horizontal_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
+
     return fig
 
 
@@ -157,13 +176,15 @@ def draw_scatter_plot(data, **kwargs):
 def format_figure(data, fig, default_xmin=None, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
                   size=None, xlabel=None, ylabel=None, spines=True,
-                  yticks=None, xticks=None, grid=False, xlabel_off=False):
+                  yticks=None, xticks=None, grid=False, xlabel_off=False,
+                  label_lines=True, label_area=False):
     """Handles general formatting common across all chart types."""
 
     ax = fig.gca()
     # Axis Labels
-    if xlabel is None and not xlabel_off:
-        xlabel = data.index.name
+    if not xlabel_off:
+        if xlabel is None:
+            xlabel = data.index.name
         plt.xlabel(xlabel)
     if ylabel is None:  # TODO: this should only be true for one-series charts!
         ylabel = data.columns[0]

@@ -169,8 +169,7 @@ class TestImageComparison(object):
                                    filename='accumulation_area.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'},
-                                   tolerance=35)
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_accumulation_area(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
@@ -190,15 +189,14 @@ class TestImageComparison(object):
             grid=True,
             xlabel_off=True
         )
-        fig.savefig('acc_out.png')
+        fig.savefig('acc_out.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
                                    filename='accumulation_line.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'},
-                                   tolerance=35)
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_accumulation_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
@@ -221,8 +219,11 @@ class TestImageComparison(object):
         fig.savefig('acc_line_out.png', bbox_inches='tight')
         return fig
 
-    # @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-    # filename='pre_crisis_chart.png')
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='pre_crisis_chart.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_pre_crisis_chart(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/title_12_17.csv',
@@ -234,16 +235,17 @@ class TestImageComparison(object):
             type_='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0" \n available at quantgov.org\nProduced by'
-                    'Michael Gasvoda')
+                    'Michael Gasvoda'),
+            label_area='center'
         )
+        fig.savefig('pre_crisis.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
                                    filename='multiple_line.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   # savefig_kwargs={'bbox_inches': 'tight'},
-                                   tolerance=35)
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_multiple_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
@@ -254,15 +256,15 @@ class TestImageComparison(object):
                    'Administration Laws, 2009-2016'),
             type_='line',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n Available at http://quantgov.org'),
+                    '"RegData 3.0." \n Available at http://quantgov.org'),
             ylabel='cumulative new associated restrictions',
             yticks=[10_000, 20_000, 30_000],
             xlabel_off=True,
+            label_lines=True,
             grid=True,
             spines=False,
         )
-        fig.savefig('mult_line_out.png') 
-        # bbox_inches='tight')
+        fig.savefig('mult_line_out.png', bbox_inches='tight')
         return fig
 
 
