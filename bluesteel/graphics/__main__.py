@@ -45,7 +45,17 @@ def parse_args(args):
     parser.add_argument('--xmax', help='maximum x value to display')
     parser.add_argument('--xlabel', help='X axis label')
     parser.add_argument('--ylabel', help='Y axis label')
-    parser.add_argument('--source', help='Source attribution')
+    parser.add_argument('--source', help='source attribution')
+    parser.add_argument('--spines', help='show axis spines')
+    parser.add_argument('--xticks', help='ticks for xaxis')
+    parser.add_argument('--yticks', help='ticks for yaxis')
+    parser.add_argument('--grid', help='show grid lines on yaxis')
+    parser.add_argument('--xlabel_off', help='disable xaxis label')
+    parser.add_argument('--label_lines', help='show series labels on end of '
+                        'line')
+    parser.add_argument('--label_area', help='show series label in center of '
+                        'area')
+
 
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',

@@ -199,6 +199,8 @@ def format_figure(data, fig, rot=None, title=None,
     :param **kwargs: holder for extra values used by drawing functions
     """
 
+    # TODO: allow user to specify size
+
     ax = fig.gca()
     # Axis Labels
     if not xlabel_off:
