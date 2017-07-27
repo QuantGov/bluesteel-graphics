@@ -56,7 +56,6 @@ def parse_args(args):
     parser.add_argument('--label_area', help='show series label in center of '
                         'area')
 
-
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',
                            const=logging.DEBUG, default=logging.INFO)
