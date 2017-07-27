@@ -182,7 +182,6 @@ class TestImageComparison(object):
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
             ylabel=('thousands of regulatory restrictions in the\nCode of '
                     'Federal Regulations'),
-            xmin=1970,
             xmax=data.index.values.max(),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
@@ -208,8 +207,6 @@ class TestImageComparison(object):
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
             ylabel=('thousands of regulatory restrictions in the\nCode of '
                     'Federal Regulations'),
-            xmin=1970,
-            xmax=data.index.values.max(),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
@@ -239,8 +236,6 @@ class TestImageComparison(object):
             spines=False,
             yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
             xlabel_off=True,
-            xmin=1970,
-            xmax=2008,
         )
         fig.savefig('pre_crisis.png', bbox_inches='tight')
         return fig
