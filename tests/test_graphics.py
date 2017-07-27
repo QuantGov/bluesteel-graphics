@@ -228,15 +228,22 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/title_12_17.csv',
                            index_col=0)
+        data_mod = data[:-8]
         fig = bluesteel.graphics.gen_chart(
-            data=data,
+            data=data_mod,
             title=('Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
                    '\n1970-2008'),
             type_='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n available at quantgov.org\nProduced by'
+                    '"RegData 3.0" \n available at quantgov.org\nProduced by '
                     'Michael Gasvoda'),
-            label_area='center'
+            label_area='center',
+            spines=False,
+            yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
+            xlabel_off=True,
+            xmin=1970,
+            xmax=2008,
+            grid=True
         )
         fig.savefig('pre_crisis.png', bbox_inches='tight')
         return fig
