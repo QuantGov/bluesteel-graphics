@@ -1,3 +1,4 @@
+-e git+git@bitbucket.org:quantgov/bluesteel-graphics.git@da23dee805a48a38d31cf52cc86204f122c81a63#egg=bluesteel_graphics
 cycler==0.10.0
 flake8==3.3.0
 matplotlib==2.0.2
@@ -13,6 +14,7 @@ pyflakes==1.5.0
 pyparsing==2.1.4
 pytest==3.1.3
 pytest-flake8==0.8.1
+pytest-mpl==0.7
 python-dateutil==2.6.0
 pytz==2017.2
 six==1.10.0
