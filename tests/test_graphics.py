@@ -187,6 +187,7 @@ class TestImageComparison(object):
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
         )
+        fig.savefig('accumulation_area.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -210,6 +211,7 @@ class TestImageComparison(object):
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
         )
+        fig.savefig('accumulation_line.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -235,6 +237,7 @@ class TestImageComparison(object):
             yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
             xlabel_off=True,
         )
+        fig.savefig('pre_crisis_chart.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -259,6 +262,7 @@ class TestImageComparison(object):
             label_lines=True,
             spines=False,
         )
+        fig.savefig('multiple_line.png', bbox_inches='tight')
         return fig
 
 
