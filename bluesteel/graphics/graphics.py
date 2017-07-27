@@ -173,12 +173,31 @@ def draw_scatter_plot(data, **kwargs):
     return fig
 
 
-def format_figure(data, fig, default_xmin=None, rot=None, title=None,
+def format_figure(data, fig, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
-                  size=None, xlabel=None, ylabel=None, spines=True,
-                  yticks=None, xticks=None, grid=False, xlabel_off=False,
-                  label_lines=True, label_area=False):
-    """Handles general formatting common across all chart types."""
+                  xlabel=None, ylabel=None, spines=True,
+                  yticks=None, xticks=None, grid=True, xlabel_off=False,
+                  **kwargs):
+    """Handles general formatting common across all chart types.
+
+    :param data: pd.DataFrame - data used to generate the chart
+    :param fig: figure object - created by drawing functions
+    :param rot: int - rotation for x-axis labels
+    :param title: str - chart title
+    :param source: str - source note (e.g. Source: http://www.quantgov.org
+    :param xmax: int - maximum xaxis value, defaults to data.index.values.max()
+    :param ymax: int - maximum yaxis value
+    :param xmin: int - minimum xaxis value, defaults to data.index.values.max()
+    :param ymin: int - minimum yaxis value
+    :param xlabel: str - xaxis label (defaults to data.index.name)
+    :param ylabel: str - yaxis label
+    :param spines: bool - toggle appearance of chart spines (axis lines)
+    :param yticks: list - values to use for yaxis ticks
+    :param xticks: list - values to use for xaxis ticks
+    :param grid: bool - toggle display of grid lines along the y axis
+    :param xlabel_off: bool - toggle display of the xaxis label
+    :param **kwargs: holder for extra values used by drawing functions
+    """
 
     ax = fig.gca()
     # Axis Labels
@@ -191,16 +210,19 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
     plt.ylabel(ylabel)
 
     # Other Options for the Graph
+    # TODO: condense these into an ax.set() call
     if title:
         plt.title(title)
     if xmax:
         ax.set_xlim(xmax=xmax)
+    else:
+        ax.set_xlim(xmax=data.index.values.max())
     if ymax:
         ax.set_ylim(ymax=ymax)
     if xmin:
         ax.set_xlim(xmin=xmin)
     else:
-        ax.set_xlim(xmin=default_xmin)
+        ax.set_xlim(xmin=data.index.values.min())
     if ymin:
         ax.set_ylim(ymin=ymin)
     else:
@@ -213,7 +235,7 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
     if not yticks:
         plt.setp(ax.get_yticklabels()[0], visible=False)
 
-    # puts commas in y ticks
+    # Puts commas in y ticks
     if yticks:
         ax.set_yticks(yticks)
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
@@ -230,7 +252,7 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
         ax.set(axisbelow=True)
         ax.grid(axis='y')
 
-    # spines
+    # Spines
     if not spines:
         ax.spines['left'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
@@ -238,7 +260,7 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
     if source:
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
 
-    # logo
+    # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
     logo_width = int(figwidth / 3)
     fig.figimage(LOGO.resize(

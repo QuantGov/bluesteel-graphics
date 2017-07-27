@@ -186,7 +186,6 @@ class TestImageComparison(object):
             xmax=data.index.values.max(),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            grid=True,
             xlabel_off=True
         )
         fig.savefig('acc_out.png', bbox_inches='tight')
@@ -213,7 +212,6 @@ class TestImageComparison(object):
             xmax=data.index.values.max(),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            grid=True,
             xlabel_off=True
         )
         fig.savefig('acc_line_out.png', bbox_inches='tight')
@@ -243,7 +241,6 @@ class TestImageComparison(object):
             xlabel_off=True,
             xmin=1970,
             xmax=2008,
-            grid=True
         )
         fig.savefig('pre_crisis.png', bbox_inches='tight')
         return fig
@@ -268,7 +265,6 @@ class TestImageComparison(object):
             yticks=[10_000, 20_000, 30_000],
             xlabel_off=True,
             label_lines=True,
-            grid=True,
             spines=False,
         )
         fig.savefig('mult_line_out.png', bbox_inches='tight')
