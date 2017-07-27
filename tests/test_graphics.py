@@ -3,7 +3,7 @@ import sys
 import pytest
 import pandas as pd
 import matplotlib
-from matplotlib.testing.decorators import cleanup
+from matplotlib.testing.decorators import cleanup, image_comparison
 
 from pathlib import Path
 
@@ -25,33 +25,33 @@ Main Functionality:
 
 1.  Accepts bluesteel.core data representations for data to visualize
 2.  Implements a basic set of plots, including:
-    A.  Line charts
-    B.  Bar charts
-        I.  Horizontal bars
-        II. Vertical Bars
-    C.  Stacked Area Charts
-    D.  Scatter Plots
+A.  Line charts
+B.  Bar charts
+I.  Horizontal bars
+II. Vertical Bars
+C.  Stacked Area Charts
+D.  Scatter Plots
 3.  Applies Mercatus Styles
 4.  Accepts additional parameters including:
-    A.  Chart title
-    B.  Axes titles
-    C.  X and Y bounds
-    D.  A source note
-    E.  If feasible: Annotations
+A.  Chart title
+B.  Axes titles
+C.  X and Y bounds
+D.  A source note
+E.  If feasible: Annotations
 5.  For appropriate charts, allows for legend or on-data series labeling
 6.  Provides two interfaces for producing charts:
-    A.  A high-level interface that returns an image in user-specified format
-    B.  A low-level interface that returns objects for further manipulation
+A.  A high-level interface that returns an image in user-specified format
+B.  A low-level interface that returns objects for further manipulation
 
 1.  Uses UNIX convention for arguments and parameters
 2.  Reads in data from a CSV or Excel spreadsheet with an index in rows and
-    series in columns
+series in columns
 3.  Employs the programmatic API exclusively for chart creation logic
 
 """
 
 # PREPARATION
-test_data = pd.read_csv('dev/test_data.csv', index_col=0)
+test_data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
 
 # GENERAL
 
@@ -60,7 +60,7 @@ test_data = pd.read_csv('dev/test_data.csv', index_col=0)
 class TestBadChartParams(object):
 
     @cleanup
-    def test_BadChartType(self):
+    def test_bad_chart_types(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
             bluesteel.graphics.gen_chart(
@@ -72,19 +72,16 @@ class TestBadChartParams(object):
 class TestValidChartTypes(object):
 
     @cleanup
-    def test_chartTypes(self):
+    def test_chart_types(self):
         for type in ['line', 'stacked_area', 'scatter',
                      'horizontal_bar', 'vertical_bar']:
-            bluesteel.graphics.gen_chart(
-                type_=type,
-                data=pd.read_csv('dev/test_data.csv', index_col=0)
-            )
+            bluesteel.graphics.gen_chart(type_=type, data=test_data)
 
 
 class TestChartReturnFormats(object):
 
     @cleanup
-    def test_ReturnImage(self):
+    def test_return_image(self):
         """Should return proper image formats when specified"""
         types = ['pdf', 'png', 'raw', 'rgba', 'svg', 'svgz']
         # TODO, figure out : 'ps', 'eps',
@@ -92,10 +89,10 @@ class TestChartReturnFormats(object):
         for format in types:
             assert format == Path(bluesteel.graphics.__main__.save_fig(
                 data=test_data,
-                outfile=f'dev/tests/output.{format}',
+                outfile=f'tests/test_output/output.{format}',
                 format=format)).suffix[1:]
 
-    def test_ReturnObject(self):
+    def test_return_object(self):
         """Should return a graphics object for further testing when
         requested"""
         assert isinstance(
@@ -156,7 +153,7 @@ class TestChartElements(object):
 
 class TestImageCreation(object):
     # TODO: Need to check against correct files
-    def test_ReturnObject(self):
+    def test_return_object(self):
         """
         Tests if the returned object has a read() function that produces bytes
         """
@@ -166,15 +163,68 @@ class TestImageCreation(object):
         assert isinstance(imgbuf.read(), bytes)
 
 
-# COMMAND LINE INTERFACE
+class TestImageComparison(object):
 
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='accumulation_area.png')
+    def test_accumulation_area(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            type_='stacked_area',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org')
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='pre_crisis_chart.png')
+    def test_pre_crisis_chart(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/title_12_17.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
+                  '\n1970-2008',
+            type_='stacked_area',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org\nProduced by'
+                    'Michael Gasvoda')
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='accumulation_line.png')
+    def test_accumulation_line(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/all_laws.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Regulatory Impact of Dodd-Frank vs. All Other\nObama '
+                  'Administration Laws, 2009-2016',
+            type_='line',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0" \n available at quantgov.org')
+        )
+        return fig
+
+
+# COMMAND LINE INTERFACE
 class TestCLI(object):
 
     def test_file_generation(self):
         """File should run without error for basic arguments."""
         bluesteel.graphics.__main__.main(
-            args=['dev/test_data.csv', '-o', 'dev/tests/testchart.png',
-                  '--title', 'test_title', '--ylabel', 'count', '--xlabel',
-                  'date', '--source', 'quantgov.org']
+            args=['tests/test_data/test_data.csv', '-o',
+                  'tests/test_output/testchart.png', '--title', 'test_title',
+                  '--ylabel', 'count', '--xlabel', 'date', '--source',
+                  'quantgov.org']
         )
-        assert Path('dev/tests/testchart.png').exists()
+        assert Path('tests/test_output/testchart.png').exists()
+
+
