@@ -89,8 +89,7 @@ class TestChartReturnFormats(object):
         for format in types:
             assert format == Path(bluesteel.graphics.__main__.save_fig(
                 data=test_data,
-                outfile=f'tests/test_output/output.{format}',
-                format=format)).suffix[1:]
+                outfile=f'tests/test_output/output.{format}')).suffix[1:]
 
     def test_return_object(self):
         """Should return a graphics object for further testing when

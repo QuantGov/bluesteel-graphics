@@ -12,12 +12,19 @@ log = logging.getLogger(__name__)
 
 
 def save_fig(outfile, **kwargs):
-    """Outputs figure to specified location. """
+    """
+    Outputs figure to specified location.
+
+    If format is None, infer format from outfile.
+    """
     log.debug(f'attempting to save to {outfile}')
     outfile = Path(outfile)
     outfile.parent.mkdir(parents=True, exist_ok=True)
+    data = kwargs.pop('data')
+    format = outfile.suffix.strip('.')
     outfile.write_bytes(
-        bluesteel.graphics.graphics.create_image(**kwargs).read())
+        bluesteel.graphics.graphics.create_image(
+            data, format, **kwargs).read())
     return str(outfile)
 
 
@@ -37,7 +44,6 @@ def parse_args(args):
 
     parser.add_argument('--type_', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
-    parser.add_argument('--format', help='output file format')
     parser.add_argument('--size', help='output size in inches')
     parser.add_argument('--ymin', help='minimum y value to display')
     parser.add_argument('--xmin', help='minimum x value to display')
@@ -70,7 +76,8 @@ def main(args=sys.argv[1:]):
     kwargs = vars(args)
 
     logging.basicConfig(level=kwargs.pop('verbose'))
-    save_fig(**kwargs)
+    outfile = kwargs.pop('outfile')
+    save_fig(outfile, **kwargs)
 
 
 if __name__ == "__main__":
