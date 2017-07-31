@@ -35,12 +35,14 @@ def create_image(data, format='png', **kwargs):
     :returns: a BytesIO holding the image
     """
     imagebuffer = io.BytesIO()
+
     draw_chart(data, **kwargs).savefig(
         imagebuffer,
         format=format,
-        bbox_inches='tight',
+        bbox_inches='tight' if 'source' in kwargs else None,
         dpi='figure'
     )
+
     imagebuffer.seek(0)
     return imagebuffer
 
@@ -199,9 +201,6 @@ def format_figure(data, fig, rot=None, title=None,
     :param xlabel_off: bool - toggle display of the xaxis label
     :param **kwargs: holder for extra values used by drawing functions
     """
-
-    # TODO: allow user to specify size
-
     ax = fig.gca()
     # Axis Labels
     if not xlabel_off:
@@ -260,8 +259,13 @@ def format_figure(data, fig, rot=None, title=None,
         ax.spines['left'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
 
+    # Set source note
     if source:
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
+    else:
+        # If no source is present, adjust the bottom of the figure to leave
+        # room for the logo
+        fig.subplots_adjust(bottom=0.2)
 
     # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
