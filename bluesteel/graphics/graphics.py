@@ -35,8 +35,7 @@ def create_image(data, format='png', **kwargs):
     :returns: a BytesIO holding the image
     """
     imagebuffer = io.BytesIO()
-
-    draw_chart(data, **kwargs).savefig(
+    create_figure(data, **kwargs).savefig(
         imagebuffer,
         format=format,
         bbox_inches='tight' if 'source' in kwargs else None,
@@ -47,7 +46,7 @@ def create_image(data, format='png', **kwargs):
     return imagebuffer
 
 
-def draw_chart(data, type_='line', **kwargs):
+def create_figure(data, type_='line', **kwargs):
     """Dispatcher function for different chart types. """
 
     kinds = {

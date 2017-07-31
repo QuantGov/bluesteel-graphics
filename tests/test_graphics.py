@@ -63,7 +63,7 @@ class TestBadChartParams(object):
     def test_bad_chart_types(self):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
-            bluesteel.graphics.gen_chart(
+            bluesteel.graphics.create_figure(
                 type_='Pie',
                 data=test_data
             )
@@ -75,7 +75,7 @@ class TestValidChartTypes(object):
     def test_chart_types(self):
         for type in ['line', 'stacked_area', 'scatter',
                      'horizontal_bar', 'vertical_bar']:
-            bluesteel.graphics.gen_chart(type_=type, data=test_data)
+            bluesteel.graphics.create_figure(type_=type, data=test_data)
 
 
 class TestChartReturnFormats(object):
@@ -95,7 +95,7 @@ class TestChartReturnFormats(object):
         """Should return a graphics object for further testing when
         requested"""
         assert isinstance(
-            bluesteel.graphics.gen_chart(data=test_data),
+            bluesteel.graphics.create_figure(data=test_data),
             matplotlib.figure.Figure
         )
 
@@ -105,7 +105,7 @@ class TestChartElements(object):
     @cleanup
     def test_chart_title(self):
         """Should contain a title when passed a valid string"""
-        assert ('test_title' == bluesteel.graphics.gen_chart(
+        assert ('test_title' == bluesteel.graphics.create_figure(
             test_data,
             type_='line',
             title='test_title'
@@ -114,12 +114,12 @@ class TestChartElements(object):
     @cleanup
     def test_axis_titles(self):
         """Should contain axes titles when passed valid strings"""
-        assert ('test_ylabel' == bluesteel.graphics.gen_chart(
+        assert ('test_ylabel' == bluesteel.graphics.create_figure(
             test_data,
             ylabel='test_ylabel'
         ).gca().get_ylabel())
 
-        assert ('test_xlabel' == bluesteel.graphics.gen_chart(
+        assert ('test_xlabel' == bluesteel.graphics.create_figure(
             test_data,
             xlabel='test_xlabel'
         ).gca().get_xlabel())
@@ -127,12 +127,12 @@ class TestChartElements(object):
     @cleanup
     def test_axis_limits(self):
         """Should limit data to specific bounds on request"""
-        assert ((1, 20,) == bluesteel.graphics.gen_chart(
+        assert ((1, 20,) == bluesteel.graphics.create_figure(
             test_data,
             ymin=1,
             ymax=20
         ).gca().get_ylim())
-        assert ((1, 20,) == bluesteel.graphics.gen_chart(
+        assert ((1, 20,) == bluesteel.graphics.create_figure(
             test_data,
             xmin=1,
             xmax=20
@@ -173,7 +173,7 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(
+        fig = bluesteel.graphics.create_figure(
             data=data,
             title='Accumulation of Federal Regulation, 1970-2016',
             type_='stacked_area',
@@ -186,7 +186,6 @@ class TestImageComparison(object):
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
         )
-        fig.savefig('accumulation_area.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -198,7 +197,7 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(
+        fig = bluesteel.graphics.create_figure(
             data=data,
             title='Accumulation of Federal Regulation, 1970-2016',
             type_='line',
@@ -210,7 +209,6 @@ class TestImageComparison(object):
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
         )
-        fig.savefig('accumulation_line.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -223,7 +221,7 @@ class TestImageComparison(object):
         data = pd.read_csv('tests/test_data/title_12_17.csv',
                            index_col=0)
         data_mod = data[:-8]
-        fig = bluesteel.graphics.gen_chart(
+        fig = bluesteel.graphics.create_figure(
             data=data_mod,
             title=('Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
                    '\n1970-2008'),
@@ -236,7 +234,6 @@ class TestImageComparison(object):
             yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
             xlabel_off=True,
         )
-        fig.savefig('pre_crisis_chart.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
@@ -248,7 +245,7 @@ class TestImageComparison(object):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
                            index_col=0)
-        fig = bluesteel.graphics.gen_chart(
+        fig = bluesteel.graphics.create_figure(
             data=data,
             title=('Regulatory Impact of Dodd-Frank vs. All Other\nObama '
                    'Administration Laws, 2009-2016'),
@@ -261,7 +258,6 @@ class TestImageComparison(object):
             label_lines=True,
             spines=False,
         )
-        fig.savefig('multiple_line.png', bbox_inches='tight')
         return fig
 
 
