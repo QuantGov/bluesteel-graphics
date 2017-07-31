@@ -23,7 +23,7 @@ log = logging.getLogger(Path(__file__).stem)
 plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 
 
-def create_image(data, type_='line', format='png', **kwargs):
+def create_image(data, format='png', **kwargs):
     """
     Create an image of a chart
 
@@ -35,12 +35,13 @@ def create_image(data, type_='line', format='png', **kwargs):
     :returns: a BytesIO holding the image
     """
     imagebuffer = io.BytesIO()
-    draw_chart(data, type_=type_, **kwargs).savefig(
+    draw_chart(data, **kwargs).savefig(
         imagebuffer,
         format=format,
         bbox_inches='tight',
         dpi='figure'
     )
+    imagebuffer.seek(0)
     return imagebuffer
 
 
