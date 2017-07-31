@@ -156,7 +156,7 @@ class TestImageCreation(object):
         """
         Tests if the returned object has a read() function that produces bytes
         """
-        imgbuf = bluesteel.graphics.graphics.create_image(
+        imgbuf = bluesteel.graphics.create_image(
             data=test_data
         )
         assert isinstance(imgbuf.read(), bytes)
