@@ -25,27 +25,27 @@ Main Functionality:
 
 1.  Accepts bluesteel.core data representations for data to visualize
 2.  Implements a basic set of plots, including:
-A.  Line charts
-B.  Bar charts
-I.  Horizontal bars
-II. Vertical Bars
-C.  Stacked Area Charts
-D.  Scatter Plots
+    A.  Line charts
+    B.  Bar charts
+        I.  Horizontal bars
+        II. Vertical Bars
+    C.  Stacked Area Charts
+    D.  Scatter Plots
 3.  Applies Mercatus Styles
 4.  Accepts additional parameters including:
-A.  Chart title
-B.  Axes titles
-C.  X and Y bounds
-D.  A source note
-E.  If feasible: Annotations
+    A.  Chart title
+    B.  Axes titles
+    C.  X and Y bounds
+    D.  A source note
+    E.  If feasible: Annotations
 5.  For appropriate charts, allows for legend or on-data series labeling
 6.  Provides two interfaces for producing charts:
-A.  A high-level interface that returns an image in user-specified format
-B.  A low-level interface that returns objects for further manipulation
+    A.  A high-level interface that returns an image in user-specified format
+    B.  A low-level interface that returns objects for further manipulation
 
 1.  Uses UNIX convention for arguments and parameters
 2.  Reads in data from a CSV or Excel spreadsheet with an index in rows and
-series in columns
+    series in columns
 3.  Employs the programmatic API exclusively for chart creation logic
 
 """
@@ -166,7 +166,10 @@ class TestImageCreation(object):
 class TestImageComparison(object):
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='accumulation_area.png')
+                                   filename='accumulation_area.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_accumulation_area(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
@@ -176,41 +179,90 @@ class TestImageComparison(object):
             title='Accumulation of Federal Regulation, 1970-2016',
             type_='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n available at quantgov.org')
+                    '"RegData 3.0." \n Available at http://quantgov.org.'),
+            ylabel=('thousands of regulatory restrictions in the\nCode of '
+                    'Federal Regulations'),
+            xmax=data.index.values.max(),
+            spines=False,
+            yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
+            xlabel_off=True
         )
+        fig.savefig('accumulation_area.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='pre_crisis_chart.png')
+                                   filename='accumulation_line.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
+    def test_accumulation_line(self):
+        """Should match given area chart"""
+        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.gen_chart(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            type_='line',
+            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
+                    '"RegData 3.0." \n Available at http://quantgov.org.'),
+            ylabel=('thousands of regulatory restrictions in the\nCode of '
+                    'Federal Regulations'),
+            spines=False,
+            yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
+            xlabel_off=True
+        )
+        fig.savefig('accumulation_line.png', bbox_inches='tight')
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='pre_crisis_chart.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
     def test_pre_crisis_chart(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/title_12_17.csv',
                            index_col=0)
+        data_mod = data[:-8]
         fig = bluesteel.graphics.gen_chart(
-            data=data,
-            title='Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
-                  '\n1970-2008',
+            data=data_mod,
+            title=('Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
+                   '\n1970-2008'),
             type_='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n available at quantgov.org\nProduced by'
-                    'Michael Gasvoda')
+                    '"RegData 3.0" \n available at quantgov.org\nProduced by '
+                    'Michael Gasvoda'),
+            label_area='center',
+            spines=False,
+            yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
+            xlabel_off=True,
         )
+        fig.savefig('pre_crisis_chart.png', bbox_inches='tight')
         return fig
 
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='accumulation_line.png')
-    def test_accumulation_line(self):
+                                   filename='multiple_line.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
+    def test_multiple_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
                            index_col=0)
         fig = bluesteel.graphics.gen_chart(
             data=data,
-            title='Regulatory Impact of Dodd-Frank vs. All Other\nObama '
-                  'Administration Laws, 2009-2016',
+            title=('Regulatory Impact of Dodd-Frank vs. All Other\nObama '
+                   'Administration Laws, 2009-2016'),
             type_='line',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n available at quantgov.org')
+                    '"RegData 3.0." \n Available at http://quantgov.org'),
+            ylabel='cumulative new associated restrictions',
+            yticks=[10_000, 20_000, 30_000],
+            xlabel_off=True,
+            label_lines=True,
+            spines=False,
         )
+        fig.savefig('multiple_line.png', bbox_inches='tight')
         return fig
 
 

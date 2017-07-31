@@ -60,7 +60,7 @@ def draw_chart(data, type_='line', **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def draw_filled_line_chart(data, **kwargs):
+def draw_filled_line_chart(data, label_area=None, **kwargs):
     """Creates filled line chart and returns figure
 
     :param data: input data
@@ -77,10 +77,18 @@ def draw_filled_line_chart(data, **kwargs):
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
 
+    if label_area:
+        stacked = data.cumsum(axis='columns')
+        xmid = sum(ax.get_xbound()) / 2
+        midvals = [0] + stacked.xs(xmid).tolist()
+        for name, lower, upper in zip(stacked.columns, midvals[: -1],
+                                      midvals[1:]):
+            ax.text(xmid, (lower + upper) / 2, name, va='center', ha='center')
+
     return fig
 
 
-def draw_line_chart(data, **kwargs):
+def draw_line_chart(data, label_lines=False, **kwargs):
     """Creates standard line chart and returns figure
 
     :param data: input data
@@ -89,6 +97,16 @@ def draw_line_chart(data, **kwargs):
     fig, ax = plt.subplots()
     for _, series in data.items():
         ax.plot(series)
+
+    if label_lines:
+        for name, series in data.items():
+            ax.text(
+                series.index[-1], series.iloc[-1],
+                f'{name}: {series.iloc[-1]:,.0f}',
+                va='bottom',
+                ha='right',
+                size='small'
+            )
 
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
@@ -115,6 +133,7 @@ def draw_horizontal_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
+
     return fig
 
 
@@ -154,49 +173,96 @@ def draw_scatter_plot(data, **kwargs):
     return fig
 
 
-def format_figure(data, fig, default_xmin=None, rot=None, title=None,
+def format_figure(data, fig, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
-                  size=None, xlabel=None, ylabel=None):
-    """Handles general formatting common across all chart types."""
+                  xlabel=None, ylabel=None, spines=True,
+                  yticks=None, xticks=None, grid=True, xlabel_off=False,
+                  **kwargs):
+    """Handles general formatting common across all chart types.
 
-    ax = fig.axes[0]
+    :param data: pd.DataFrame - data used to generate the chart
+    :param fig: figure object - created by drawing functions
+    :param rot: int - rotation for x-axis labels
+    :param title: str - chart title
+    :param source: str - source note (e.g. Source: http://www.quantgov.org
+    :param xmax: int - maximum xaxis value, defaults to data.index.values.max()
+    :param ymax: int - maximum yaxis value
+    :param xmin: int - minimum xaxis value, defaults to data.index.values.max()
+    :param ymin: int - minimum yaxis value
+    :param xlabel: str - xaxis label (defaults to data.index.name)
+    :param ylabel: str - yaxis label
+    :param spines: bool - toggle appearance of chart spines (axis lines)
+    :param yticks: list - values to use for yaxis ticks
+    :param xticks: list - values to use for xaxis ticks
+    :param grid: bool - toggle display of grid lines along the y axis
+    :param xlabel_off: bool - toggle display of the xaxis label
+    :param **kwargs: holder for extra values used by drawing functions
+    """
+
+    # TODO: allow user to specify size
+
+    ax = fig.gca()
     # Axis Labels
-    if xlabel is None:
-        xlabel = data.index.name
-    plt.xlabel(xlabel)
+    if not xlabel_off:
+        if xlabel is None:
+            xlabel = data.index.name
+        plt.xlabel(xlabel)
     if ylabel is None:  # TODO: this should only be true for one-series charts!
         ylabel = data.columns[0]
     plt.ylabel(ylabel)
 
     # Other Options for the Graph
+    # TODO: condense these into an ax.set() call
     if title:
         plt.title(title)
     if xmax:
         ax.set_xlim(xmax=xmax)
+    else:
+        ax.set_xlim(xmax=data.index.values.max())
     if ymax:
         ax.set_ylim(ymax=ymax)
     if xmin:
         ax.set_xlim(xmin=xmin)
     else:
-        ax.set_xlim(xmin=default_xmin)
+        ax.set_xlim(xmin=data.index.values.min())
     if ymin:
         ax.set_ylim(ymin=ymin)
     else:
         ax.set_ylim(ymin=0)
     if rot:
         plt.xticks(rotation=rot)
-    if source:
-        fig.text(1, 0, source, transform=ax.transAxes,
-                 fontsize=10, ha='right', va='bottom')
-    # Formatting
-    # Hides the 0 on the y-axis for a cleaner look
-    plt.setp(ax.get_yticklabels()[0], visible=False)
-    # puts commas in y ticks
+
+    # Hides the 0 on the y-axis for a cleaner look if ylabels are not
+    # user-specified
+    if not yticks:
+        plt.setp(ax.get_yticklabels()[0], visible=False)
+
+    # Puts commas in y ticks
+    if yticks:
+        ax.set_yticks(yticks)
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-    # turns ticks marks off
+
+    # Reduces size of labels greater than 6 digits
+    if max(ax.get_yticks()) >= 1000000:
+        ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
+                           for i in ax.get_yticks())
+    # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
-    # logo
+    # Optionally turns on ygrid
+    if grid:
+        ax.set(axisbelow=True)
+        ax.grid(axis='y')
+
+    # Spines
+    if not spines:
+        ax.spines['left'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+
+    if source:
+        fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
+
+    # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
     logo_width = int(figwidth / 3)
     fig.figimage(LOGO.resize(
@@ -205,10 +271,6 @@ def format_figure(data, fig, default_xmin=None, rot=None, title=None,
         xo=fig.dpi / 16,
         yo=fig.dpi / 16
     )
-
-    # adjustment to fit Mercatus logo and source notes
-    # TODO: make adjustment relative
-    fig.subplots_adjust(bottom=0.2)
 
     return fig
 
