@@ -23,7 +23,7 @@ def save_fig(outfile, **kwargs):
     data = kwargs.pop('data')
     format = outfile.suffix.strip('.')
     outfile.write_bytes(
-        bluesteel.graphics.graphics.create_image(
+        bluesteel.graphics.create_image(
             data, format, **kwargs).read())
     return str(outfile)
 
