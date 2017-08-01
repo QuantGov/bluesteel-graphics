@@ -168,6 +168,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
                 va='bottom', ha='center', size='small')
     for i in ax.get_yticks():
         ax.axhline(y = i, color='white')
+
     return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
 
