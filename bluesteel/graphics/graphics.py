@@ -177,7 +177,7 @@ def draw_scatter_plot(data, **kwargs):
 
 def format_figure(data, fig, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
-                  xlabel=None, ylabel=None, spines=True, size=None
+                  xlabel=None, ylabel=None, spines=True, size=None,
                   yticks=None, xticks=None, grid=True, xlabel_off=False):
     """Handles general formatting common across all chart types.
 
