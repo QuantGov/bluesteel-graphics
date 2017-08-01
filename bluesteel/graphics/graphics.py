@@ -169,11 +169,11 @@ def draw_scatter_plot(data, **kwargs):
     """
     fig, ax = plt.subplots()
     x_value = data.index.values
-    y_value = data.iloc[:, 0]
-    ax.scatter(x_value, y_value)
-
+    for column in list(data):
+        ax.scatter(x_value, data[column])
+    if len(list(data)) > 1:
+        plt.legend(frameon=True)
     return fig
-
 
 def format_figure(data, fig, rot=None, title=None,
                   source=None, xmax=None, ymax=None, xmin=None, ymin=None,
