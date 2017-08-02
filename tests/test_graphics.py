@@ -64,7 +64,7 @@ class TestBadChartParams(object):
         """Should only run on specific types of charts"""
         with pytest.raises(NotImplementedError):
             bluesteel.graphics.create_figure(
-                type_='Pie',
+                kind='Pie',
                 data=test_data
             )
 
@@ -83,7 +83,7 @@ class TestValidChartTypes(object):
     def test_chart_types(self):
         for type in ['line', 'stacked_area', 'scatter',
                      'horizontal_bar', 'vertical_bar']:
-            bluesteel.graphics.create_figure(type_=type, data=test_data)
+            bluesteel.graphics.create_figure(kind=type, data=test_data)
 
 
 class TestChartReturnFormats(object):
@@ -115,7 +115,7 @@ class TestChartElements(object):
         """Should contain a title when passed a valid string"""
         assert ('test_title' == bluesteel.graphics.create_figure(
             test_data,
-            type_='line',
+            kind='line',
             title='test_title'
         ).gca().get_title())
 
@@ -184,7 +184,7 @@ class TestImageComparison(object):
         fig = bluesteel.graphics.create_figure(
             data=data,
             title='Accumulation of Federal Regulation, 1970-2016',
-            type_='stacked_area',
+            kind='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
             ylabel=('thousands of regulatory restrictions in the\nCode of '
@@ -208,7 +208,7 @@ class TestImageComparison(object):
         fig = bluesteel.graphics.create_figure(
             data=data,
             title='Accumulation of Federal Regulation, 1970-2016',
-            type_='line',
+            kind='line',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
             ylabel=('thousands of regulatory restrictions in the\nCode of '
@@ -233,7 +233,7 @@ class TestImageComparison(object):
             data=data_mod,
             title=('Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
                    '\n1970-2008'),
-            type_='stacked_area',
+            kind='stacked_area',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0" \n available at quantgov.org\nProduced by '
                     'Michael Gasvoda'),
@@ -257,7 +257,7 @@ class TestImageComparison(object):
             data=data,
             title=('Regulatory Impact of Dodd-Frank vs. All Other\nObama '
                    'Administration Laws, 2009-2016'),
-            type_='line',
+            kind='line',
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0." \n Available at http://quantgov.org'),
             ylabel='cumulative new associated restrictions',
