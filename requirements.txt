@@ -1,4 +1,3 @@
--e git+git@bitbucket.org:quantgov/bluesteel-graphics.git@df98cc5f886631cace280f2f735c5da25a88eae3#egg=bluesteel_graphics
 coverage==4.4.1
 cycler==0.10.0
 flake8==3.3.0
