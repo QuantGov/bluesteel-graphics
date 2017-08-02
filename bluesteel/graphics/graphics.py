@@ -59,7 +59,7 @@ def create_figure(data, type_='line', **kwargs):
     if type_ not in kinds:
         raise NotImplementedError("This chart type is not supported")
     fig = kinds[type_](data, **kwargs)
-    return format_figure(data, fig, **kwargs)
+    return fig
 
 
 def draw_filled_line_chart(data, label_area=None, **kwargs):
@@ -87,7 +87,7 @@ def draw_filled_line_chart(data, label_area=None, **kwargs):
                                       midvals[1:]):
             ax.text(xmid, (lower + upper) / 2, name, va='center', ha='center')
 
-    return fig
+    return format_figure(data, fig, **kwargs)
 
 
 def draw_line_chart(data, label_lines=False, **kwargs):
@@ -113,7 +113,7 @@ def draw_line_chart(data, label_lines=False, **kwargs):
     # Better labels for graphs with few x values
     fix_xticks_for_short_series(data, ax)
 
-    return fig
+    return format_figure(data, fig, **kwargs)
 
 
 def draw_horizontal_bar_chart(data, **kwargs):
@@ -136,10 +136,10 @@ def draw_horizontal_bar_chart(data, **kwargs):
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left')
 
-    return fig
+    return format_figure(data, fig, **kwargs)
 
 
-def draw_vertical_bar_chart(data, **kwargs):
+def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     """Creates vertical bar chart and returns figure
 
     :param data: input data
@@ -150,7 +150,8 @@ def draw_vertical_bar_chart(data, **kwargs):
     width = 2 / 3
     values = data.iloc[:, 0]
     ax.bar(bars, values, width)
-    ax.set_xlim(bars.min() - width * .75, bars.max() + width * .75)
+    xmin = bars.min() - width * .75
+    xmax = bars.max() + width * .75
     ax.set_xticks(bars)
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
@@ -158,7 +159,7 @@ def draw_vertical_bar_chart(data, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    return fig
+    return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
 
 def draw_scatter_plot(data, **kwargs):
@@ -169,11 +170,12 @@ def draw_scatter_plot(data, **kwargs):
     """
     fig, ax = plt.subplots()
     x_value = data.index.values
+
     for column in list(data):
         ax.scatter(x_value, data[column])
     if len(list(data)) > 1:
         plt.legend(frameon=True)
-    return fig
+    return format_figure(data, fig, **kwargs)
 
 
 def format_figure(data, fig, rot=None, title=None,
