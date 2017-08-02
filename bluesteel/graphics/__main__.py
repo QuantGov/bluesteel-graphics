@@ -73,7 +73,9 @@ def parse_args(args):
 def main(args=sys.argv[1:]):
     """Dispatches request to module. """
     args = parse_args(args)
-    kwargs = vars(args)
+
+    kwargs = {n: vars(args)[n] for n in vars(args) if vars(args)[n] is not
+              None}
 
     logging.basicConfig(level=kwargs.pop('verbose'))
     outfile = kwargs.pop('outfile')

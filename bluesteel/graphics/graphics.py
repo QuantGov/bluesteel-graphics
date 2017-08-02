@@ -62,7 +62,7 @@ def create_figure(data, type_='line', **kwargs):
     return fig
 
 
-def draw_filled_line_chart(data, label_area=None, **kwargs):
+def draw_filled_line_chart(data, label_area=False, **kwargs):
     """Creates filled line chart and returns figure
 
     :param data: input data
@@ -178,11 +178,10 @@ def draw_scatter_plot(data, **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def format_figure(data, fig, rot=None, title=None,
-                  source=None, xmax=None, ymax=None, xmin=None, ymin=None,
-                  xlabel=None, ylabel=None, spines=True,
-                  yticks=None, xticks=None, grid=True, xlabel_off=False,
-                  **kwargs):
+def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
+                  ymax=None, xmin=None, ymin=None, xlabel=None, ylabel=None,
+                  spines=True, size=None, yticks=None, xticks=None, grid=True,
+                  xlabel_off=False):
     """Handles general formatting common across all chart types.
 
     :param data: pd.DataFrame - data used to generate the chart

@@ -68,6 +68,14 @@ class TestBadChartParams(object):
                 data=test_data
             )
 
+    def test_extra_params(self):
+        """Should raise an error if incorrect params are provided"""
+        with pytest.raises(TypeError):
+            bluesteel.graphics.create_figure(
+                data=test_data,
+                fake_param=True
+            )
+
 
 class TestValidChartTypes(object):
 
