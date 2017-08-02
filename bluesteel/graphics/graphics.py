@@ -162,7 +162,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
 
-def draw_scatter_plot(data, **kwargs):
+def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
     """Creates standard scatter plot and returns figure
 
     :param data: input data
@@ -175,7 +175,11 @@ def draw_scatter_plot(data, **kwargs):
         ax.scatter(x_value, data[column])
     if len(list(data)) > 1:
         plt.legend(frameon=True)
-    return format_figure(data, fig, **kwargs)
+
+    xmin = data.index.values.min() * .8
+    xmax = data.index.values.max() * 1.1 
+
+    return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
 
 def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
