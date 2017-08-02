@@ -116,8 +116,8 @@ def draw_line_chart(data, label_lines=False, **kwargs):
     return fig
 
 
-def draw_horizontal_bar_chart(data, xmin=None, xmax=None,
-                  ymin=None, ymax=None, **kwargs):
+def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
+                              **kwargs):
     """Creates horizontal bar chart and returns figure
 
     :param data: input data
@@ -140,10 +140,10 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None,
         ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
                 va='center', ha='left', size='small')
     for i in ax.get_xticks():
-        ax.axvline(x = i, color='white')
+        ax.axvline(x=i, color='white')
 
-    return format_figure(data, fig, xmin=xmin, xmax=xmax,
-        ymin=ymin, ymax=ymax, **kwargs)
+    return format_figure(data, fig, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
+                         **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
@@ -167,7 +167,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center', size='small')
     for i in ax.get_yticks():
-        ax.axhline(y = i, color='white')
+        ax.axhline(y=i, color='white')
 
     return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
