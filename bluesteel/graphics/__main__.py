@@ -42,7 +42,7 @@ def parse_args(args):
     parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('-o', '--outfile', type=Path)
 
-    parser.add_argument('--type_', default='line', help='chart type')
+    parser.add_argument('--kind', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
     parser.add_argument('--size', help='output size in inches')
     parser.add_argument('--ymin', help='minimum y value to display')
