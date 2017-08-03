@@ -177,7 +177,7 @@ def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
         plt.legend(frameon=True)
 
     xmin = data.index.values.min() * .8
-    xmax = data.index.values.max() * 1.1 
+    xmax = data.index.values.max() * 1.1
 
     return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
 
