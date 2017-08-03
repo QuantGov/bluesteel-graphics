@@ -28,7 +28,7 @@ def create_image(data, format='png', **kwargs):
     Create an image of a chart
 
     :param data: a DataFrame representing the data to be charted
-    :param type_: type of chart to create
+    :param kind: type of chart to create
     :param image_format: three-letter code for the image type to be created
     :param **kwargs: settings for the chart
 
@@ -46,7 +46,7 @@ def create_image(data, format='png', **kwargs):
     return imagebuffer
 
 
-def create_figure(data, type_='line', **kwargs):
+def create_figure(data, kind='line', **kwargs):
     """Dispatcher function for different chart types. """
 
     kinds = {
@@ -56,9 +56,9 @@ def create_figure(data, type_='line', **kwargs):
         'horizontal_bar': draw_horizontal_bar_chart,
         'vertical_bar': draw_vertical_bar_chart
     }
-    if type_ not in kinds:
+    if kind not in kinds:
         raise NotImplementedError("This chart type is not supported")
-    fig = kinds[type_](data, **kwargs)
+    fig = kinds[kind](data, **kwargs)
     return fig
 
 
