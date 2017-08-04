@@ -8,7 +8,6 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import io
 import logging
-import re
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -182,7 +181,7 @@ def draw_scatter_plot(data, **kwargs):
 def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
                   ymax=None, xmin=None, ymin=None, xlabel=None, ylabel=None,
                   spines=True, size=None, yticks=None, xticks=None, grid=True,
-                  xlabel_off=False):
+                  xlabel_off=False, label_thousands=True):
     """Handles general formatting common across all chart types.
 
     :param data: pd.DataFrame - data used to generate the chart
@@ -201,6 +200,8 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
     :param xticks: list - values to use for xaxis ticks
     :param grid: bool - toggle display of grid lines along the y axis
     :param xlabel_off: bool - toggle display of the xaxis label
+    :param label_thousands: bool - toggle whether or (thousands) should be
+           appended to the yaxis label when ticks are truncated
     :param **kwargs: holder for extra values used by drawing functions
     """
     ax = fig.gca()
@@ -247,11 +248,11 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
     if max(ax.get_yticks()) >= 1000000:
         ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
                            for i in ax.get_yticks())
-        if not re.search('thousands', ylabel, flags=re.IGNORECASE):
+        if label_thousands:
             ylabel += " (thousands)"
 
-    plt.ylabel(ylabel)   
-   
+    plt.ylabel(ylabel)
+
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
