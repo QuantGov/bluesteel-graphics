@@ -8,6 +8,7 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import io
 import logging
+import re
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -210,7 +211,6 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
         plt.xlabel(xlabel)
     if ylabel is None:  # TODO: this should only be true for one-series charts!
         ylabel = data.columns[0]
-    plt.ylabel(ylabel)
 
     # Other Options for the Graph
     # TODO: condense these into an ax.set() call
@@ -247,6 +247,11 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
     if max(ax.get_yticks()) >= 1000000:
         ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
                            for i in ax.get_yticks())
+        if not re.search('thousands', ylabel, flags=re.IGNORECASE):
+            ylabel += " (thousands)"
+
+    plt.ylabel(ylabel)   
+   
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
