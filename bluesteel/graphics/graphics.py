@@ -211,14 +211,14 @@ def format_figure(data, fig, spines=True, grid=True,
     ax.tick_params(bottom='off', left='off')
 
     # Optionally turns on ygrid
-    if 'grid' in kwargs:
+    if grid:
         ax.set(axisbelow=True)
         ax.grid(axis='y')
 
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
     # Spines
-    if 'spines' not in kwargs:
+    if not spines:
         ax.spines['left'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
 

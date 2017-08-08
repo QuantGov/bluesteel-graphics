@@ -187,7 +187,7 @@ class TestImageComparison(object):
                     '"RegData 3.0." \n Available at http://quantgov.org.'),
             ylabel=('thousands of regulatory restrictions in the\nCode of '
                     'Federal Regulations'),
-            xlim=[0, data.index.values.max()],
+            xlim=[data.index.values.min(), data.index.values.max()],
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
             xlabel_off=True
