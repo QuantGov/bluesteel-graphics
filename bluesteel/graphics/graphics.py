@@ -152,6 +152,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     ax.bar(bars, values, width)
     xmin = bars.min() - width * .75
     xmax = bars.max() + width * .75
+    xlim = [xmin, xmax]
     ax.set_xticks(bars)
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
@@ -159,7 +160,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
+    return format_figure(data, fig, xlim=xlim, **kwargs)
 
 
 def draw_scatter_plot(data, **kwargs):
@@ -178,7 +179,7 @@ def draw_scatter_plot(data, **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def format_figure(data, fig, spines=True, grid=True, 
+def format_figure(data, fig, spines=True, grid=True,
                   xlabel_off=False, rot=None,
                   source=None, **kwargs):
 
@@ -214,7 +215,7 @@ def format_figure(data, fig, spines=True, grid=True,
         ax.set(axisbelow=True)
         ax.grid(axis='y')
 
-    ax.set(**{i: j for i,j in kwargs.items() if j is not None})
+    ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
     # Spines
     if 'spines' not in kwargs:
@@ -222,7 +223,7 @@ def format_figure(data, fig, spines=True, grid=True,
         ax.spines['bottom'].set_visible(False)
 
     # Set source note
-    if 'source' in kwargs:
+    if source:
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
     else:
         # If no source is present, adjust the bottom of the figure to leave
