@@ -193,6 +193,9 @@ def format_figure(data, fig, spines=True, grid=True,
     if 'xlim' not in kwargs:
         kwargs['xlim'] = [data.index.values.min(), data.index.values.max()]
 
+    if 'ylim' not in kwargs:
+        kwargs['ylim'] = [0, None]
+
     # Hides the 0 on the y-axis for a cleaner look if ylabels are not
     if 'yticks' not in kwargs:
         plt.setp(ax.get_yticklabels()[0], visible=False)
