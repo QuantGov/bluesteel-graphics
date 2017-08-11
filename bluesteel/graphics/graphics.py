@@ -190,6 +190,9 @@ def format_figure(data, fig, spines=True, grid=True,
     if 'ylabel' not in kwargs:
         kwargs['ylabel'] = data.columns[0]
 
+    if 'ylim' not in kwargs:
+        kwargs['ylim'] = [0, None]
+
     if 'xlim' not in kwargs:
         kwargs['xlim'] = [data.index.values.min(), data.index.values.max()]
 

@@ -25,27 +25,27 @@ Main Functionality:
 
 1.  Accepts bluesteel.core data representations for data to visualize
 2.  Implements a basic set of plots, including:
-    A.  Line charts
-    B.  Bar charts
-        I.  Horizontal bars
-        II. Vertical Bars
-    C.  Stacked Area Charts
-    D.  Scatter Plots
+A.  Line charts
+B.  Bar charts
+I.  Horizontal bars
+II. Vertical Bars
+C.  Stacked Area Charts
+D.  Scatter Plots
 3.  Applies Mercatus Styles
 4.  Accepts additional parameters including:
-    A.  Chart title
-    B.  Axes titles
-    C.  X and Y bounds
-    D.  A source note
-    E.  If feasible: Annotations
+A.  Chart title
+B.  Axes titles
+C.  X and Y bounds
+D.  A source note
+E.  If feasible: Annotations
 5.  For appropriate charts, allows for legend or on-data series labeling
 6.  Provides two interfaces for producing charts:
-    A.  A high-level interface that returns an image in user-specified format
-    B.  A low-level interface that returns objects for further manipulation
+A.  A high-level interface that returns an image in user-specified format
+B.  A low-level interface that returns objects for further manipulation
 
 1.  Uses UNIX convention for arguments and parameters
 2.  Reads in data from a CSV or Excel spreadsheet with an index in rows and
-    series in columns
+series in columns
 3.  Employs the programmatic API exclusively for chart creation logic
 
 """
@@ -68,13 +68,13 @@ class TestBadChartParams(object):
                 data=test_data
             )
 
-    # def test_extra_params(self):
+    def test_extra_params(self):
         """Should raise an error if incorrect params are provided"""
-      # with pytest.raises(TypeError):
-           # bluesteel.graphics.create_figure(
-               # data=test_data,
-               # fake_param=True
-           # )
+        with pytest.raises(AttributeError):
+            bluesteel.graphics.create_figure(
+                data=test_data,
+                fake_param=True
+            )
 
 
 class TestValidChartTypes(object):
