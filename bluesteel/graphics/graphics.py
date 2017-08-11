@@ -222,7 +222,6 @@ def format_figure(data, fig, spines=True, grid=True,
         plt.setp(ax.get_yticklabels()[0], visible=False)
 
     # Puts commas in y ticks
-    # Can we removed the second line in this block and move it below ax.set?
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
