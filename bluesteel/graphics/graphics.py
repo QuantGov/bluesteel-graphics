@@ -152,6 +152,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     ax.bar(bars, values, width)
     xmin = bars.min() - width * .75
     xmax = bars.max() + width * .75
+    xlim = [xmin, xmax]
     ax.set_xticks(bars)
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
@@ -159,7 +160,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     for i, k in zip(bars, values.values):
         ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
                 va='bottom', ha='center')
-    return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
+    return format_figure(data, fig, xlim=xlim, **kwargs)
 
 
 def draw_scatter_plot(data, **kwargs):
@@ -178,70 +179,53 @@ def draw_scatter_plot(data, **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
-                  ymax=None, xmin=None, ymin=None, xlabel=None, ylabel=None,
-                  spines=True, size=None, yticks=None, xticks=None, grid=True,
-                  xlabel_off=False, label_thousands=True):
+def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
+                  rot=None, source=None, label_thousands=True, **kwargs):
     """Handles general formatting common across all chart types.
 
     :param data: pd.DataFrame - data used to generate the chart
     :param fig: figure object - created by drawing functions
-    :param rot: int - rotation for x-axis labels
-    :param title: str - chart title
     :param source: str - source note (e.g. Source: http://www.quantgov.org
-    :param xmax: int - maximum xaxis value, defaults to data.index.values.max()
-    :param ymax: int - maximum yaxis value
-    :param xmin: int - minimum xaxis value, defaults to data.index.values.max()
-    :param ymin: int - minimum yaxis value
-    :param xlabel: str - xaxis label (defaults to data.index.name)
-    :param ylabel: str - yaxis label
     :param spines: bool - toggle appearance of chart spines (axis lines)
-    :param yticks: list - values to use for yaxis ticks
-    :param xticks: list - values to use for xaxis ticks
     :param grid: bool - toggle display of grid lines along the y axis
     :param xlabel_off: bool - toggle display of the xaxis label
+    :param rot: int - rotation for x-axis labels
     :param label_thousands: bool - toggle whether or (thousands) should be
            appended to the yaxis label when ticks are truncated
-    :param **kwargs: holder for extra values used by drawing functions
+    :param **kwargs: holder for values used in ax.set call. Accepts:
+        :param ylim: iterable - minimum and maximum for yaxis limits, defaults
+            to (0, None)
+        :param xlim: iterable - minimum and maximum for xaxis limits
+        :param title: str - chart title
+        :param xlabel: str - xaxis label (defaults to data.index.name)
+        :param ylabel: str - yaxis label
+        :param xticks: list - values to use for xaxis ticks
+        :param yticks: list - values to use for yaxis ticks
     """
     ax = fig.gca()
-    # Axis Labels
     if not xlabel_off:
-        if xlabel is None:
-            xlabel = data.index.name
-        plt.xlabel(xlabel)
-    if ylabel is None:  # TODO: this should only be true for one-series charts!
-        ylabel = data.columns[0]
+        if 'xlabel' not in kwargs:
+            kwargs['xlabel'] = data.index.name
+    if 'ylabel' not in kwargs:
+        kwargs['ylabel'] = data.columns[0]
 
-    # Other Options for the Graph
-    # TODO: condense these into an ax.set() call
-    if title:
-        plt.title(title)
-    if xmax:
-        ax.set_xlim(xmax=xmax)
-    else:
-        ax.set_xlim(xmax=data.index.values.max())
-    if ymax:
-        ax.set_ylim(ymax=ymax)
-    if xmin:
-        ax.set_xlim(xmin=xmin)
-    else:
-        ax.set_xlim(xmin=data.index.values.min())
-    if ymin:
-        ax.set_ylim(ymin=ymin)
-    else:
-        ax.set_ylim(ymin=0)
-    if rot:
-        plt.xticks(rotation=rot)
+    if 'ylim' not in kwargs:
+        kwargs['ylim'] = [0, None]
+
+    if 'xlim' not in kwargs:
+        kwargs['xlim'] = [data.index.values.min(), data.index.values.max()]
+
+    if 'ylim' not in kwargs:
+        kwargs['ylim'] = [0, None]
 
     # Hides the 0 on the y-axis for a cleaner look if ylabels are not
-    # user-specified
-    if not yticks:
+    if 'yticks' not in kwargs:
         plt.setp(ax.get_yticklabels()[0], visible=False)
 
     # Puts commas in y ticks
-    if yticks:
-        ax.set_yticks(yticks)
+    # Can we removed the second line in this block and move it below ax.set?
+    if 'yticks' in kwargs:
+        ax.set_yticks(kwargs['yticks'])
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
 
     # Reduces size of labels greater than 6 digits
@@ -249,9 +233,7 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
         ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
                            for i in ax.get_yticks())
         if label_thousands:
-            ylabel += " (thousands)"
-
-    plt.ylabel(ylabel)
+            kwargs['ylabel'] += " (thousands)"
 
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
@@ -260,6 +242,8 @@ def format_figure(data, fig, rot=None, title=None, source=None, xmax=None,
     if grid:
         ax.set(axisbelow=True)
         ax.grid(axis='y')
+
+    ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
     # Spines
     if not spines:
