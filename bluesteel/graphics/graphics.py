@@ -182,7 +182,25 @@ def draw_scatter_plot(data, **kwargs):
 def format_figure(data, fig, spines=True, grid=True,
                   xlabel_off=False, rot=None,
                   source=None, **kwargs):
+    """Handles general formatting common across all chart types.
 
+    :param data: pd.DataFrame - data used to generate the chart
+    :param fig: figure object - created by drawing functions
+    :param source: str - source note (e.g. Source: http://www.quantgov.org
+    :param spines: bool - toggle appearance of chart spines (axis lines)
+    :param grid: bool - toggle display of grid lines along the y axis
+    :param xlabel_off: bool - toggle display of the xaxis label
+    :param rot: int - rotation for x-axis labels
+    :param **kwargs: holder for values used in ax.set call. Accepts:
+        :param ylim: iterable - minimum and maximum for yaxis limits, defaults
+            to (0, None)
+        :param xlim: iterable - minimum and maximum for xaxis limits
+        :param title: str - chart title
+        :param xlabel: str - xaxis label (defaults to data.index.name)
+        :param ylabel: str - yaxis label
+        :param xticks: list - values to use for xaxis ticks
+        :param yticks: list - values to use for yaxis ticks
+    """
     ax = fig.gca()
     if not xlabel_off:
         if 'xlabel' not in kwargs:
