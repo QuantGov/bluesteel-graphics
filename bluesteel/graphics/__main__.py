@@ -44,7 +44,6 @@ def parse_args(args):
     Arguments[attributes] -- returns object with arguments as attributes.
     """
     parser = argparse.ArgumentParser(description=__doc__)
-    # parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('-o', '--outfile', type=Path)
 
