@@ -8,7 +8,6 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import io
 import logging
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -59,7 +58,7 @@ def create_figure(data, type_='line', **kwargs):
     if type_ not in kinds:
         raise NotImplementedError("This chart type is not supported")
     fig = kinds[type_](data, **kwargs)
-    return format_figure(data, fig, **kwargs)
+    return fig
 
 
 def draw_filled_line_chart(data, label_area=None, **kwargs):
@@ -142,8 +141,8 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     for i in ax.get_xticks():
         ax.axvline(x=i, color='white')
 
-    return format_figure(data, fig, xmin=xmin, xmax=xmax, ymin=ymin, ymax=ymax,
-                         **kwargs)
+    return format_figure(data, fig, xmin=xmin, xmax=xmax,
+        ymin=ymin, ymax=ymax, **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
@@ -159,6 +158,8 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     ax.bar(bars, values, width)
     xmin = bars.min() - width * .75
     xmax = bars.max() + width * .75
+    ymin = ax.get_ylim()[0]
+    ymax = ax.get_ylim()[1]
     ax.set_xticks(bars)
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
@@ -169,7 +170,8 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     for i in ax.get_yticks():
         ax.axhline(y=i, color='white')
 
-    return format_figure(data, fig, xmin=xmin, xmax=xmax, **kwargs)
+    return format_figure(data, fig, xmin=xmin, xmax=xmax,
+        ymin=ymin, ymax=ymax, **kwargs)
 
 
 def draw_scatter_plot(data, **kwargs):
@@ -226,17 +228,18 @@ def format_figure(data, fig, rot=None, title=None,
     # TODO: condense these into an ax.set() call
     if title:
         plt.title(title)
-    if xmax:
+    
+    if xmax is not None:
         ax.set_xlim(xmax=xmax)
     else:
         ax.set_xlim(xmax=data.index.values.max())
-    if ymax:
+    if ymax is not None:
         ax.set_ylim(ymax=ymax)
-    if xmin:
+    if xmin is not None:
         ax.set_xlim(xmin=xmin)
     else:
         ax.set_xlim(xmin=data.index.values.min())
-    if ymin:
+    if ymin is not None:
         ax.set_ylim(ymin=ymin)
     else:
         ax.set_ylim(ymin=0)
