@@ -14,7 +14,7 @@ The command line interface supports the following options:
 * data [required] - must be the first argument. Supports .csv and .xlsx files.
 * -o --outfile - path to output file including file type. Supported output file types are
     pdf, png, raw, rgba, svg, and svgz
-* --type_ - type of chart. Supported types include line, scatter plot, horizontal bar, 
+* --kind - type of chart. Supported types include line, scatter plot, horizontal bar, 
     vertical bar, and stacked area charts
 * --title - Chart main title
 * --format - filetype of the output. If not specified, the filetype will be determined
