@@ -21,6 +21,11 @@ def save_fig(outfile, **kwargs):
     outfile = Path(outfile)
     outfile.parent.mkdir(parents=True, exist_ok=True)
     data = kwargs.pop('data')
+    if data.index.dtype == 'O':
+        try:
+            data.index = pd.to_datetime(data.index)
+        except ValueError:
+            pass
     format = outfile.suffix.strip('.')
     outfile.write_bytes(
         bluesteel.graphics.create_image(
@@ -39,9 +44,10 @@ def parse_args(args):
     Arguments[attributes] -- returns object with arguments as attributes.
     """
     parser = argparse.ArgumentParser(description=__doc__)
+    # parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('data', type=lambda x: pd.read_csv(x, index_col=0))
     parser.add_argument('-o', '--outfile', type=Path)
-
+    
     parser.add_argument('--kind', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
     parser.add_argument('--size', help='output size in inches')
