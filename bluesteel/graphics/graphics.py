@@ -8,7 +8,6 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import io
 import logging
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -161,6 +160,9 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     xmin = bars.min() - width * .75
     xmax = bars.max() + width * .75
     xlim = [xmin, xmax]
+    ymin = ax.get_ylim()[0]
+    ymax = ax.get_ylim()[1]
+    ylim = [ymin, ymax]
     ax.set_xticks(bars)
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
@@ -170,7 +172,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
                 va='bottom', ha='center', size='small')
     for i in ax.get_yticks():
         ax.axhline(y=i, color='white')
-    return format_figure(data, fig, xlim=xlim, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_scatter_plot(data, **kwargs):
