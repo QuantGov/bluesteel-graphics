@@ -144,7 +144,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     for i in ax.get_xticks():
         ax.axvline(x=i, color='white')
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
