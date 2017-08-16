@@ -266,6 +266,22 @@ class TestImageComparison(object):
         )
         return fig
 
+    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
+                                   filename='sample_scatter.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
+    def test_scatterplot(self):
+        data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title="Sample Scatter Plot",
+            source="Source: Random Data Generation",
+            xlabel_off=True,
+            spines=False
+        )
+        return fig
+
 
 # COMMAND LINE INTERFACE
 class TestCLI(object):
