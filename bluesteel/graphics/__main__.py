@@ -21,6 +21,11 @@ def save_fig(outfile, **kwargs):
     outfile = Path(outfile)
     outfile.parent.mkdir(parents=True, exist_ok=True)
     data = kwargs.pop('data')
+    if data.index.dtype == 'O':
+        try:
+            data.index = pd.to_datetime(data.index)
+        except ValueError:
+            pass
     format = outfile.suffix.strip('.')
     outfile.write_bytes(
         bluesteel.graphics.create_image(
