@@ -230,10 +230,12 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
 
     # Reduces size of labels greater than 6 digits
     if max(ax.get_yticks()) >= 1000000:
-        ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
-                           for i in ax.get_yticks())
         if label_thousands:
-            kwargs['ylabel'] += " (thousands)"
+            ax.set_yticklabels('' if not i else f"{i / 1000:,.0fK}"
+                               for i in ax.get_yticks())
+        else:
+            ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
+                               for i in ax.get_yticks())
 
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
