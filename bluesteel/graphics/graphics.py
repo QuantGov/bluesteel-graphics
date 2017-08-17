@@ -226,16 +226,28 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
     # Can we removed the second line in this block and move it below ax.set?
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
-    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+
+    yticklabels = ax.get_yticks()
 
     # Reduces size of labels greater than 6 digits
-    if max(ax.get_yticks()) >= 1000000:
-        if label_thousands:
-            ax.set_yticklabels('' if not i else f"{i / 1000:,.0fK}"
-                               for i in ax.get_yticks())
+    if max(yticklabels) >= 1000000:
+        # Check to see if any labels need to be formatted as floats to avoid
+        # losing precision
+        if any([i % 1000 for i in yticklabels]):
+            yticklabels = ['' if not i else f"{i / 1000:,}" for i in
+                           yticklabels]
         else:
-            ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
-                               for i in ax.get_yticks())
+            yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
+                           yticklabels]
+
+        # Append a 'K' to labels to show that they have been truncated - can be
+        # disabled using 'label_thousands=False' in call to create_figure()
+        if label_thousands:
+            yticklabels = [i + 'K' if i else '' for i in yticklabels]
+    else:
+        yticklabels = ['{:,.0f}'.format(i) for i in ax.get_yticks()]
+
+    ax.set_yticklabels(yticklabels)
 
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
