@@ -1,6 +1,7 @@
 import argparse
 import logging
 import sys
+import re
 
 import pandas as pd
 
@@ -31,6 +32,14 @@ def save_fig(outfile, **kwargs):
         bluesteel.graphics.create_image(
             data, format, **kwargs).read())
     return str(outfile)
+
+
+def process_string_inputs(data):
+    for column in data:
+        if data[column].dtype == 'O':
+            temp = data[column].map(lambda x: re.sub(r'[^\d.]+', '', x))
+            data[column] = pd.to_numeric(temp, errors='ignore')
+    return data
 
 
 def parse_args(args):
@@ -81,6 +90,8 @@ def main(args=sys.argv[1:]):
 
     kwargs = {n: vars(args)[n] for n in vars(args) if vars(args)[n] is not
               None}
+
+    kwargs['data'] = process_string_inputs(kwargs['data'])
 
     logging.basicConfig(level=kwargs.pop('verbose'))
     outfile = kwargs.pop('outfile')
