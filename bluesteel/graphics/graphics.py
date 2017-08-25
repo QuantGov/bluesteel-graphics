@@ -10,6 +10,7 @@ import io
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 from pathlib import Path
 from PIL import Image as image
@@ -257,7 +258,7 @@ def format_figure(data, fig, spines=True, grid=True,
     
     # Adds em-dash to date range in title
     if title:
-        ax.set_title(title.replace('-', '\N{EM DASH}'))
+        ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
 
     # Spines
     if not spines:
@@ -266,7 +267,7 @@ def format_figure(data, fig, spines=True, grid=True,
 
     # Set source note
     if source:
-        source = source.replace('-', '\N{EM DASH}')
+        source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
     else:
         # If no source is present, adjust the bottom of the figure to leave
