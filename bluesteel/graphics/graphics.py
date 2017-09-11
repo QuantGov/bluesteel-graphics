@@ -10,6 +10,7 @@ import io
 import logging
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 from pathlib import Path
 from PIL import Image as image
@@ -195,7 +196,7 @@ def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
 
 
 def format_figure(data, fig, spines=True, grid=True,
-                  xlabel_off=False, rot=None,
+                  xlabel_off=False, rot=None, title=False,
                   source=None, **kwargs):
     """Handles general formatting common across all chart types.
 
@@ -203,6 +204,7 @@ def format_figure(data, fig, spines=True, grid=True,
     :param fig: figure object - created by drawing functions
     :param source: str - source note (e.g. Source: http://www.quantgov.org
     :param spines: bool - toggle appearance of chart spines (axis lines)
+    :param title: str - chart title
     :param grid: bool - toggle display of grid lines along the y axis
     :param xlabel_off: bool - toggle display of the xaxis label
     :param rot: int - rotation for x-axis labels
@@ -210,7 +212,6 @@ def format_figure(data, fig, spines=True, grid=True,
         :param ylim: iterable - minimum and maximum for yaxis limits, defaults
             to (0, None)
         :param xlim: iterable - minimum and maximum for xaxis limits
-        :param title: str - chart title
         :param xlabel: str - xaxis label (defaults to data.index.name)
         :param ylabel: str - yaxis label
         :param xticks: list - values to use for xaxis ticks
@@ -254,6 +255,10 @@ def format_figure(data, fig, spines=True, grid=True,
         ax.grid(axis='y')
 
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
+    
+    # Adds em-dash to date range in title
+    if title:
+        ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
 
     # Spines
     if not spines:
@@ -262,6 +267,7 @@ def format_figure(data, fig, spines=True, grid=True,
 
     # Set source note
     if source:
+        source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
     else:
         # If no source is present, adjust the bottom of the figure to leave
