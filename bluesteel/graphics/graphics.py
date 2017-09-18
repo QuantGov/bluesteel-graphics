@@ -132,13 +132,13 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
             ax.text(series.iloc[j] * 1.02, j + i * height,
                     "{:,.0f}".format(k), va='center', ha='left',
                     size=(18 - len(data.columns) * 3))
-    ymin = bars.min() - height * .75
-    ymax = bars.max() + height * .75
+    ymin = bars.min() - height * .75 * len(data.columns)
+    ymax = bars.max() + height * len(data.columns)
     xmin = ax.get_xlim()[0]
     xmax = ax.get_xlim()[1]
     xlim = [xmin, xmax]
     ylim = [ymin, ymax]
-    ax.set_yticks(bars + height / 2)
+    ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
     ax.set_yticklabels(data.index, size='small')
     ax.tick_params(bottom='off')
     ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
@@ -160,17 +160,17 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     for i, (_, series) in enumerate(data.items()):
         ax.bar(bars + i * width, series.values, width)
         for j, k in zip(bars, series.values):
-            ax.text(j + i * height, series.iloc[j] * 1.02,
+            ax.text(j + i * width, series.iloc[j] * 1.02,
                     "{:,.0f}".format(k),
                     va='bottom', ha='center',
                     size=(18 - len(data.columns) * 3))
-    xmin = bars.min() - width * .75
-    xmax = bars.max() + width * .75
+    xmin = bars.min() - width * .75 * len(data.columns)
+    xmax = bars.max() + width * len(data.columns)
     xlim = [xmin, xmax]
     ymin = ax.get_ylim()[0]
     ymax = ax.get_ylim()[1]
     ylim = [ymin, ymax]
-    ax.set_xticks(bars + width / 2)
+    ax.set_xticks(bars + width * (len(data.columns) * 0.5 - 0.5))
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
