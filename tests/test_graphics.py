@@ -190,7 +190,8 @@ class TestImageComparison(object):
             xlim=[data.index.values.min(), data.index.values.max()],
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True
+            xlabel_off=True,
+            label_thousands=False
         )
         return fig
 
@@ -213,7 +214,8 @@ class TestImageComparison(object):
                     'Federal Regulations'),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True
+            xlabel_off=True,
+            label_thousands=False
         )
         return fig
 
