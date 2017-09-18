@@ -176,7 +176,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
     for i in ax.get_yticks():
         ax.axhline(y=i, color='white')
-    
+
     return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
@@ -259,7 +259,7 @@ def format_figure(data, fig, spines=True, grid=True,
         ax.grid(axis='y')
 
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
-    
+
     # Adds em-dash to date range in title
     if title:
         ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
