@@ -199,9 +199,9 @@ def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
     return format_figure(data, fig, xlim=xlim, **kwargs)
 
 
-def format_figure(data, fig, spines=True, grid=True,
-                  xlabel_off=False, rot=None, title=False,
-                  source=None, **kwargs):
+def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
+                  xlabel_off=False, rot=None, title=False, source=None,
+                  **kwargs):
     """Handles general formatting common across all chart types.
 
     :param data: pd.DataFrame - data used to generate the chart
@@ -212,6 +212,8 @@ def format_figure(data, fig, spines=True, grid=True,
     :param grid: bool - toggle display of grid lines along the y axis
     :param xlabel_off: bool - toggle display of the xaxis label
     :param rot: int - rotation for x-axis labels
+    :param label_thousands: bool - toggle whether or (thousands) should be
+           appended to the yaxis label when ticks are truncated
     :param **kwargs: holder for values used in ax.set call. Accepts:
         :param ylim: iterable - minimum and maximum for yaxis limits, defaults
             to (0, None)
@@ -244,12 +246,29 @@ def format_figure(data, fig, spines=True, grid=True,
     # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
-    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+
+    yticklabels = ax.get_yticks()
 
     # Reduces size of labels greater than 6 digits
-    if max(ax.get_yticks()) >= 1000000:
-        ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
-                           for i in ax.get_yticks())
+    if max(yticklabels) >= 1000000:
+        # Check to see if any labels need to be formatted as floats to avoid
+        # losing precision
+        if any([i % 1000 for i in yticklabels]):
+            yticklabels = ['' if not i else f"{i / 1000:,}" for i in
+                           yticklabels]
+        else:
+            yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
+                           yticklabels]
+
+        # Append a 'K' to labels to show that they have been truncated - can be
+        # disabled using 'label_thousands=False' in call to create_figure()
+        if label_thousands:
+            yticklabels = [i + 'K' if i else '' for i in yticklabels]
+    else:
+        yticklabels = ['{:,.0f}'.format(i) for i in ax.get_yticks()]
+
+    ax.set_yticklabels(yticklabels)
+
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
