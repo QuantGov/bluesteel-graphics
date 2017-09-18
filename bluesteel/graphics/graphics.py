@@ -125,22 +125,23 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     """
     fig, ax = plt.subplots()
     bars = np.arange(len(data.index))
-    height = 2 / 3
-    values = data.iloc[:, 0]
-    ax.barh(bars, values, height)
-    ymin = bars.min() - height * .75
-    ymax = bars.max() + height * .75
+    height = (2 / 3) / len(data.columns)
+    for i, (_, series) in enumerate(data.items()):
+        ax.barh(bars + i * height, series.values, height)
+        for j, k in zip(bars, series.values):
+            ax.text(series.iloc[j] * 1.02, j + i * height,
+                    "{:,.0f}".format(k), va='center', ha='left',
+                    size=(18 - len(data.columns) * 3))
+    ymin = bars.min() - height * .75 * len(data.columns)
+    ymax = bars.max() + height * len(data.columns)
     xmin = ax.get_xlim()[0]
     xmax = ax.get_xlim()[1]
     xlim = [xmin, xmax]
     ylim = [ymin, ymax]
-    ax.set_yticks(bars)
+    ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
     ax.set_yticklabels(data.index, size='small')
     ax.tick_params(bottom='off')
     ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
-    for i, k in zip(bars, values.values):
-        ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
-                va='center', ha='left', size='small')
     for i in ax.get_xticks():
         ax.axvline(x=i, color='white')
 
@@ -155,25 +156,28 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     """
     fig, ax = plt.subplots()
     bars = np.arange(len(data.index))
-    width = 2 / 3
-    values = data.iloc[:, 0]
-    ax.bar(bars, values, width)
-    xmin = bars.min() - width * .75
-    xmax = bars.max() + width * .75
+    width = (2 / 3) / len(data.columns)
+    for i, (_, series) in enumerate(data.items()):
+        ax.bar(bars + i * width, series.values, width)
+        for j, k in zip(bars, series.values):
+            ax.text(j + i * width, series.iloc[j] * 1.02,
+                    "{:,.0f}".format(k),
+                    va='bottom', ha='center',
+                    size=(18 - len(data.columns) * 3))
+    xmin = bars.min() - width * .75 * len(data.columns)
+    xmax = bars.max() + width * len(data.columns)
     xlim = [xmin, xmax]
     ymin = ax.get_ylim()[0]
     ymax = ax.get_ylim()[1]
     ylim = [ymin, ymax]
-    ax.set_xticks(bars)
+    ax.set_xticks(bars + width * (len(data.columns) * 0.5 - 0.5))
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-    for i, k in zip(bars, values.values):
-        ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
-                va='bottom', ha='center', size='small')
     for i in ax.get_yticks():
         ax.axhline(y=i, color='white')
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
+
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
 def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
@@ -255,7 +259,7 @@ def format_figure(data, fig, spines=True, grid=True,
         ax.grid(axis='y')
 
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
-    
+
     # Adds em-dash to date range in title
     if title:
         ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
