@@ -237,14 +237,10 @@ def format_figure(data, fig, spines=True, grid=True,
     if 'ylim' not in kwargs:
         kwargs['ylim'] = [0, None]
 
-    # Hides the 0 on the y-axis for a cleaner look if ylabels are not
-    if 'yticks' not in kwargs:
-        plt.setp(ax.get_yticklabels()[0], visible=False)
-
     # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
-    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+    ax.set_yticklabels(('{:,.0f}'.format(i) for i in ax.get_yticks()), ha='right')
 
     # Reduces size of labels greater than 6 digits
     if max(ax.get_yticks()) >= 1000000:

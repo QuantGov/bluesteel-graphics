@@ -237,7 +237,7 @@ class TestImageComparison(object):
                     'Michael Gasvoda'),
             label_area='center',
             spines=False,
-            yticks=[10_000, 20_000, 30_000, 40_000, 50_000],
+            yticks=[0, 10_000, 20_000, 30_000, 40_000, 50_000],
             xlabel_off=True,
         )
         return fig
@@ -259,7 +259,7 @@ class TestImageComparison(object):
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0." \n Available at http://quantgov.org'),
             ylabel='cumulative new associated restrictions',
-            yticks=[10_000, 20_000, 30_000],
+            yticks=[0, 10_000, 20_000, 30_000],
             xlabel_off=True,
             label_lines=True,
             spines=False,
