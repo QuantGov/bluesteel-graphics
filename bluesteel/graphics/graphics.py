@@ -8,9 +8,9 @@ Utility functions for generating Mercatus style graphics objects and files.
 
 import io
 import logging
-
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 from pathlib import Path
 from PIL import Image as image
@@ -116,7 +116,8 @@ def draw_line_chart(data, label_lines=False, **kwargs):
     return format_figure(data, fig, **kwargs)
 
 
-def draw_horizontal_bar_chart(data, **kwargs):
+def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
+                              **kwargs):
     """Creates horizontal bar chart and returns figure
 
     :param data: input data
@@ -124,19 +125,27 @@ def draw_horizontal_bar_chart(data, **kwargs):
     """
     fig, ax = plt.subplots()
     bars = np.arange(len(data.index))
-    height = 2 / 3
-    values = data.iloc[:, 0]
-    ax.barh(bars, values, height)
-    ax.set_ylim(bars.min() - height * .75, bars.max() + height * .75)
-    ax.set_yticks(bars)
-    ax.set_yticklabels(data.index)
-    ax.tick_params(bottom='off', left='off')
+    height = (2 / 3) / len(data.columns)
+    for i, (_, series) in enumerate(data.items()):
+        ax.barh(bars + i * height, series.values, height)
+        for j, k in zip(bars, series.values):
+            ax.text(series.iloc[j] * 1.02, j + i * height,
+                    "{:,.0f}".format(k), va='center', ha='left',
+                    size=(18 - len(data.columns) * 3))
+    ymin = bars.min() - height * .75 * len(data.columns)
+    ymax = bars.max() + height * len(data.columns)
+    xmin = ax.get_xlim()[0]
+    xmax = ax.get_xlim()[1]
+    xlim = [xmin, xmax]
+    ylim = [ymin, ymax]
+    ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
+    ax.set_yticklabels(data.index, size='small')
+    ax.tick_params(bottom='off')
     ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
-    for i, k in zip(bars, values.values):
-        ax.text(values.iloc[i] * 1.01, i, "{:,.0f}".format(k),
-                va='center', ha='left')
+    for i in ax.get_xticks():
+        ax.axvline(x=i, color='white')
 
-    return format_figure(data, fig, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
@@ -147,23 +156,31 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     """
     fig, ax = plt.subplots()
     bars = np.arange(len(data.index))
-    width = 2 / 3
-    values = data.iloc[:, 0]
-    ax.bar(bars, values, width)
-    xmin = bars.min() - width * .75
-    xmax = bars.max() + width * .75
+    width = (2 / 3) / len(data.columns)
+    for i, (_, series) in enumerate(data.items()):
+        ax.bar(bars + i * width, series.values, width)
+        for j, k in zip(bars, series.values):
+            ax.text(j + i * width, series.iloc[j] * 1.02,
+                    "{:,.0f}".format(k),
+                    va='bottom', ha='center',
+                    size=(18 - len(data.columns) * 3))
+    xmin = bars.min() - width * .75 * len(data.columns)
+    xmax = bars.max() + width * len(data.columns)
     xlim = [xmin, xmax]
-    ax.set_xticks(bars)
+    ymin = ax.get_ylim()[0]
+    ymax = ax.get_ylim()[1]
+    ylim = [ymin, ymax]
+    ax.set_xticks(bars + width * (len(data.columns) * 0.5 - 0.5))
     ax.set_xticklabels(data.index)
     ax.tick_params(bottom='off', left='off')
     ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
-    for i, k in zip(bars, values.values):
-        ax.text(i, values.iloc[i] * 1.01, "{:,.0f}".format(k),
-                va='bottom', ha='center')
-    return format_figure(data, fig, xlim=xlim, **kwargs)
+    for i in ax.get_yticks():
+        ax.axhline(y=i, color='white')
+
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
-def draw_scatter_plot(data, **kwargs):
+def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
     """Creates standard scatter plot and returns figure
 
     :param data: input data
@@ -176,17 +193,22 @@ def draw_scatter_plot(data, **kwargs):
         ax.scatter(x_value, data[column])
     if len(list(data)) > 1:
         plt.legend(frameon=True)
-    return format_figure(data, fig, **kwargs)
+
+    xlim = [data.index.values.min() * .8, data.index.values.max() * 1.1]
+
+    return format_figure(data, fig, xlim=xlim, **kwargs)
 
 
-def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
-                  rot=None, source=None, label_thousands=True, **kwargs):
+def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
+                  xlabel_off=False, rot=None, title=False, source=None,
+                  **kwargs):
     """Handles general formatting common across all chart types.
 
     :param data: pd.DataFrame - data used to generate the chart
     :param fig: figure object - created by drawing functions
     :param source: str - source note (e.g. Source: http://www.quantgov.org
     :param spines: bool - toggle appearance of chart spines (axis lines)
+    :param title: str - chart title
     :param grid: bool - toggle display of grid lines along the y axis
     :param xlabel_off: bool - toggle display of the xaxis label
     :param rot: int - rotation for x-axis labels
@@ -196,7 +218,6 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
         :param ylim: iterable - minimum and maximum for yaxis limits, defaults
             to (0, None)
         :param xlim: iterable - minimum and maximum for xaxis limits
-        :param title: str - chart title
         :param xlabel: str - xaxis label (defaults to data.index.name)
         :param ylabel: str - yaxis label
         :param xticks: list - values to use for xaxis ticks
@@ -223,7 +244,6 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
         plt.setp(ax.get_yticklabels()[0], visible=False)
 
     # Puts commas in y ticks
-    # Can we removed the second line in this block and move it below ax.set?
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
 
@@ -259,6 +279,10 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
 
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
+    # Adds em-dash to date range in title
+    if title:
+        ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
+
     # Spines
     if not spines:
         ax.spines['left'].set_visible(False)
@@ -266,6 +290,7 @@ def format_figure(data, fig, spines=True, grid=True, xlabel_off=False,
 
     # Set source note
     if source:
+        source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
     else:
         # If no source is present, adjust the bottom of the figure to leave
