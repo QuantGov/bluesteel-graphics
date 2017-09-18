@@ -37,8 +37,8 @@ def save_fig(outfile, **kwargs):
 def process_string_inputs(data):
     for column in data:
         if data[column].dtype == 'O':
-            temp = data[column].map(lambda x: re.sub(r'[^\d.]+', '', x))
-            data[column] = pd.to_numeric(temp, errors='ignore')
+            numeric_col = data[column].map(lambda x: re.sub(r'[^\d.]+', '', x))
+            data[column] = pd.to_numeric(numeric_col, errors='ignore')
     return data
 
 
