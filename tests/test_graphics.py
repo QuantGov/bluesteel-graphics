@@ -190,7 +190,8 @@ class TestImageComparison(object):
             xlim=[data.index.values.min(), data.index.values.max()],
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True
+            xlabel_off=True,
+            label_thousands=False
         )
         return fig
 
@@ -213,7 +214,8 @@ class TestImageComparison(object):
                     'Federal Regulations'),
             spines=False,
             yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True
+            xlabel_off=True,
+            label_thousands=False
         )
         return fig
 
@@ -282,6 +284,23 @@ class TestImageComparison(object):
         )
         return fig
 
+    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
+                                   filename='sample_vbar.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'})
+    def test_vbar(self):
+        data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="vertical_bar",
+            title="Sample Bar Chart",
+            source="Random data generation",
+            ylabel='Sample taxis title',
+            spines=False
+        )
+        return fig
+
 
 # COMMAND LINE INTERFACE
 class TestCLI(object):
@@ -295,5 +314,3 @@ class TestCLI(object):
                   'quantgov.org']
         )
         assert Path('tests/test_output/testchart.png').exists()
-
-
