@@ -265,6 +265,9 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     ax.set_yticklabels(yticklabels)
 
+    # Format yaxis zeroes
+    ax.tick_params(axis='y', pad=10)
+
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
 
