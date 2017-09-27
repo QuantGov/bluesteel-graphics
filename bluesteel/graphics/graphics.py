@@ -242,16 +242,6 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
-<<<<<<< HEAD
-    ax.set_yticklabels(('{:,.0f}'.format(i) for i in ax.get_yticks()),
-                       ha='right')
-    ax.tick_params(axis='y', pad=10)
-
-    # Reduces size of labels greater than 6 digits
-    if max(ax.get_yticks()) >= 1000000:
-        ax.set_yticklabels('' if not i else f"{i / 1000:,.0f}"
-                           for i in ax.get_yticks())
-=======
 
     yticklabels = ax.get_yticks()
 
@@ -274,7 +264,6 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
         yticklabels = ['{:,.0f}'.format(i) for i in ax.get_yticks()]
 
     ax.set_yticklabels(yticklabels)
->>>>>>> release
 
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
