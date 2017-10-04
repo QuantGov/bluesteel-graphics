@@ -248,10 +248,6 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     if 'ylim' not in kwargs:
         kwargs['ylim'] = [0, None]
 
-    # Hides the 0 on the y-axis for a cleaner look if ylabels are not
-    if 'yticks' not in kwargs:
-        plt.setp(ax.get_yticklabels()[0], visible=False)
-
     # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks(kwargs['yticks'])
@@ -277,6 +273,9 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
         yticklabels = ['{:,.0f}'.format(i) for i in ax.get_yticks()]
 
     ax.set_yticklabels(yticklabels)
+
+    # Format yaxis zeroes
+    ax.tick_params(axis='y', pad=10)
 
     # Turns ticks marks off
     ax.tick_params(bottom='off', left='off')
