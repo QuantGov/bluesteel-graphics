@@ -121,6 +121,10 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     """Creates horizontal bar chart and returns figure
 
     :param data: input data
+    :param xmin: xaxis minimum value
+    :param xmax: xaxis maxium value
+    :param ymin: yaxis minimum value
+    :param ymax: yaxis maximum value
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -152,6 +156,8 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, **kwargs):
     """Creates vertical bar chart and returns figure
 
     :param data: input data
+    :param xmin: xaxis minimum value
+    :param xmax: xaxis maximum value
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -184,6 +190,8 @@ def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
     """Creates standard scatter plot and returns figure
 
     :param data: input data
+    :param xmin: xaxis minimum value
+    :param xmax: xaxis maximum value
     :param **kwargs: passed through to formatting function
     """
     fig, ax = plt.subplots()
@@ -206,14 +214,15 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     :param data: pd.DataFrame - data used to generate the chart
     :param fig: figure object - created by drawing functions
-    :param source: str - source note (e.g. Source: http://www.quantgov.org
     :param spines: bool - toggle appearance of chart spines (axis lines)
-    :param title: str - chart title
     :param grid: bool - toggle display of grid lines along the y axis
-    :param xlabel_off: bool - toggle display of the xaxis label
-    :param rot: int - rotation for x-axis labels
     :param label_thousands: bool - toggle whether or (thousands) should be
            appended to the yaxis label when ticks are truncated
+    :param xlabel_off: bool - toggle display of the xaxis label
+    :param rot: int - rotation for x-axis labels
+    :param title: str - chart title
+    :param source: str - source note (e.g. Source: http://www.quantgov.org
+
     :param **kwargs: holder for values used in ax.set call. Accepts:
         :param ylim: iterable - minimum and maximum for yaxis limits, defaults
             to (0, None)
@@ -276,6 +285,7 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
         ax.set(axisbelow=True)
         ax.grid(axis='y')
 
+    # Apply general ax.set arguments
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
     # Adds em-dash to date range in title
