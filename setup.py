@@ -20,10 +20,16 @@ setup(
     packages=find_packages(exclude=['contrib', 'docs', 'tests']),
     install_requires=[
         'matplotlib',
-        'pandas'
+        'numpy',
+        'pandas',
+        'Pillow'
     ],
     extras_require={
-        'test': ['pytest-flake8', 'nose'],
+        'test': [
+            'pytest-cov',
+            'pytest-flake8',
+            'pytest-mpl'
+        ],
     },
     include_package_data=True
 )
