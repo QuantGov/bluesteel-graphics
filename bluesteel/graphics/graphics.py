@@ -301,6 +301,7 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     if source:
         source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
         fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
+        fig.subplots_adjust(bottom=0.17)
     else:
         # If no source is present, adjust the bottom of the figure to leave
         # room for the logo
