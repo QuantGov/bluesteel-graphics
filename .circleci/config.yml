@@ -21,7 +21,9 @@ jobs:
       - checkout
 
       - pre:
-        - sudo apt-get update; sudo apt-get install ghostscript
+        name: install ghostscript
+        command: |
+          sudo apt-get update; sudo apt-get install ghostscript
 
       # Download and cache dependencies
       - restore_cache:
