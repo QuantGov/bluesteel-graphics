@@ -17,12 +17,13 @@ jobs:
 
     working_directory: ~/repo
 
+    dependencies:
+      pre:
+        - sudo apt-get update; sudo apt-get install ghostscript
+
     steps:
       - checkout
 
-      dependencies:
-        pre:
-          - sudo apt-get update; sudo apt-get install gnu-smalltalk
 
       # Download and cache dependencies
       - restore_cache:
