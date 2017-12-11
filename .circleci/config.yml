@@ -45,6 +45,8 @@ jobs:
       # run tests!
       - run:
           name: run tests
+          environment:
+            MPLBACKEND: "agg"
           command: |
             . venv/bin/activate
             pytest
