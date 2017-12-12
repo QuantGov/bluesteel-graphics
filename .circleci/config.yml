@@ -55,19 +55,11 @@ jobs:
           path: test-reports
           destination: test-reports
 
-
 workflows:
   version: 2
   build_and_test:
     jobs:
-<<<<<<< HEAD
       - build:
-=======
-      - build
-      - test:
-          requires:
-            - build
->>>>>>> 922a0a0c5a006615f247b4579a4b2228a66e0117
           filters:
             branches:
               only:
