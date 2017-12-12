@@ -11,7 +11,6 @@ import logging
 import matplotlib.pyplot as plt
 import numpy as np
 import re
-import matplotlib as mpl
 import matplotlib.font_manager as font_manager
 
 from pathlib import Path
@@ -21,8 +20,6 @@ font_dirs = [str(Path(__file__).parent.joinpath('fonts'))]
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
 font_list = font_manager.createFontList(font_files)
 font_manager.fontManager.ttflist.extend(font_list)
-
-mpl.rcParams['font.family'] = 'Gotham Narrow'
 
 LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
 LOGO.load(10)
