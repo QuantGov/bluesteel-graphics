@@ -240,7 +240,7 @@ class TestImageComparison(object):
             source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
                     '"RegData 3.0" \n available at quantgov.org\nProduced by '
                     'Michael Gasvoda'),
-            label_area='center',
+            label_area=True,
             spines=False,
             yticks=[0, 10_000, 20_000, 30_000, 40_000, 50_000],
             xlabel_off=True,
