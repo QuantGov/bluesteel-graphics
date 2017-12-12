@@ -174,7 +174,8 @@ class TestImageComparison(object):
                                    filename='accumulation_area.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
     def test_accumulation_area(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
@@ -199,7 +200,8 @@ class TestImageComparison(object):
                                    filename='accumulation_line.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
     def test_accumulation_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/annual_restrictions.csv',
@@ -223,7 +225,8 @@ class TestImageComparison(object):
                                    filename='pre_crisis_chart.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5.7)
     def test_pre_crisis_chart(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/title_12_17.csv',
@@ -248,7 +251,8 @@ class TestImageComparison(object):
                                    filename='multiple_line.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
     def test_multiple_line(self):
         """Should match given area chart"""
         data = pd.read_csv('tests/test_data/all_laws.csv',
@@ -272,7 +276,8 @@ class TestImageComparison(object):
                                    filename='sample_scatter.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
     def test_scatterplot(self):
         data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
         fig = bluesteel.graphics.create_figure(
@@ -288,7 +293,8 @@ class TestImageComparison(object):
                                    filename='sample_vbar.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
     def test_vbar(self):
         data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
         fig = bluesteel.graphics.create_figure(
