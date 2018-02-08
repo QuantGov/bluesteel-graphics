@@ -105,7 +105,7 @@ def draw_line_chart(data, lw=2, label_lines=False, color=[0], **kwargs):
     """
     fig, ax = plt.subplots()
     if (len(data.columns) > 1) and (color == [0]):
-        color = list(np.arange(0, len(data.items())-1))
+        color = list(np.arange(0, len(data.columns)))
     for i, (_, series) in enumerate(data.items()):
         ax.plot(series, lw=lw, color=colors[int(color[i])])
 
@@ -140,7 +140,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     bars = np.arange(len(data.index))
     height = (2 / 3) / len(data.columns)
     if (len(data.columns) > 1) and (color == [0]):
-        color = list(np.arange(0, len(data.items())-1))
+        color = list(np.arange(0, len(data.columns)))
     for i, (_, series) in enumerate(data.items()):
         ax.barh(bars + i * height, series.values, height,
                 color=colors[int(color[i])])
@@ -183,7 +183,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, color=[0], **kwargs):
     bars = np.arange(len(data.index))
     width = (2 / 3) / len(data.columns)
     if (len(data.columns) > 1) and (color == [0]):
-        color = list(np.arange(0, len(data.items())-1))
+        color = list(np.arange(0, len(data.columns)))
     for i, (_, series) in enumerate(data.items()):
         ax.bar(bars + i * width, series.values, width,
                color=colors[int(color[i])])

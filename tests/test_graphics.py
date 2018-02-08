@@ -1,11 +1,11 @@
 import sys
 
+from pathlib import Path
+
 import pytest
 import pandas as pd
 import matplotlib
 from matplotlib.testing.decorators import cleanup, image_comparison
-
-from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.resolve()))
 
@@ -272,7 +272,7 @@ class TestImageComparison(object):
         )
         return fig
 
-    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
                                    filename='sample_scatter.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
@@ -282,6 +282,7 @@ class TestImageComparison(object):
         data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
         fig = bluesteel.graphics.create_figure(
             data=data,
+            kind="scatter",
             title="Sample Scatter Plot",
             source="Source: Random Data Generation",
             xlabel_off=True,
@@ -289,7 +290,7 @@ class TestImageComparison(object):
         )
         return fig
 
-    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
                                    filename='sample_vbar.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
@@ -300,6 +301,24 @@ class TestImageComparison(object):
         fig = bluesteel.graphics.create_figure(
             data=data,
             kind="vertical_bar",
+            title="Sample Bar Chart",
+            source="Random data generation",
+            ylabel='Sample taxis title',
+            spines=False
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='sample_hbar.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar(self):
+        data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="horizontal_bar",
             title="Sample Bar Chart",
             source="Random data generation",
             ylabel='Sample taxis title',
