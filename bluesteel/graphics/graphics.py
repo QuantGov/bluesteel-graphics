@@ -155,10 +155,14 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
                 ax.text(series.iloc[j] + series.values.max() * .01,
                         j + i * height, "{:,.0f}".format(k), va='center',
                         ha='left', size=(18 - len(data.columns) * 3))
-    ymin = bars.min() - height * .75 * len(data.columns)
-    ymax = bars.max() + height * len(data.columns)
-    xmin = ax.get_xlim()[0]
-    xmax = ax.get_xlim()[1]
+    if not ymin:
+        ymin = bars.min() - height * .75 * len(data.columns)
+    if not ymax:
+        ymax = bars.max() + height * len(data.columns)
+    if not xmin:
+        xmin = ax.get_xlim()[0]
+    if not xmax:
+        xmax = ax.get_xlim()[1]
     xlim = [xmin, xmax]
     ylim = [ymin, ymax]
     ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
@@ -203,11 +207,15 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, color=[0], **kwargs):
                     "{:,.0f}".format(k),
                     va='bottom', ha='center',
                     size=(18 - len(data.columns) * 3))
-    xmin = bars.min() - width * .75 * len(data.columns)
-    xmax = bars.max() + width * len(data.columns)
+    if not xmin:
+        xmin = bars.min() - width * .75 * len(data.columns)
+    if not xmax:
+        xmax = bars.max() + width * len(data.columns)
+    if not ymin:
+        ymin = ax.get_ylim()[0]
+    if not ymax:
+        ymax = ax.get_ylim()[1]
     xlim = [xmin, xmax]
-    ymin = ax.get_ylim()[0]
-    ymax = ax.get_ylim()[1]
     ylim = [ymin, ymax]
     ax.set_xticks(bars + width * (len(data.columns) * 0.5 - 0.5))
     ax.set_xticklabels(data.index.values)

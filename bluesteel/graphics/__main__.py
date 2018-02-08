@@ -59,27 +59,26 @@ def parse_args(args):
     parser.add_argument('--kind', default='line', help='chart type')
     parser.add_argument('--title', help='main chart title')
     parser.add_argument('--size', help='output size in inches')
-    parser.add_argument('--ymin', help='minimum y value to display')
-    parser.add_argument('--xmin', help='minimum x value to display')
-    parser.add_argument('--ymax', help='maximum y value to display')
-    parser.add_argument('--xmax', help='maximum x value to display')
+    parser.add_argument('--ymin', help='min y value to display', type=float)
+    parser.add_argument('--xmin', help='min x value to display', type=float)
+    parser.add_argument('--ymax', help='max y value to display', type=float)
+    parser.add_argument('--xmax', help='max x value to display', type=float)
     parser.add_argument('--xlabel', help='X axis label')
     parser.add_argument('--ylabel', help='Y axis label')
     parser.add_argument('--source', help='source attribution')
-    parser.add_argument('--spines', help='show axis spines')
+    parser.add_argument('--spines', help='show axis spines', type=bool)
     parser.add_argument('--xticks', help='ticks for xaxis')
-    parser.add_argument('--yticks', help='ticks for yaxis',
-                        nargs='+')
-    parser.add_argument('--grid', help='show grid lines on yaxis')
-    parser.add_argument('--xlabel_off', help='disable xaxis label')
-    parser.add_argument('--ylabel_off', help='disable yaxis label')
-    parser.add_argument('--label_lines',
+    parser.add_argument('--yticks', help='ticks for yaxis', nargs='+')
+    parser.add_argument('--grid', help='show grid lines on yaxis', type=bool)
+    parser.add_argument('--xlabel_off', help='disable xaxis label', type=bool)
+    parser.add_argument('--ylabel_off', help='disable yaxis label', type=bool)
+    parser.add_argument('--label_lines', type=bool,
                         help='show series labels on end of line')
-    parser.add_argument('--label_area',
+    parser.add_argument('--label_area', type=bool,
                         help='show series label in center of area')
-    parser.add_argument('--lw', help='line thickness')
+    parser.add_argument('--lw', help='line thickness', type=float)
     parser.add_argument('--color', help='colors of lines, areas, or bars',
-                        nargs='+')
+                        nargs='+', type=int)
 
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',
