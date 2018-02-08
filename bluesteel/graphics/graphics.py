@@ -58,8 +58,8 @@ def create_figure(data, kind='line', **kwargs):
 
     kinds = {
         'line': draw_line_chart,
-        "stacked_area": draw_filled_line_chart,
-        "scatter": draw_scatter_plot,
+        'stacked_area': draw_filled_line_chart,
+        'scatter': draw_scatter_plot,
         'horizontal_bar': draw_horizontal_bar_chart,
         'vertical_bar': draw_vertical_bar_chart
     }
@@ -144,10 +144,17 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     for i, (_, series) in enumerate(data.items()):
         ax.barh(bars + i * height, series.values, height,
                 color=colors[int(color[i])])
-        for j, k in zip(bars, series.values):
-            ax.text(series.iloc[j] * 1.02, j + i * height,
-                    "{:,.0f}".format(k), va='center', ha='left',
-                    size=(18 - len(data.columns) * 3))
+        # Creates value labels as % if maximum value is less than 1
+        if series.values.max() < 1:
+            for j, k in zip(bars, series.values):
+                ax.text(series.iloc[j] + series.values.max() * .01,
+                        j + i * height, "{:.2%}".format(k), va='center',
+                        ha='left', size=(18 - len(data.columns) * 3))
+        else:
+            for j, k in zip(bars, series.values):
+                ax.text(series.iloc[j] + series.values.max() * .01,
+                        j + i * height, "{:,.0f}".format(k), va='center',
+                        ha='left', size=(18 - len(data.columns) * 3))
     ymin = bars.min() - height * .75 * len(data.columns)
     ymax = bars.max() + height * len(data.columns)
     xmin = ax.get_xlim()[0]
@@ -156,7 +163,11 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     ylim = [ymin, ymax]
     ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
     ax.set_yticklabels(data.index.values, size='small')
-    ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
+    # Creates x labels as % if maximum value is less than 1
+    if xmax < 1:  
+        ax.set_xticklabels('{:.0%}'.format(i) for i in ax.get_xticks())
+    else:
+        ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
     ax.tick_params(bottom='off')
     for i in ax.get_xticks():
         ax.axvline(x=i, color='white')
@@ -188,7 +199,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, color=[0], **kwargs):
         ax.bar(bars + i * width, series.values, width,
                color=colors[int(color[i])])
         for j, k in zip(bars, series.values):
-            ax.text(j + i * width, series.iloc[j] * 1.02,
+            ax.text(j + i * width, series.iloc[j] + series.values.max() * .01,
                     "{:,.0f}".format(k),
                     va='bottom', ha='center',
                     size=(18 - len(data.columns) * 3))

@@ -102,4 +102,4 @@ bluesteel/.DS_Store
 
 # Other
 bin*
-chart.bash
+*.bash
