@@ -5,7 +5,7 @@ import re
 
 from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 version_path = Path(__file__).parent.joinpath(
@@ -17,7 +17,7 @@ version = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
 setup(
     name='bluesteel-graphics',
     version=version,
-    packages=find_packages(exclude=['contrib', 'docs', 'tests']),
+    packages=['bluesteel.graphics'],
     install_requires=[
         'matplotlib',
         'numpy',
