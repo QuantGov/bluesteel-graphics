@@ -177,7 +177,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
         ax.axvline(x=i, color='white')
     ax.spines['left'].set_visible(True)
     ax.spines['bottom'].set_visible(False)
-
+    # Sets default x and y labels if not given
     if 'xlabel' not in kwargs:
         kwargs['xlabel'] = data.columns[0]
     if 'ylabel' not in kwargs:
@@ -336,7 +336,8 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     # Adds em-dash to date range in title
     if title:
-        ax.set_title(re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title))
+        title = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title)
+        ax.set_title(title.replace('\\n', '\n'))
 
     # Spines
     if not spines:
@@ -346,7 +347,8 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     # Set source note
     if source:
         source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
-        fig.text(ax.get_position().x1, 0, source, size=10, ha='right')
+        fig.text(ax.get_position().x1, 0, source.replace('\\n', '\n'), 
+                 size=10, ha='right')
         # Leaves more space between logo and x-axis
         fig.subplots_adjust(bottom=0.17)
     else:
