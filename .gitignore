@@ -93,13 +93,6 @@ bluesteel/.DS_Store
 .DS_Store
 .vscode
 
-# Quick-test images and files
-*.png
-*.svg
-*.eps
-*.csv
-*.xlsx
-
 # Other
 bin*
 *.bash
