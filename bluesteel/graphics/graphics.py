@@ -168,7 +168,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     ax.set_yticks(bars + height * (len(data.columns) * 0.5 - 0.5))
     ax.set_yticklabels(data.index.values, size='small')
     # Creates x labels as % if maximum value is less than 1
-    if xmax < 1:  
+    if xmax < 1:
         ax.set_xticklabels('{:.0%}'.format(i) for i in ax.get_xticks())
     else:
         ax.set_xticklabels('{:,.0f}'.format(i) for i in ax.get_xticks())
@@ -186,7 +186,8 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
 
 
-def draw_vertical_bar_chart(data, xmin=None, xmax=None, color=[0], **kwargs):
+def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
+                            color=[0], **kwargs):
     """Creates vertical bar chart and returns figure
 
     :param data: input data
@@ -301,19 +302,20 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     yticklabels = ax.get_yticks()
 
     # Reduces size of labels greater than 6 digits
-    if len(ax.get_yticklabels()[0].get_text()) == 0:
     # This section is ignored if ytick labels already exist
+    if len(ax.get_yticklabels()[0].get_text()) == 0:
         if max(yticklabels) >= 1000000:
-            # Check to see if any labels need to be formatted as floats to avoid
-            # losing precision
+            # Check to see if any labels need to be formatted as floats
+            # to avoid losing precision
             if any([i % 1000 for i in yticklabels]):
                 yticklabels = ['' if not i else f"{i / 1000:,}" for i in
                                yticklabels]
             else:
                 yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                yticklabels]
-            # Append a 'K' to labels to show that they have been truncated - can be
-            # disabled using 'label_thousands=False' in call to create_figure()
+            # Append a 'K' to labels to show that they have been truncated
+            # This can be disabled using 'label_thousands=False'
+            # in call to create_figure()
             if label_thousands:
                 yticklabels = [i + 'K' if i else '' for i in yticklabels]
         else:
@@ -347,12 +349,12 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     # Set source note
     if source:
         source = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', source)
-        fig.text(ax.get_position().x1, 0, source.replace('\\n', '\n'), 
+        fig.text(ax.get_position().x1, 0, source.replace('\\n', '\n'),
                  size=10, ha='right')
         # Leaves more space between logo and x-axis
         fig.subplots_adjust(bottom=0.17)
     else:
-        fig.text(ax.get_position().x1, 0, 
+        fig.text(ax.get_position().x1, 0,
                  u'Produced with Bluesteel Graphics\u2122.',
                  size=10, ha='right')
         fig.subplots_adjust(bottom=0.17)
