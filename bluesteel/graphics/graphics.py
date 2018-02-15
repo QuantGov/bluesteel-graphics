@@ -297,7 +297,11 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     # Puts commas in y ticks
     if 'yticks' in kwargs:
-        ax.set_yticks(kwargs['yticks'])
+        ax.set_yticks([int(label) for label in kwargs.pop('yticks')])
+
+    if 'xticks' in kwargs:
+        ax.set_xticks([int(label) for label in kwargs.pop('xticks')])
+
 
     yticklabels = ax.get_yticks()
 
