@@ -92,3 +92,7 @@ ENV/
 bluesteel/.DS_Store
 .DS_Store
 .vscode
+
+# Other
+bin*
+*.bash
