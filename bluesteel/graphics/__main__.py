@@ -67,7 +67,7 @@ def parse_args(args):
     parser.add_argument('--ylabel', help='Y axis label')
     parser.add_argument('--source', help='source attribution')
     parser.add_argument('--spines', help='show axis spines', type=bool)
-    parser.add_argument('--xticks', help='ticks for xaxis')
+    parser.add_argument('--xticks', help='ticks for xaxis', nargs='+')
     parser.add_argument('--yticks', help='ticks for yaxis', nargs='+')
     parser.add_argument('--grid', help='show grid lines on yaxis', type=bool)
     parser.add_argument('--xlabel_off', help='disable xaxis label', type=bool)
@@ -76,7 +76,7 @@ def parse_args(args):
                         help='show series labels on end of line')
     parser.add_argument('--label_area', type=bool,
                         help='show series label in center of area')
-    parser.add_argument('--lw', help='line thickness', type=float)
+    parser.add_argument('--line_thickness', help='line thickness', type=float)
     parser.add_argument('--color', help='colors of lines, areas, or bars',
                         nargs='+', type=int)
 
