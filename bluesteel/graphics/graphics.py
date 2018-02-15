@@ -302,7 +302,6 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     if 'xticks' in kwargs:
         ax.set_xticks([int(label) for label in kwargs.pop('xticks')])
 
-
     yticklabels = ax.get_yticks()
 
     # Reduces size of labels greater than 6 digits
