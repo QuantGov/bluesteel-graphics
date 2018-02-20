@@ -7,7 +7,7 @@ This module is a utility for producing simple production-quality charts quickly 
 ### Command Line Interface
 With the bluesteel-graphics module installed, graphics may be created using python's -m flag. Example:
 
-    python -m blusteel-graphics PATH/TO/DATA.csv --title "A sample chart"
+    python -m blusteel.graphics PATH/TO/DATA.csv --title "A sample chart"
 The command line interface supports the following options:
 
 
