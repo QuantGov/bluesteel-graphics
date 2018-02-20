@@ -295,12 +295,19 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     if 'ylim' not in kwargs:
         kwargs['ylim'] = [0, None]
 
-    # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks([int(label) for label in kwargs.pop('yticks')])
-
-    if 'xticks' in kwargs:
-        ax.set_xticks([int(label) for label in kwargs.pop('xticks')])
+    
+    # Allows the user to input x-axis tick labels
+    # Produces a warning for incorrect number of labels
+    if 'xticks' in kwargs:     
+        if len(kwargs['xticks']) < len(data.index):
+            print('You have supplied too few x-axis labels. Please provide the'
+                ' correct number of labels. Input " " to the list add a blank label.')
+        elif len(kwargs['xticks']) > len(data.index):
+            print('You have supplied too many x-axis labels. Please provide the'
+                ' correct number of labels.')    
+        ax.set_xticklabels(kwargs.pop('xticks'))
 
     yticklabels = ax.get_yticks()
 
@@ -338,6 +345,15 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     # Apply general ax.set arguments
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
+
+    # Prevents labels from overlapping on the x-axis
+    for label in ax.xaxis.get_ticklabels()[1::2]:
+        if len(label.get_text()) > 3:
+            label.set_visible(False)
+    
+    # Rotates the x-axis according to user input      
+    if rot:
+        plt.xticks(rotation=rot)
 
     # Adds em-dash to date range in title
     if title:
