@@ -1,0 +1,43 @@
+{
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\bluesteel\\graphics\\__init__.py": [
+    1518729181.1827655,
+    [
+      "W391",
+      "F401"
+    ]
+  ],
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\bluesteel\\graphics\\__main__.py": [
+    1519319707.3699152,
+    [
+      "W391"
+    ]
+  ],
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\bluesteel\\graphics\\graphics.py": [
+    1519408125.9895775,
+    [
+      "W391"
+    ]
+  ],
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\setup.py": [
+    1518727475.526826,
+    [
+      "W391"
+    ]
+  ],
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\tests\\__init__.py": [
+    1518727475.527828,
+    [
+      "W391",
+      "F401",
+      "E402"
+    ]
+  ],
+  "C:\\Users\\Sstrosko.IT2000025\\Documents\\GitHub\\bluesteel-graphics\\tests\\test_graphics.py": [
+    1518729181.2230046,
+    [
+      "W391",
+      "F401",
+      "E402"
+    ]
+  ]
+}
