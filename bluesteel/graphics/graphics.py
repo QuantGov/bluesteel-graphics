@@ -500,8 +500,10 @@ def fix_xaxis_vertical_bar(data, ax):
         for item in ax.xaxis.get_ticklabels():
             length_list.append(len(item.get_text()))
             total_length = sum(length_list)
-            if (len(item.get_text()) > 9) | (total_length > 49) | (len(
-                 item.get_text()) > 6 and len(ax.xaxis.get_ticklabels()) > 7):
+            if (len(item.get_text()) > 9) | \
+                    (total_length > 49) | \
+                    (len(item.get_text()) > 6 and
+                     len(ax.xaxis.get_ticklabels()) > 7):
                 print("You may want to consider using a horizontal_bar chart"
                       " so that all of your x-axis labels are readable. Use"
                       " the command --kind horizontal_bar")
