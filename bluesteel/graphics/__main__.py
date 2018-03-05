@@ -66,13 +66,17 @@ def parse_args(args):
     parser.add_argument('--xlabel', help='X axis label')
     parser.add_argument('--ylabel', help='Y axis label')
     parser.add_argument('--source', help='source attribution')
-    parser.add_argument('--spines', help='show axis spines', type=bool)
+    parser.add_argument('--spines', help='show axis spines',
+                        action='store_true', default=False)
     parser.add_argument('--xticks', help='ticks for xaxis', nargs='+')
     parser.add_argument('--rot', help='rotate xtick labels', type=float)
     parser.add_argument('--yticks', help='ticks for yaxis', nargs='+')
-    parser.add_argument('--grid', help='show grid lines on yaxis', type=bool)
-    parser.add_argument('--xlabel_off', help='disable xaxis label', type=bool)
-    parser.add_argument('--ylabel_off', help='disable yaxis label', type=bool)
+    parser.add_argument('--grid', help='show grid lines on yaxis',
+                        action='store_true', default=False)
+    parser.add_argument('--xlabel_off', help='disable xaxis label',
+                        action='store_true', default=False)
+    parser.add_argument('--ylabel_off', help='disable yaxis label',
+                        action='store_true', default=False)
     parser.add_argument('--label_lines', type=bool,
                         help='show series labels on end of line')
     parser.add_argument('--label_area', type=bool,

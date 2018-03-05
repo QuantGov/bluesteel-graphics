@@ -326,6 +326,42 @@ class TestImageComparison(object):
         )
         return fig
 
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='sample_hbar_stack.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_stack(self):
+        data = pd.read_csv('tests/test_data/test_stacked_h.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_hbar",
+            title="Sample Bar Chart",
+            source="Random data generation",
+            ylabel='Sample taxis title',
+            spines=False
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='sample_vbar_stack.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_stack(self):
+        data = pd.read_csv('tests/test_data/test_stacked_v.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_vbar",
+            title="Sample Bar Chart",
+            source="Random data generation",
+            ylabel='Sample taxis title',
+            spines=False
+        )
+        return fig
+
 
 # COMMAND LINE INTERFACE
 class TestCLI(object):

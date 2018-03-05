@@ -185,7 +185,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     if 'ylabel' not in kwargs:
         kwargs['ylabel'] = data.index.name
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
@@ -231,7 +231,7 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
 
     fix_xaxis_vertical_bar(data, ax)
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=True, **kwargs)
 
 
 def draw_vertical_stacked_bar(data, xmin=None, xmax=None, ymin=None, ymax=None,
@@ -270,7 +270,7 @@ def draw_vertical_stacked_bar(data, xmin=None, xmax=None, ymin=None, ymax=None,
 
     fix_xaxis_vertical_bar(data, ax)
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_horizontal_stacked_bar(data, xmin=None, xmax=None, ymin=None,
@@ -308,7 +308,7 @@ def draw_horizontal_stacked_bar(data, xmin=None, xmax=None, ymin=None,
         kwargs['xlabel'] = data.columns[0]
     if 'ylabel' not in kwargs:
         kwargs['ylabel'] = data.index.name
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
@@ -489,11 +489,19 @@ def fix_xaxis_vertical_bar(data, ax):
     :ax: active Axes object
 
     """
-    for label in ax.xaxis.get_ticklabels()[1::2]:
-        print(label)
-        if len(label.get_text()) > 6:
-            "You may want to consider using a horizontal_bar chart so that"
-            " all of your x-axis labels are readable."
-        # If it is a year turns every other one off
-        if len(label.get_text()) == 4 and label.get_text().isdigit():
+    # Informs the user to consider h-bar if labels are too long
+    label = ax.xaxis.get_ticklabels()[0]
+    if len(label.get_text()) == 4 and label.get_text().isdigit():
+        if len(ax.xaxis.get_ticklabels()) > 12:
+            for label in ax.xaxis.get_ticklabels()[1::2]:
                 label.set_visible(False)
+    else:
+        length_list = []
+        for item in ax.xaxis.get_ticklabels():
+            length_list.append(len(item.get_text()))
+            total_length = sum(length_list)
+            if (len(item.get_text()) > 9) | (total_length > 49) | (len(
+                 item.get_text()) > 6 and len(ax.xaxis.get_ticklabels()) > 7):
+                print("You may want to consider using a horizontal_bar chart"
+                      " so that all of your x-axis labels are readable. Use"
+                      " the command --kind horizontal_bar")
