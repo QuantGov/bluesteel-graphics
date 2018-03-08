@@ -61,7 +61,9 @@ def create_figure(data, kind='line', **kwargs):
         'stacked_area': draw_filled_line_chart,
         'scatter': draw_scatter_plot,
         'horizontal_bar': draw_horizontal_bar_chart,
-        'vertical_bar': draw_vertical_bar_chart
+        'vertical_bar': draw_vertical_bar_chart,
+        'stacked_vbar': draw_vertical_stacked_bar,
+        'stacked_hbar': draw_horizontal_stacked_bar
     }
     if kind not in kinds:
         raise NotImplementedError("This chart type is not supported")
@@ -183,7 +185,7 @@ def draw_horizontal_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     if 'ylabel' not in kwargs:
         kwargs['ylabel'] = data.index.name
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
@@ -227,7 +229,86 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_visible(True)
 
-    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+    fix_xaxis_vertical_bar(data, ax)
+
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=True, **kwargs)
+
+
+def draw_vertical_stacked_bar(data, xmin=None, xmax=None, ymin=None, ymax=None,
+                              color=[0], **kwargs):
+    """Creates stacked vertical bar chart and returns figure
+
+    :param data input data
+    :param xmin: xaxis minimum value
+    :param xmax: xaxis maximum value
+    :param **kwargs: passed through to formatting function
+    """
+    fig, ax = plt.subplots()
+    bars = np.arange(len(data.index))
+    width = .66
+    data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
+    for column in data.columns[::-1]:
+        ax.bar(bars, data[column], bottom=data_bottoms[column],
+               width=width, label=column)
+    ax.legend()
+    if not xmin:
+        xmin = bars.min() - width
+    if not xmax:
+        xmax = bars.max() + width
+    if not ymin:
+        ymin = ax.get_ylim()[0]
+    if not ymax:
+        ymax = ax.get_ylim()[1]
+    xlim = [xmin, xmax]
+    ylim = [ymin, ymax]
+    ax.set_xticks(bars)
+    ax.set_xticklabels(data.index.values)
+    ax.tick_params(bottom='off', left='off')
+    ax.set_yticklabels('{:,.0f}'.format(i) for i in ax.get_yticks())
+    ax.spines['left'].set_visible(False)
+    ax.spines['bottom'].set_visible(True)
+
+    fix_xaxis_vertical_bar(data, ax)
+
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
+
+
+def draw_horizontal_stacked_bar(data, xmin=None, xmax=None, ymin=None,
+                                ymax=None, color=[0], **kwargs):
+    """Creates stacked horizontal bar chart and returns figure
+
+    :param data input data
+    :param xmin: xaxis minimum value
+    :param xmax: xaxis maximum value
+    :param **kwargs: passed through to formatting function
+    """
+    fig, ax = plt.subplots()
+    bars = np.arange(len(data.index))
+    height = .66
+    data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
+    for column in data:
+        ax.barh(bars, data[column], left=data_bottoms[column],
+                height=height, label=column)
+    ax.legend()
+    if not ymin:
+        ymin = bars.min() - height
+    if not ymax:
+        ymax = bars.max() + height
+    if not xmin:
+        xmin = ax.get_xlim()[0]
+    if not xmax:
+        xmax = ax.get_xlim()[1]
+    xlim = [xmin, xmax]
+    ylim = [ymin, ymax]
+    ax.set_yticks(bars)
+    ax.set_yticklabels(data.index.values, size='small')
+
+    # Sets default x and y labels if not given
+    if 'xlabel' not in kwargs:
+        kwargs['xlabel'] = data.columns[0]
+    if 'ylabel' not in kwargs:
+        kwargs['ylabel'] = data.index.name
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
@@ -295,12 +376,20 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     if 'ylim' not in kwargs:
         kwargs['ylim'] = [0, None]
 
-    # Puts commas in y ticks
     if 'yticks' in kwargs:
         ax.set_yticks([int(label) for label in kwargs.pop('yticks')])
 
+    # Allows the user to input x-axis tick labels
+    # Produces a warning for incorrect number of labels
     if 'xticks' in kwargs:
-        ax.set_xticks([int(label) for label in kwargs.pop('xticks')])
+        if len(kwargs['xticks']) < len(data.index):
+            print('You have supplied too few x-axis labels. Please provide'
+                  ' the correct number of labels. Input " " to '
+                  'the list add a blank label.')
+        elif len(kwargs['xticks']) > len(data.index):
+            print('You have supplied too many x-axis labels.'
+                  ' Please provide the correct number of labels.')
+        ax.set_xticklabels(kwargs.pop('xticks'))
 
     yticklabels = ax.get_yticks()
 
@@ -339,6 +428,10 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
     # Apply general ax.set arguments
     ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
+    # Rotates the x-axis according to user input
+    if rot:
+        plt.xticks(rotation=rot)
+
     # Adds em-dash to date range in title
     if title:
         title = re.sub(r'(\d{4})-(\d{4})', '\\1\N{EN DASH}\\2', title)
@@ -364,6 +457,7 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
+
     logo_width = int(figwidth / 3)
     fig.figimage(LOGO.resize(
         (logo_width,
@@ -385,3 +479,31 @@ def fix_xticks_for_short_series(data, ax):
     """
     if len(data.index) < 6:
         ax.set_xticks(data.index)
+
+
+def fix_xaxis_vertical_bar(data, ax):
+    """
+    Fix x-axis labels from overlapping in bar charts.
+
+    :data: DataFrame holding the chart data
+    :ax: active Axes object
+
+    """
+    # Informs the user to consider h-bar if labels are too long
+    label = ax.xaxis.get_ticklabels()[0]
+    if len(label.get_text()) == 4 and label.get_text().isdigit():
+        if len(ax.xaxis.get_ticklabels()) > 12:
+            for label in ax.xaxis.get_ticklabels()[1::2]:
+                label.set_visible(False)
+    else:
+        length_list = []
+        for item in ax.xaxis.get_ticklabels():
+            length_list.append(len(item.get_text()))
+            total_length = sum(length_list)
+            if (len(item.get_text()) > 9) | \
+                    (total_length > 49) | \
+                    (len(item.get_text()) > 6 and
+                     len(ax.xaxis.get_ticklabels()) > 7):
+                print("You may want to consider using a horizontal_bar chart"
+                      " so that all of your x-axis labels are readable. Use"
+                      " the command --kind horizontal_bar")
