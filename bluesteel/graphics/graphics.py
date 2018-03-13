@@ -327,9 +327,14 @@ def draw_scatter_plot(data, xmin=None, xmax=None, **kwargs):
     if len(list(data)) > 1:
         plt.legend(frameon=True)
 
-    xlim = [data.index.values.min() * .8, data.index.values.max() * 1.1]
+    ymin = ax.get_ylim()[0]
+    ymax = ax.get_ylim()[1]
+    ylim = [ymin, ymax]
+    xmin = ax.get_xlim()[0]
+    xmax = ax.get_xlim()[1]
+    xlim = [xmin, xmax]    
 
-    return format_figure(data, fig, xlim=xlim, **kwargs)
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, **kwargs)
 
 
 def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
@@ -372,9 +377,6 @@ def format_figure(data, fig, spines=True, grid=True, label_thousands=True,
 
     if 'xlim' not in kwargs:
         kwargs['xlim'] = [data.index.values.min(), data.index.values.max()]
-
-    if 'ylim' not in kwargs:
-        kwargs['ylim'] = [0, None]
 
     if 'yticks' in kwargs:
         ax.set_yticks([int(label) for label in kwargs.pop('yticks')])
