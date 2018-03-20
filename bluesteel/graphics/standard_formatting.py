@@ -92,7 +92,7 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
     test_fig, test_ax = plt.subplots()
     variable_list = ['kind', 'title', 'size', 'xmin', 'ymin', 'ymax', 'xmax',
                      'xlabel', 'ylabel', 'source', 'spines', 'xtick_loc',
-                     'ytick_loc', 'xticklabels', 'yticklabels', 'xyear',
+                     'ytick_loc', 'xticklabels', 'yticklabels', 'xyear', 'grid',
                      'yyear', 'rot', 'xlabel_off', 'ylabel_off', 'label_bars',
                      'label_lines', 'label_area', 'line_thickness', 'color']
     for i in variable_list:
