@@ -68,19 +68,31 @@ def parse_args(args):
     parser.add_argument('--source', help='source attribution')
     parser.add_argument('--spines', help='show axis spines',
                         action='store_true', default=False)
-    parser.add_argument('--xticks', help='ticks for xaxis', nargs='+')
+    parser.add_argument('--xtick_loc', help='xaxis tick location', nargs='+',
+                        type=float)
+    parser.add_argument('--ytick_loc', help='yaxis tick location', nargs='+',
+                        type=float)
+    parser.add_argument('--xticklabels', help='xaxis tick labels', nargs='+',
+                        type=str)
+    parser.add_argument('--yticklabels', help='xaxis tick labels', nargs='+',
+                        type=str)
+    parser.add_argument('--xyear', help='flag for year or not year on xaxis '
+                        'for non bar', action='store_true', default=False)
+    parser.add_argument('--yyear', help='flag for year or not year on yaxis '
+                        'for non bar', action='store_true', default=False)
     parser.add_argument('--rot', help='rotate xtick labels', type=float)
-    parser.add_argument('--yticks', help='ticks for yaxis', nargs='+')
     parser.add_argument('--grid', help='show grid lines on yaxis',
                         action='store_true', default=False)
     parser.add_argument('--xlabel_off', help='disable xaxis label',
                         action='store_true', default=False)
     parser.add_argument('--ylabel_off', help='disable yaxis label',
                         action='store_true', default=False)
-    parser.add_argument('--label_lines', type=bool,
-                        help='show series labels on end of line')
-    parser.add_argument('--label_area', type=bool,
-                        help='show series label in center of area')
+    parser.add_argument('--label_lines', help='show series labels on end line',
+                        action='store_true', default=False)
+    parser.add_argument('--label_area', help='show series label in area',
+                        action='store_true', default=False)
+    parser.add_argument('--label_bars', help='show label on bar',
+                        action='store_true', default=False)
     parser.add_argument('--line_thickness', help='line thickness', type=float)
     parser.add_argument('--color', help='colors of lines, areas, or bars',
                         nargs='+', type=int)
@@ -96,7 +108,6 @@ def parse_args(args):
 def main(args=sys.argv[1:]):
     """Dispatches request to module. """
     args = parse_args(args)
-
     kwargs = {n: vars(args)[n] for n in vars(args) if vars(args)[n] is not
               None}
 
@@ -109,4 +120,3 @@ def main(args=sys.argv[1:]):
 
 if __name__ == "__main__":
     main()
-
