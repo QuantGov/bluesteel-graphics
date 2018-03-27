@@ -99,7 +99,7 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
     for i in variable_list:
         try:
             kwargs.pop(i)
-        except:
+        except KeyError:
             pass
     test_ax.set(**{i: j for i, j in kwargs.items() if j is not None})
 
