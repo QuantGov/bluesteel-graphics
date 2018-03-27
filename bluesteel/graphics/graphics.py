@@ -229,6 +229,12 @@ def draw_vertical_bar_chart(data, xmin=None, xmax=None, ymin=None, ymax=None,
     ax.spines['left'].set_visible(False)
     ax.spines['bottom'].set_visible(True)
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+    return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=False, **kwargs)
+=======
+>>>>>>> Stashed changes
     fix_xaxis_vertical_bar(data, ax)
 
     return format_figure(data, fig, xlim=xlim, ylim=ylim, grid=True, **kwargs)
@@ -247,9 +253,11 @@ def draw_vertical_stacked_bar(data, xmin=None, xmax=None, ymin=None, ymax=None,
     bars = np.arange(len(data.index))
     width = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data.columns[::-1]:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data.columns[::-1]):
         ax.bar(bars, data[column], bottom=data_bottoms[column],
-               width=width, label=column)
+               width=width, label=column, color=colors[int(color[i])])
     ax.legend()
     if not xmin:
         xmin = bars.min() - width
@@ -286,9 +294,11 @@ def draw_horizontal_stacked_bar(data, xmin=None, xmax=None, ymin=None,
     bars = np.arange(len(data.index))
     height = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data):
         ax.barh(bars, data[column], left=data_bottoms[column],
-                height=height, label=column)
+                height=height, label=column, color=colors[int(color[i])])
     ax.legend()
     if not ymin:
         ymin = bars.min() - height
