@@ -197,8 +197,6 @@ def draw_vertical_bar_chart(data, label_bars=None, color=[0],
     if len(data.columns) > 1:
         ax.legend(labels=data.columns)
     fig = specific_formatting.axis_labels_vbar(fig, ax, data, **kwargs)
-
-    fix_xaxis_vertical_bar(data, ax)
     
     if grid:
         pass
