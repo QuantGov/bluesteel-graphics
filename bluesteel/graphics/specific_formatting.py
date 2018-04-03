@@ -1,4 +1,5 @@
 import collections
+import textwrap
 
 import matplotlib.font_manager as font_manager
 
@@ -274,6 +275,7 @@ def axis_labels_hbar(fig, ax, data, xtick_loc=None, xticklabels=None,
                                    yticklabels]
                 else:
                     yticklabels = [int(i) for i in data.index.values]
+        yticklabels = [textwrap.fill(i, 30) for i in yticklabels]
         ax.set_yticklabels(yticklabels)
 
     return fig
