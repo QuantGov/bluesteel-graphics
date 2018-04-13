@@ -15,7 +15,7 @@ font_manager.fontManager.ttflist.extend(font_list)
 # Formatting that is Specific Based on Chart Type
 def min_max_scatter_formatter(fig, ax, xmin=None, xmax=None, ymin=None,
                               ymax=None, **kwargs):
-    # Sets defualt min and max unless otherwise given
+    # Sets default min and max unless otherwise given
     if xmin:
         if xmax:
             ax.set_xlim(xmin, xmax)
@@ -36,7 +36,7 @@ def min_max_scatter_formatter(fig, ax, xmin=None, xmax=None, ymin=None,
 
 def min_max_line_area_formatter(fig, ax, data, xmin=None, xmax=None, ymin=None,
                                 ymax=None, **kwargs):
-    # Sets defualt xlim and ylim for scatter and line charts
+    # Sets default xlim and ylim for scatter and line charts
     if xmin:
         if xmax:
             ax.set_xlim(xmin, xmax)
@@ -59,9 +59,9 @@ def min_max_line_area_formatter(fig, ax, data, xmin=None, xmax=None, ymin=None,
     return fig
 
 
-def set_xticks_yticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
-                             ytick_loc=None, yticklabels=None, xyear=None,
-                             yyear=None, **kwargs):
+def set_ticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
+                     ytick_loc=None, yticklabels=None, xyear=None,
+                     yyear=None, **kwargs):
     """
     For xtick_loc the user can input any list of positive or negative
     digits. Values that are not an int or float raise an error. xtick_loc

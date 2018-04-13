@@ -6,7 +6,7 @@ from pathlib import Path
 from PIL import Image as image
 
 
-# Sets Overarching Syle Attributes
+# Sets overarching style attributes
 font_dirs = [str(Path(__file__).parent.joinpath('fonts'))]
 font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
 font_list = font_manager.createFontList(font_files)
@@ -18,7 +18,7 @@ plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 
 
-# Formatting that Every Chart Type is Directed Through
+# Formatting that every chart type is directed through
 def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
                   source=False, **kwargs):

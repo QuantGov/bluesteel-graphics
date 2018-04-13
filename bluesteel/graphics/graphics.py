@@ -96,7 +96,7 @@ def draw_scatter_plot(data, grid=None, **kwargs):
         ax.set(axisbelow=True)
         ax.grid(axis='y')
     fig = specific_formatting.min_max_scatter_formatter(fig, ax, **kwargs)
-    fig = specific_formatting.set_xticks_yticks_nonbar(fig, ax, **kwargs)
+    fig = specific_formatting.set_ticks_nonbar(fig, ax, **kwargs)
 
     return standard_formatting.format_figure(data, fig, **kwargs)
 
@@ -133,7 +133,7 @@ def draw_line_chart(data, lw=2, label_lines=None, color=[0],
         ax.grid(axis='y')
     fig = specific_formatting.min_max_line_area_formatter(fig, ax,
                                                           data, **kwargs)
-    fig = specific_formatting.set_xticks_yticks_nonbar(fig, ax, **kwargs)
+    fig = specific_formatting.set_ticks_nonbar(fig, ax, **kwargs)
 
     return standard_formatting.format_figure(data, fig, **kwargs)
 
@@ -164,7 +164,7 @@ def draw_stacked_area_chart(data, label_area=None, grid=None, **kwargs):
         ax.grid(axis='y')
     fig = specific_formatting.min_max_line_area_formatter(fig, ax,
                                                           data, **kwargs)
-    fig = specific_formatting.set_xticks_yticks_nonbar(fig, ax, **kwargs)
+    fig = specific_formatting.set_ticks_nonbar(fig, ax, **kwargs)
 
     return standard_formatting.format_figure(data, fig, **kwargs)
 
