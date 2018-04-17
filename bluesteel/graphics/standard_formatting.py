@@ -1,5 +1,4 @@
 import logging
-import matplotlib.font_manager as font_manager
 import matplotlib.pyplot as plt
 import re
 from pathlib import Path
@@ -7,10 +6,6 @@ from PIL import Image as image
 
 
 # Sets overarching style attributes
-font_dirs = [str(Path(__file__).parent.joinpath('fonts'))]
-font_files = font_manager.findSystemFonts(fontpaths=font_dirs)
-font_list = font_manager.createFontList(font_files)
-font_manager.fontManager.ttflist.extend(font_list)
 LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
 LOGO.load(10)
 log = logging.getLogger(Path(__file__).stem)
