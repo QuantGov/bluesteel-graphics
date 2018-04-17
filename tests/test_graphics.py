@@ -1,16 +1,14 @@
+import bluesteel.graphics
+import bluesteel.graphics.__main__
+import matplotlib
+import pandas as pd
+import pytest
 import sys
 
-import pytest
-import pandas as pd
-import matplotlib
 from matplotlib.testing.decorators import cleanup, image_comparison
-
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).parent.parent.resolve()))
-
-import bluesteel.graphics
-import bluesteel.graphics.__main__
 
 
 """
@@ -125,23 +123,25 @@ class TestChartElements(object):
         assert ('test_ylabel' == bluesteel.graphics.create_figure(
             test_data,
             ylabel='test_ylabel'
-        ).gca().get_ylabel())
+        ).gca().get_ylabel().strip())
 
         assert ('test_xlabel' == bluesteel.graphics.create_figure(
             test_data,
             xlabel='test_xlabel'
-        ).gca().get_xlabel())
+        ).gca().get_xlabel().strip())
 
     @cleanup
     def test_axis_limits(self):
         """Should limit data to specific bounds on request"""
         assert ((1, 20,) == bluesteel.graphics.create_figure(
             test_data,
-            ylim=[1, 20],
+            ymin=1,
+            ymax=20
         ).gca().get_ylim())
         assert ((1, 20,) == bluesteel.graphics.create_figure(
             test_data,
-            xlim=[1, 20],
+            xmin=1,
+            xmax=20
         ).gca().get_xlim())
 
     @cleanup
@@ -169,135 +169,393 @@ class TestImageCreation(object):
 
 
 class TestImageComparison(object):
-
+    # Scatter plot tests
     @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='accumulation_area.png',
+                                   filename='scatter_test_1.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_accumulation_area(self):
-        """Should match given area chart"""
-        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
-                           index_col=0)
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_scatterplot_1(self):
+        data = pd.read_csv('tests/test_data/scatter_test_1.csv', index_col=0)
         fig = bluesteel.graphics.create_figure(
             data=data,
-            title='Accumulation of Federal Regulation, 1970-2016',
-            kind='stacked_area',
-            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0." \n Available at http://quantgov.org.'),
-            ylabel=('thousands of regulatory restrictions in the\nCode of '
-                    'Federal Regulations'),
-            xlim=[data.index.values.min(), data.index.values.max()],
-            spines=False,
-            yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True,
-            label_thousands=False
-        )
-        return fig
-
-    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='accumulation_line.png',
-                                   style=('bluesteel/graphics/mercatus.'
-                                          'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_accumulation_line(self):
-        """Should match given area chart"""
-        data = pd.read_csv('tests/test_data/annual_restrictions.csv',
-                           index_col=0)
-        fig = bluesteel.graphics.create_figure(
-            data=data,
-            title='Accumulation of Federal Regulation, 1970-2016',
-            kind='line',
-            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0." \n Available at http://quantgov.org.'),
-            ylabel=('thousands of regulatory restrictions in the\nCode of '
-                    'Federal Regulations'),
-            spines=False,
-            yticks=[0, 250_000, 500_000, 750_000, 1_000_000, 1_250_000],
-            xlabel_off=True,
-            label_thousands=False
-        )
-        return fig
-
-    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='pre_crisis_chart.png',
-                                   style=('bluesteel/graphics/mercatus.'
-                                          'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_pre_crisis_chart(self):
-        """Should match given area chart"""
-        data = pd.read_csv('tests/test_data/title_12_17.csv',
-                           index_col=0)
-        data_mod = data[:-8]
-        fig = bluesteel.graphics.create_figure(
-            data=data_mod,
-            title=('Growth in Pre-Crisis Finanacial Regulatory Restrictions,'
-                   '\n1970-2008'),
-            kind='stacked_area',
-            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0" \n available at quantgov.org\nProduced by '
-                    'Michael Gasvoda'),
-            label_area='center',
-            spines=False,
-            yticks=[0, 10_000, 20_000, 30_000, 40_000, 50_000],
-            xlabel_off=True,
-        )
-        return fig
-
-    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
-                                   filename='multiple_line.png',
-                                   style=('bluesteel/graphics/mercatus.'
-                                          'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_multiple_line(self):
-        """Should match given area chart"""
-        data = pd.read_csv('tests/test_data/all_laws.csv',
-                           index_col=0)
-        fig = bluesteel.graphics.create_figure(
-            data=data,
-            title=('Regulatory Impact of Dodd-Frank vs. All Other\nObama '
-                   'Administration Laws, 2009-2016'),
-            kind='line',
-            source=('Source: Patrick A. McLaughlin and Oliver Sherouse, '
-                    '"RegData 3.0." \n Available at http://quantgov.org'),
-            ylabel='cumulative new associated restrictions',
-            yticks=[0, 10_000, 20_000, 30_000],
-            xlabel_off=True,
-            label_lines=True,
-            spines=False,
-        )
-        return fig
-
-    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
-                                   filename='sample_scatter.png',
-                                   style=('bluesteel/graphics/mercatus.'
-                                          'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_scatterplot(self):
-        data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
-        fig = bluesteel.graphics.create_figure(
-            data=data,
+            kind="scatter",
             title="Sample Scatter Plot",
             source="Source: Random Data Generation",
             xlabel_off=True,
-            spines=False
+            ytick_loc=[5000],
+            xmin=1500,
+            yticklabels=["test_label"],
+            grid=True
         )
         return fig
 
-    @pytest.mark.mpl_image_comapre(baseline_dir='baseline',
-                                   filename='sample_vbar.png',
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='scatter_test_2.png',
                                    style=('bluesteel/graphics/mercatus.'
                                           'mplstyle'),
-                                   savefig_kwargs={'bbox_inches': 'tight'})
-    def test_vbar(self):
-        data = pd.read_csv('tests/test_data/test_data.csv', index_col=0)
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_scatterplot_2(self):
+        data = pd.read_csv('tests/test_data/scatter_test_2.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="scatter",
+            title="Sample Scatter Plot",
+            source="Source: Random Data Generation",
+            xlabel_off=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='scatter_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_scatterplot_3(self):
+        data = pd.read_csv('tests/test_data/scatter_test_3.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="scatter",
+            title="Sample Scatter Plot",
+            source="Source: Random Data Generation",
+            xlabel_off=True,
+            spines=True
+        )
+        return fig
+
+    # Line Chart Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='line_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_line_1(self):
+        data = pd.read_csv('tests/test_data/line_test_1.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            kind='line',
+            source='Source: Patrick A. McLaughlin and Oliver Sherouse',
+            ylabel='thousands of regulatory restrictions',
+            ytick_loc=[250000, 500000, 750000, 1000000, 1250000],
+            xlabel_off=True,
+            xyear=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='line_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_line_2(self):
+        data = pd.read_csv('tests/test_data/line_test_2.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title='Accumulation of Federal Regulation, 1970-2016',
+            kind='line',
+            source='Source: Patrick A. McLaughlin and Oliver Sherouse',
+            ylabel='thousands of regulatory restrictions',
+            xlabel_off=True,
+            xtick_loc=[1980, 1990, 2000],
+            xticklabels=['hi', 'hello', 'goodbye'],
+            xmin=1980
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='line_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_line_3(self):
+        data = pd.read_csv('tests/test_data/line_test_3.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind='line',
+            grid=True,
+            label_lines=True
+        )
+        return fig
+
+    # Stacked Area Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_area_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_stacked_area_1(self):
+        data = pd.read_csv('tests/test_data/stacked_area_test_1.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title='A Test Chart',
+            kind='stacked_area',
+            spines=True,
+            xyear=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_area_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5.7)
+    def test_stacked_area_2(self):
+        data = pd.read_csv('tests/test_data/stacked_area_test_2.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title='A Test Chart',
+            kind='stacked_area',
+            label_area=True,
+            xyear=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_area_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5.7)
+    def test_stacked_area_3(self):
+        data = pd.read_csv('tests/test_data/stacked_area_test_3.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            title='A Test Chart',
+            kind='stacked_area',
+            xmin=1980,
+            xmax=2010,
+            ymin=5000,
+            label_area=True,
+            xyear=True
+        )
+        return fig
+
+    # Vertical Bar Chart Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='vertical_bar_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_1(self):
+        data = pd.read_csv('tests/test_data/vertical_bar_test_1.csv',
+                           index_col=0)
         fig = bluesteel.graphics.create_figure(
             data=data,
             kind="vertical_bar",
-            title="Sample Bar Chart",
-            source="Random data generation",
-            ylabel='Sample taxis title',
-            spines=False
+            title="A Test Chart",
+            xyear=True,
+            label_bars=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='vertical_bar_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_2(self):
+        data = pd.read_csv('tests/test_data/vertical_bar_test_2.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="vertical_bar",
+            title="A Test Chart",
+            source="The chart was made with love.",
+            spines=True,
+            label_bars=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='vertical_bar_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_3(self):
+        data = pd.read_csv('tests/test_data/vertical_bar_test_3.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="vertical_bar",
+            xticklabels=['bar1', 'bar2', 'bar3', 'bar4'],
+            ytick_loc=30,
+            yticklabels=["label"]
+        )
+        return fig
+
+    # Stacked Vertical Bar Chart Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_vbar_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_stack_1(self):
+        data = pd.read_csv('tests/test_data/stacked_vbar_test_1.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_vbar",
+            xyear=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_vbar_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_stack_2(self):
+        data = pd.read_csv('tests/test_data/stacked_vbar_test_2.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_vbar",
+            xticklabels=["a", "b", " ", "d", "e", " ", "g"],
+            xlabel_off=True,
+            spines=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_vbar_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_vbar_stack_3(self):
+        data = pd.read_csv('tests/test_data/stacked_vbar_test_3.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_vbar",
+            xticklabels=["I", "am", "", "rotating", "", "some", "labels"],
+            xlabel_off=True,
+            rot=45,
+            ytick_loc=[20, 40, 45]
+        )
+        return fig
+
+    # Horizontal Bar Chart Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='hbar_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_1(self):
+        data = pd.read_csv('tests/test_data/hbar_test_1.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="horizontal_bar",
+            title="A Test Chart",
+            xlabel="hello",
+            ylabel_off=True,
+            grid=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='hbar_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_2(self):
+        data = pd.read_csv('tests/test_data/hbar_test_2.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="horizontal_bar",
+            title="A Test Chart",
+            xlabel="hello",
+            spines=True,
+            label_bars=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='hbar_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_3(self):
+        data = pd.read_csv('tests/test_data/hbar_test_3.csv', index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="horizontal_bar",
+            title="A Test Chart",
+            xtick_loc=[5, 10],
+            xticklabels=["hi", "hello"]
+        )
+        return fig
+
+    # Stacked Horizontal Bar Chart Tests
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_hbar_test_1.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_stack_1(self):
+        data = pd.read_csv('tests/test_data/stacked_hbar_test_1.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_hbar",
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_hbar_test_2.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_stack_2(self):
+        data = pd.read_csv('tests/test_data/stacked_hbar_test_2.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_hbar",
+            spines=True,
+            xlabel_off=True
+        )
+        return fig
+
+    @pytest.mark.mpl_image_compare(baseline_dir='baseline',
+                                   filename='stacked_hbar_test_3.png',
+                                   style=('bluesteel/graphics/mercatus.'
+                                          'mplstyle'),
+                                   savefig_kwargs={'bbox_inches': 'tight'},
+                                   tolerance=5)
+    def test_hbar_stack_3(self):
+        data = pd.read_csv('tests/test_data/stacked_hbar_test_3.csv',
+                           index_col=0)
+        fig = bluesteel.graphics.create_figure(
+            data=data,
+            kind="stacked_hbar",
+            xtick_loc=[20, 40],
+            xticklabels=["test", "test"]
         )
         return fig
 
