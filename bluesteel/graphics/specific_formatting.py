@@ -251,7 +251,7 @@ def axis_labels_hbar(fig, ax, data, xtick_loc=None, xticklabels=None,
         ax.set_xticklabels(xtick_labels)
     if not yticklabels:
         yticklabels = data.index.values
-        if (type(yticklabels[0]) != str and 
+        if (type(yticklabels[0]) != str and
                 type(yticklabels[0]) != datetime.datetime):
             if max(yticklabels) >= 1000000:
                 if any([i % 1000 for i in yticklabels]):
