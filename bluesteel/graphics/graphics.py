@@ -95,7 +95,7 @@ def draw_scatter_plot(data, grid=None, **kwargs):
     return standard_formatting.format_figure(data, fig, **kwargs)
 
 
-def draw_line_chart(data, lw=2, label_lines=None, color=[0],
+def draw_line_chart(data, line_thickness=2, label_lines=None, color=[0],
                     grid=None, **kwargs):
     """Creates standard line chart and returns figure
 
@@ -110,7 +110,7 @@ def draw_line_chart(data, lw=2, label_lines=None, color=[0],
     if (len(data.columns) > 1) and (color == [0]):
         color = list(np.arange(0, len(data.columns)))
     for i, (_, series) in enumerate(data.items()):
-        ax.plot(series, lw=lw, color=colors[int(color[i])])
+        ax.plot(series, lw=line_thickness, color=colors[int(color[i])])
     if len(data.index) < 6:
         ax.set_xticks(data.index)
     if label_lines:
