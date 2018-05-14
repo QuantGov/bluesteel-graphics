@@ -191,7 +191,7 @@ def draw_vertical_bar_chart(data, label_bars=None, color=[0],
     if len(data.columns) > 1:
         ax.legend(labels=data.columns)
     fig = specific_formatting.axis_labels_vbar(fig, ax, data, **kwargs)
-
+    
     if grid:
         pass
     else:
@@ -212,9 +212,11 @@ def draw_vertical_stacked_bar(data, color=[0], **kwargs):
     bars = np.arange(len(data.index))
     width = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data.columns[::-1]:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data.columns[::-1]):
         ax.bar(bars, data[column], bottom=data_bottoms[column],
-               width=width, label=column)
+               width=width, label=column, color=colors[int(color[i])])
     ax.legend()
     ax.set_xticks(bars)
     fig = specific_formatting.axis_labels_vbar(fig, ax, data, **kwargs)
@@ -280,9 +282,11 @@ def draw_horizontal_stacked_bar(data, label_bars=None, color=[0], xlabel=None,
     bars = np.arange(len(data.index))
     height = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data):
         ax.barh(bars, data[column], left=data_bottoms[column],
-                height=height, label=column)
+                height=height, label=column, color=colors[int(color[i])])
     ax.legend()
     ax.set_yticks(bars)
     fig = specific_formatting.axis_labels_hbar(fig, ax, data, **kwargs)
