@@ -16,7 +16,7 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 # Formatting that every chart type is directed through
 def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
-                  source=False, **kwargs):
+                  source=False, ticks=False, **kwargs):
 
     ax = fig.gca()
 
@@ -24,7 +24,8 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
     ax.tick_params(axis='y', pad=10)
 
     # Tick Marks
-    ax.tick_params(bottom=False, left=False)
+    if not ticks:
+        ax.tick_params(bottom=False, left=False)
 
     # Spines
     if not spines:
