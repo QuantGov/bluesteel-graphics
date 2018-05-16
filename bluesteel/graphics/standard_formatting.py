@@ -16,7 +16,7 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 # Formatting that every chart type is directed through
 def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
-                  source=False, ticks=False, **kwargs):
+                  source=False, ticks=False, phoenix=False, **kwargs):
 
     ax = fig.gca()
 
@@ -77,12 +77,22 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
     figwidth = fig.get_size_inches()[0] * fig.dpi
 
     logo_width = int(figwidth / 3)
-    fig.figimage(LOGO.resize(
-        (logo_width,
-         int(logo_width * LOGO.height / LOGO.width))),
-        xo=fig.dpi / 16,
-        yo=fig.dpi / 16
-    )
+    if phoenix:
+        fig.figimage(LOGO.resize(
+            (logo_width,
+             int(logo_width * LOGO.height / LOGO.width))),
+            xo=fig.dpi / 16,
+            yo=fig.dpi / 16,
+            origin='lower'
+        )
+    else:
+        fig.figimage(LOGO.resize(
+            (logo_width,
+             int(logo_width * LOGO.height / LOGO.width))),
+            xo=fig.dpi / 16,
+            yo=fig.dpi / 16,
+            origin='upper'
+        )
 
     # Tests for false params
     test_fig, test_ax = plt.subplots()
