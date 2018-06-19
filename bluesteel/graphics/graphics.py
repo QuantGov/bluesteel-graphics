@@ -39,13 +39,15 @@ def create_image(data, format='png', **kwargs):
     :returns: a BytesIO holding the image
     """
     imagebuffer = io.BytesIO()
-    create_figure(data, **kwargs).savefig(
+    fig = create_figure(data, **kwargs)
+    fig.savefig(
         imagebuffer,
         format=format,
         bbox_inches='tight',
         dpi='figure'
     )
     imagebuffer.seek(0)
+    plt.close('all')
 
     return imagebuffer
 
