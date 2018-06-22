@@ -68,6 +68,8 @@ def parse_args(args):
     parser.add_argument('--source', help='source attribution')
     parser.add_argument('--spines', help='show axis spines',
                         action='store_true', default=False)
+    parser.add_argument('--ticks', help='show tick marks',
+                        action='store_true', default=False)
     parser.add_argument('--xtick_loc', help='xaxis tick location', nargs='+',
                         type=float)
     parser.add_argument('--ytick_loc', help='yaxis tick location', nargs='+',
