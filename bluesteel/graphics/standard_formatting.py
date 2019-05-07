@@ -4,6 +4,7 @@ import re
 from pathlib import Path
 from PIL import Image as image
 
+
 # Sets overarching style attributes
 LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
 LOGO.load(10)
