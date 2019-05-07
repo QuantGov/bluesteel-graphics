@@ -95,7 +95,7 @@ def parse_args(args):
                         action='store_true', default=False)
     parser.add_argument('--label_bars', help='show label on bar',
                         action='store_true', default=False)
-    parser.add_argument('--line_thickness', help='line thickness', type=float)
+    parser.add_argument('--lw', help='line thickness', type=float)
     parser.add_argument('--color', help='colors of lines, areas, or bars',
                         nargs='+', type=int)
 

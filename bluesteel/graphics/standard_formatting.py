@@ -18,6 +18,7 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
                   source=False, ticks=False, phoenix=False, **kwargs):
 
+
     ax = fig.gca()
 
     # Format yaxis zeroes
