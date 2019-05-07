@@ -1,5 +1,11 @@
 import collections
+import datetime
+import logging
 import textwrap
+
+from pathlib import Path
+
+log = logging.getLogger(Path(__file__).stem)
 
 
 # Formatting that is Specific Based on Chart Type
@@ -64,8 +70,8 @@ def set_ticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
         try:
             ax.set_xticks(xtick_loc)
         except AttributeError:
-            print('You have provided invalid '
-                  'xtick location.')
+            log.error('You have provided invalid xtick location.')
+            raise
         if xticklabels:
             ax.set_xticklabels(xticklabels)
     if ytick_loc:
@@ -74,8 +80,8 @@ def set_ticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
         try:
             ax.set_yticks(ytick_loc)
         except AttributeError:
-            print('You have provided invalid '
-                  'ytick location.')
+            log.error('You have provided invalid ytick location.')
+            raise
         if yticklabels:
             ax.set_yticklabels(yticklabels)
 
@@ -91,8 +97,8 @@ def set_ticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
                 else:
                     xticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                    xticklabels]
-                # Append a 'K' to labels to show that they have been truncated
-                xticklabels = [i + 'K' if i else '' for i in xticklabels]
+                log.warning('The x values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 if not xyear:
                     xticklabels = ['{:,.0f}'.format(i) for i in
@@ -110,7 +116,8 @@ def set_ticks_nonbar(fig, ax, xtick_loc=None, xticklabels=None,
                 else:
                     yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                    yticklabels]
-                yticklabels = [i + 'K' if i else '' for i in yticklabels]
+                log.warning('The y values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 if not yyear:
                     yticklabels = ['{:,.0f}'.format(i) for i in
@@ -132,12 +139,12 @@ def axis_labels_vbar(fig, ax, data, xyear=None, yyear=None, xticklabels=None,
     # Alerts user if the wrong number of labels was provided, sets labels
     if xticklabels:
         if len(xticklabels) < len(data.index):
-            print('You have supplied too few x-axis labels. Please provide'
-                  ' the correct number of labels. Input " " to '
-                  'the list add a blank label.')
+            raise ValueError('You have supplied too few x-axis labels. '
+                             'Please provide the correct number of labels. '
+                             'Input " " to the list add a blank label.')
         elif len(xticklabels) > len(data.index):
-            print('You have supplied too many x-axis labels.'
-                  ' Please provide the correct number of labels.')
+            raise ValueError('You have supplied too many x-axis labels. '
+                             'Please provide the correct number of labels.')
         ax.set_xticklabels(xticklabels)
 
     # Sets y-tick locations and labels if given
@@ -147,8 +154,8 @@ def axis_labels_vbar(fig, ax, data, xyear=None, yyear=None, xticklabels=None,
         try:
             ax.set_yticks(ytick_loc)
         except AttributeError:
-            print('You have provided an invalid '
-                  'ytick location.')
+            log.error('You have provided an invalid ytick location.')
+            raise
     if yticklabels:
         ax.set_yticklabels(yticklabels)
 
@@ -164,8 +171,8 @@ def axis_labels_vbar(fig, ax, data, xyear=None, yyear=None, xticklabels=None,
                 else:
                     xticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                    xticklabels]
-                # Append a 'K' to labels to show that they have been truncated
-                xticklabels = [i + 'K' if i else '' for i in xticklabels]
+                log.warning('The x values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 if not xyear:
                     xticklabels = ['{:,.0f}'.format(i) for i in
@@ -183,7 +190,8 @@ def axis_labels_vbar(fig, ax, data, xyear=None, yyear=None, xticklabels=None,
                 else:
                     yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                    yticklabels]
-                yticklabels = [i + 'K' if i else '' for i in yticklabels]
+                log.warning('The y values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 yticklabels = ['{:,.0f}'.format(i) for i in ax.get_yticks()]
         ax.set_yticklabels(yticklabels)
@@ -199,13 +207,13 @@ def axis_labels_vbar(fig, ax, data, xyear=None, yyear=None, xticklabels=None,
         for item in ax.xaxis.get_ticklabels():
             length_list.append(len(item.get_text()))
             total_length = sum(length_list)
-            if (len(item.get_text()) > 9) | \
-                    (total_length > 49) | \
+            if ((len(item.get_text()) > 9) or
+                    (total_length > 49) or
                     (len(item.get_text()) > 6 and
-                     len(ax.xaxis.get_ticklabels()) > 7):
-                print("You may want to consider using a horizontal_bar chart"
-                      " so that all of your x-axis labels are readable. Use"
-                      " the command --kind horizontal_bar")
+                     len(ax.xaxis.get_ticklabels()) > 7)):
+                log.warning('You may want to consider using a horizontal_bar '
+                            'chart so that all of your x-axis labels are '
+                            'readable. Use the command --kind horizontal_bar.')
                 break
 
     return fig
@@ -215,20 +223,20 @@ def axis_labels_hbar(fig, ax, data, xtick_loc=None, xticklabels=None,
                      ytick_loc=None, yticklabels=None, yyear=None, **kwargs):
     if yticklabels:
         if len(yticklabels) < len(data.index):
-            print('You have supplied too few y-axis labels. Please provide'
-                  ' the correct number of labels. Input " " to '
-                  'the list add a blank label.')
+            raise ValueError('You have supplied too few y-axis labels. '
+                             'Please provide the correct number of labels. '
+                             'Input " " to the list add a blank label.')
         elif len(yticklabels) > len(data.index):
-            print('You have supplied too many y-axis labels.'
-                  ' Please provide the correct number of labels.')
+            raise ValueError('You have supplied too many y-axis labels. '
+                             'Please provide the correct number of labels.')
         ax.set_yticklabels(yticklabels)
 
     if xtick_loc:
         try:
             ax.set_xticks(xtick_loc)
         except AttributeError:
-            print('You have provided an invalid '
-                  'xtick location.')
+            log.error('You have provided an invalid xtick location.')
+            raise
 
     if xticklabels:
         ax.set_xticklabels(xticklabels)
@@ -244,13 +252,15 @@ def axis_labels_hbar(fig, ax, data, xtick_loc=None, xticklabels=None,
                 else:
                     xtick_labels = ['' if not i else f"{i / 1000:,.0f}" for
                                     i in xtick_labels]
-                xtick_labels = [i + 'K' if i else '' for i in xtick_labels]
+                log.warning('The x values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 xtick_labels = ['{:,.0f}'.format(i) for i in ax.get_xticks()]
         ax.set_xticklabels(xtick_labels)
     if not yticklabels:
         yticklabels = data.index.values
-        if type(yticklabels[0]) != str:
+        if (type(yticklabels[0]) != str and
+                type(yticklabels[0]) != datetime.datetime):
             if max(yticklabels) >= 1000000:
                 if any([i % 1000 for i in yticklabels]):
                     yticklabels = ['' if not i else f"{i / 1000:,}" for i in
@@ -258,7 +268,8 @@ def axis_labels_hbar(fig, ax, data, xtick_loc=None, xticklabels=None,
                 else:
                     yticklabels = ['' if not i else f"{i / 1000:,.0f}" for i in
                                    yticklabels]
-                yticklabels = [i + 'K' if i else '' for i in yticklabels]
+                log.warning('The y values have been truncated by an order of '
+                            '1000. Mark this on somewhere the chart.')
             else:
                 if not yyear:
                     yticklabels = ['{:,.0f}'.format(i) for i in

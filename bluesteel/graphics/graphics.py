@@ -97,7 +97,7 @@ def draw_scatter_plot(data, grid=None, **kwargs):
     return standard_formatting.format_figure(data, fig, **kwargs)
 
 
-def draw_line_chart(data, lw=2, label_lines=None, color=[0],
+def draw_line_chart(data, line_thickness=2, label_lines=None, color=[0],
                     grid=None, **kwargs):
     """Creates standard line chart and returns figure
 
@@ -112,7 +112,7 @@ def draw_line_chart(data, lw=2, label_lines=None, color=[0],
     if (len(data.columns) > 1) and (color == [0]):
         color = list(np.arange(0, len(data.columns)))
     for i, (_, series) in enumerate(data.items()):
-        ax.plot(series, lw=lw, color=colors[int(color[i])])
+        ax.plot(series, lw=line_thickness, color=colors[int(color[i])])
     if len(data.index) < 6:
         ax.set_xticks(data.index)
     if label_lines:
@@ -214,9 +214,11 @@ def draw_vertical_stacked_bar(data, color=[0], **kwargs):
     bars = np.arange(len(data.index))
     width = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data.columns[::-1]:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data.columns[::-1]):
         ax.bar(bars, data[column], bottom=data_bottoms[column],
-               width=width, label=column)
+               width=width, label=column, color=colors[int(color[i])])
     ax.legend()
     ax.set_xticks(bars)
     fig = specific_formatting.axis_labels_vbar(fig, ax, data, **kwargs)
@@ -282,9 +284,11 @@ def draw_horizontal_stacked_bar(data, label_bars=None, color=[0], xlabel=None,
     bars = np.arange(len(data.index))
     height = .66
     data_bottoms = data.cumsum(axis=1).shift(1, axis=1).fillna(0)
-    for column in data:
+    if (len(data.columns) > 1) and (color == [0]):
+        color = list(np.arange(0, len(data.columns)))
+    for i, column in enumerate(data):
         ax.barh(bars, data[column], left=data_bottoms[column],
-                height=height, label=column)
+                height=height, label=column, color=colors[int(color[i])])
     ax.legend()
     ax.set_yticks(bars)
     fig = specific_formatting.axis_labels_hbar(fig, ax, data, **kwargs)
