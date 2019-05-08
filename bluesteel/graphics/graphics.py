@@ -20,7 +20,6 @@ from . import standard_formatting
 from . import specific_formatting
 
 import matplotlib as mpl
-mpl.rcParams.update(mpl.rcParamsDefault)
 
 log = logging.getLogger(Path(__file__).stem)
 colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
