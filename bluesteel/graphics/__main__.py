@@ -98,6 +98,10 @@ def parse_args(args):
     parser.add_argument('--line_thickness', help='line thickness', type=float)
     parser.add_argument('--color', help='colors of lines, areas, or bars',
                         nargs='+', type=int)
+    parser.add_argument('--pubs_format', help='publish in pubs format',
+                        action='store_true', default=False)
+    parser.add_argument('--logo_off', help='hides the Mercatus logo',
+                        action='store_true', default=False)
 
     verbosity = parser.add_mutually_exclusive_group()
     verbosity.add_argument('-v', '--verbose', action='store_const',

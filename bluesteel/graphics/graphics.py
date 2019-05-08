@@ -12,22 +12,21 @@ import logging
 import matplotlib.pyplot as plt
 import numpy as np
 
+from matplotlib import rc
 from pathlib import Path
 from PIL import Image as image
 
 from . import standard_formatting
 from . import specific_formatting
 
+import matplotlib as mpl
+mpl.rcParams.update(mpl.rcParamsDefault)
 
-LOGO = image.open(str(Path(__file__).parent.joinpath('mercatus_logo.eps')))
-LOGO.load(10)
 log = logging.getLogger(Path(__file__).stem)
-plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
 colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 
-
 # Overarching Functions that Direct to the Correct Chart Type
-def create_image(data, format='png', **kwargs):
+def create_image(data, format, pubs_format=None, **kwargs):
     """
     Create an image of a chart
 
@@ -38,17 +37,24 @@ def create_image(data, format='png', **kwargs):
 
     :returns: a BytesIO holding the image
     """
+    if pubs_format:
+        plt.style.use(str(Path(__file__).parent.joinpath('mercatuspub.mplstyle')))
+        filetype = 'eps'
+        rc('text', usetex=1)
+        print("reeee")
+    else:
+        plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
+        filetype = 'png'
     imagebuffer = io.BytesIO()
     create_figure(data, **kwargs).savefig(
         imagebuffer,
-        format=format,
+        format= filetype,
         bbox_inches='tight',
         dpi='figure'
     )
     imagebuffer.seek(0)
 
     return imagebuffer
-
 
 def create_figure(data, kind='line', **kwargs):
     """

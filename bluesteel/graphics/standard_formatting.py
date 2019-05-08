@@ -16,12 +16,14 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 # Formatting that every chart type is directed through
 def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
-                  source=False, ticks=False, phoenix=False, **kwargs):
+                  source=False, ticks=False, logo_off=False, phoenix=False, **kwargs):
 
     ax = fig.gca()
 
     # Format yaxis zeroes
     ax.tick_params(axis='y', pad=10)
+
+
 
     # Tick Marks
     if not ticks:
@@ -67,16 +69,19 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
         fig.text(ax.get_position().x1, 0, source.replace('\\n', '\n'),
                  size=10, ha='right')
         fig.subplots_adjust(bottom=0.17)
-    else:
-        fig.text(ax.get_position().x1, 0,
-                 u'Produced with Bluesteel Graphics\u2122.',
-                 size=10, ha='right')
-        fig.subplots_adjust(bottom=0.17)
 
     # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
 
     logo_width = int(figwidth / 3)
+    if not logo_off:
+        fig.figimage(LOGO.resize(
+            (logo_width,
+             int(logo_width * LOGO.height / LOGO.width))),
+            xo=fig.dpi / 16,
+            yo=fig.dpi / 16,
+            origin='upper'
+        )
     if phoenix:
         fig.figimage(LOGO.resize(
             (logo_width,
@@ -84,14 +89,6 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
             xo=fig.dpi / 16,
             yo=fig.dpi / 16,
             origin='lower'
-        )
-    else:
-        fig.figimage(LOGO.resize(
-            (logo_width,
-             int(logo_width * LOGO.height / LOGO.width))),
-            xo=fig.dpi / 16,
-            yo=fig.dpi / 16,
-            origin='upper'
         )
 
     # Tests for false params
@@ -101,7 +98,7 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                      'ytick_loc', 'xticklabels', 'yticklabels', 'xyear',
                      'yyear', 'rot', 'xlabel_off', 'ylabel_off', 'label_bars',
                      'label_lines', 'label_area', 'line_thickness',
-                     'color', 'grid']
+                     'color', 'grid', 'logo_off']
     for i in variable_list:
         try:
             kwargs.pop(i)
