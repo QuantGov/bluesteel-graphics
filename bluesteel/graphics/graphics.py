@@ -14,15 +14,13 @@ import numpy as np
 
 from matplotlib import rc
 from pathlib import Path
-from PIL import Image as image
 
 from . import standard_formatting
 from . import specific_formatting
 
-import matplotlib as mpl
-
 log = logging.getLogger(Path(__file__).stem)
 colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
+
 
 # Overarching Functions that Direct to the Correct Chart Type
 def create_image(data, format, pubs_format=None, **kwargs):
@@ -37,10 +35,10 @@ def create_image(data, format, pubs_format=None, **kwargs):
     :returns: a BytesIO holding the image
     """
     if pubs_format:
-        plt.style.use(str(Path(__file__).parent.joinpath('mercatuspub.mplstyle')))
+        plt.style.use(str(Path(__file__).parent.joinpath(
+            'mercatuspub.mplstyle')))
         filetype = 'eps'
         rc('text', usetex=1)
-        print("reeee")
     else:
         plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
         filetype = 'png'
