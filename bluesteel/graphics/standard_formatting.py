@@ -23,8 +23,6 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
     # Format yaxis zeroes
     ax.tick_params(axis='y', pad=10)
 
-
-
     # Tick Marks
     if not ticks:
         ax.tick_params(bottom=False, left=False)
@@ -69,6 +67,12 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
         fig.text(ax.get_position().x1, 0, source.replace('\\n', '\n'),
                  size=10, ha='right')
         fig.subplots_adjust(bottom=0.17)
+    else:
+        fig.text(ax.get_position().x1, 0,
+                 u'Produced with Bluesteel Graphics.',
+                 size=10, ha='right')
+        fig.subplots_adjust(bottom=0.17)
+
 
     # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi
