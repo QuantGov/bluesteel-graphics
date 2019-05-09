@@ -23,7 +23,7 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 
 
 # Overarching Functions that Direct to the Correct Chart Type
-def create_image(data, pubs_format=None, **kwargs):
+def create_image(data, format, pubs_format=None, **kwargs):
     """
     Create an image of a chart
 
@@ -37,15 +37,15 @@ def create_image(data, pubs_format=None, **kwargs):
     if pubs_format:
         plt.style.use(str(Path(__file__).parent.joinpath(
             'mercatuspub.mplstyle')))
-        filetype = 'eps'
+        format = 'eps'
         rc('text', usetex=True)
     else:
         plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
-        filetype = 'png'
+        format = 'png'
     imagebuffer = io.BytesIO()
     create_figure(data, **kwargs).savefig(
         imagebuffer,
-        format=filetype,
+        #format=filetype,
         bbox_inches='tight',
         dpi='figure'
     )
