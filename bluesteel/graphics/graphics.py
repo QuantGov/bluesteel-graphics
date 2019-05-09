@@ -23,7 +23,7 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 
 
 # Overarching Functions that Direct to the Correct Chart Type
-def create_image(data, format, pubs_format=None, **kwargs):
+def create_image(data, pubs_format=None, **kwargs):
     """
     Create an image of a chart
 
@@ -45,14 +45,14 @@ def create_image(data, format, pubs_format=None, **kwargs):
     imagebuffer = io.BytesIO()
     create_figure(data, **kwargs).savefig(
         imagebuffer,
-        format = filetype,
-        bbox_inches = 'tight',
-        dpi = 'figure'
+        format=filetype,
+        bbox_inches='tight',
+        dpi='figure'
     )
     imagebuffer.seek(0)
 
-
     return imagebuffer
+
 
 def create_figure(data, kind='line', **kwargs):
     """
