@@ -16,7 +16,8 @@ colors = [i['color'] for i in plt.rcParams['axes.prop_cycle']]
 # Formatting that every chart type is directed through
 def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                   ylabel_off=False, xlabel=None, ylabel=None, rot=None,
-                  source=False, ticks=False, logo_off=False, phoenix=False, **kwargs):
+                  source=False, ticks=False, logo_off=False, phoenix=False,
+                  **kwargs):
 
     ax = fig.gca()
 
@@ -72,7 +73,6 @@ def format_figure(data, fig, spines=False, title=False, xlabel_off=False,
                  u'Produced with Bluesteel Graphics.',
                  size=10, ha='right')
         fig.subplots_adjust(bottom=0.17)
-
 
     # Logo
     figwidth = fig.get_size_inches()[0] * fig.dpi

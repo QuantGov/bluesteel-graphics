@@ -38,18 +38,19 @@ def create_image(data, format, pubs_format=None, **kwargs):
         plt.style.use(str(Path(__file__).parent.joinpath(
             'mercatuspub.mplstyle')))
         filetype = 'eps'
-        rc('text', usetex=1)
+        rc('text', usetex=True)
     else:
         plt.style.use(str(Path(__file__).parent.joinpath('mercatus.mplstyle')))
         filetype = 'png'
     imagebuffer = io.BytesIO()
     create_figure(data, **kwargs).savefig(
         imagebuffer,
-        format= filetype,
-        bbox_inches='tight',
-        dpi='figure'
+        format = filetype,
+        bbox_inches = 'tight',
+        dpi = 'figure'
     )
     imagebuffer.seek(0)
+
 
     return imagebuffer
 
